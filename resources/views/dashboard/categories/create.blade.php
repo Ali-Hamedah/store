@@ -3,19 +3,28 @@
     categories
 @endsection
 
-@section('page-header')
-@endsection
 @section('content')
 
-<div class="container p-3"> <!-- يضيف مسافة داخلية حول النموذج -->
-    <form action="{{ route('dashboard.categories.store') }}" method="POST">
+@section('Starter_Page')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index')}}">Home</a></li>
+    <li class="breadcrumb-item active">categories</li>
+@endsection
+
+<div class="container p-3 card shadow mb-4" style="width: 99%; margin: auto;"> <!-- يضيف مسافة داخلية حول النموذج -->
+    <form action="{{ route('dashboard.categories.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="exampleFormControlInput1">Name</label>
             <input  type="text" name="name" class="form-control" >
+            @error('name')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
         </div>
         <div class="form-group">
             <label >parents </label>
+            @error('parent_id')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
            
             <select name="parent_id" class="form-control" >
         <option value="">categories parent</option>
@@ -27,10 +36,16 @@
         <div class="form-group">
             <label for="exampleFormControlTextarea1">description</label>
             <textarea name="description" class="form-control"  rows="3"></textarea>
+            @error('description')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
         </div>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Iamge</label>
             <input type="file" name="image" class="from-control">
+            @error('image')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
         </div>
 
         <fieldset class="form-group row">
@@ -48,7 +63,9 @@
                     Archived
                 </label>
               </div>
-            
+              @error('status')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
             </div>
           </fieldset>
 

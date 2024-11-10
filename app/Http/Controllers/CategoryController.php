@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::paginate(10);
         return view('dashboard.categories.index', compact('categories'));
     }
 
@@ -32,13 +32,28 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // $categories = Category::findOrFail($request->id);
-        $date = $request->all();
-        $date['slug'] = Str::slug($request->name);
-        Category::create($date);
 
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|integer|exists:categories,id',
+            'slug' => 'nullable|string|max:255|unique:categories,slug',
+            'description' => 'nullable|string|max:1000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        // الحصول على اسم القسم واستخدامه كاسم للملف
+        $categoryName = Str::slug($request->name, '-'); // تحويل الاسم إلى صيغة صالحة للملفات
+        $extension = $request->file('image')->getClientOriginalExtension(); // استخراج الامتداد الأصلي للصورة
+        $fileName = $categoryName . '.' . $extension; // تكوين اسم الملف باستخدام اسم القسم
+
+        // تخزين الملف في مجلد "images" مع الاسم المخصص
+        $imagePath = $request->file('image')->storeAs('images', $fileName, 'public');
+        $data = $request->all();
+        $data['image_path'] = $imagePath;
+        $data['slug'] = $categoryName;
+        Category::create($data);
+
+        // toastr()->success('Data has been saved successfully!');
         return redirect()->route('dashboard.categories.index')->with('success', 'Category created successfully');
-       
     }
 
     /**

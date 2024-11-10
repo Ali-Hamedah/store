@@ -3,21 +3,23 @@
     categories
 @endsection
 
-@section('page-header')
-@endsection
 @section('content')
-@if(session()->has('success'))
-    
-<div class="alert alert-success" role="alert">
-    Category created successfully
-  </div>
-@endif
-
-<div  style="width: 95%; margin: auto;">
-<div class="mb-5">
-    <a href="{{ route('dashboard.categories.create') }}"  class="btn btn-outline-primary">Add</a>
-</div>
-
+@section('Starter_Page')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index')}}">Home</a></li>
+    <li class="breadcrumb-item active">categories</li>
+@endsection
+<div class="card shadow mb-4" style="width: 99%; margin: auto;">
+    <div class="card-header py-3 d-flex">
+        <h6 class="m-0 font-weight-bold text-primary">Products</h6>
+        <div class="ml-auto">
+            <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
+                <span class="icon text-white-50">
+                    <i class="fa fa-plus"></i>
+                </span>
+                <span class="text">Add new Category</span>
+            </a>
+        </div>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -41,6 +43,15 @@
                 </tr>
             @endforelse
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                    <div class="d-flex align-items-center">
+                        {!! $categories->appends(request()->all())->links() !!}
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>
 @endsection
