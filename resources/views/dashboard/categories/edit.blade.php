@@ -11,11 +11,12 @@
 @endsection
 
 <div class="container p-3 card shadow mb-4" style="width: 99%; margin: auto;"> <!-- يضيف مسافة داخلية حول النموذج -->
-    <form action="{{ route('dashboard.categories.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('dashboard.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PATCH')
         <div class="form-group">
             <label for="exampleFormControlInput1">Name</label>
-            <input type="text" name="name" class="form-control">
+            <input value="{{ $category->name }}" type="text" name="name" class="form-control">
             @error('name')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -25,7 +26,10 @@
             <select name="parent_id" class="form-control">
                 <option value="">categories parent</option>
                 @foreach ($parents as $parent)
-                    <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                    <option value="{{ $parent->id }}"
+                        {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
+                        {{ $parent->name }}
+                    </option>
                 @endforeach
             </select>
             @error('parent_id')
@@ -34,7 +38,7 @@
         </div>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">description</label>
-            <textarea name="description" class="form-control" rows="3"></textarea>
+            <textarea name="description" class="form-control" rows="3">{{ old('description', $category->description) }}</textarea>
             @error('description')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -51,13 +55,15 @@
             <legend class="col-form-label col-sm-2 float-sm-left pt-0">Status</legend>
             <div class="col-sm-10">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="gridRadios1" value="Active">
+                    <input class="form-check-input" type="radio" name="status" id="gridRadios1" value="Active"
+                        {{ old('status', $category->status) == 'active' ? 'checked' : '' }}>
                     <label class="form-check-label" for="gridRadios1">
                         Active
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="gridRadios2" value="Archived">
+                    <input class="form-check-input" type="radio" name="status" id="gridRadios2" value="Archived"
+                        {{ old('status', $category->status) == 'archived' ? 'checked' : '' }}>
                     <label class="form-check-label" for="gridRadios2">
                         Archived
                     </label>
@@ -67,7 +73,6 @@
                 @enderror
             </div>
         </fieldset>
-
         <div class="form-group">
             <button type="submit" class="but btn-primary">Save</button>
         </div>

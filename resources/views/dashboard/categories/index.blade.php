@@ -26,7 +26,10 @@
                 <th>#</th>
                 <th>name</th>
                 <th>parent</th>
-                <th>created_at</th>
+                <th>description</th>
+                <th>status</th>
+                <th>Image</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -35,7 +38,22 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->parent_id }}</td>
-                    <td>{{ $category->created_at }}</td>
+                    <td>{{ $category->description }}</td>
+                    <td>{{ $category->status }}</td>
+                    <td>
+                        <img src="{{ asset('storage/images/' . $category->image_path) }}" alt="Category Image" style="width: 100px; height: auto;">
+                    </td>
+                    
+                    
+                    
+                    <td>
+                        <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
+                            href="{{ route('dashboard.categories.edit', $category->id)  }}"><i
+                                class="las la-pen"></i></a>
+                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
+                            data-toggle="modal" href="#delete{{ $category->id }}"><i
+                                class="las la-trash"></i></a>
+                    </td>
                 </tr>
             @empty
                 <tr>
