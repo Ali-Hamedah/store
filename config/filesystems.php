@@ -39,10 +39,20 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
+
+
+        'images' => [
+            'driver' => 'local',
+            'root' => public_path('images'), // تخزين الصور مباشرة في المجلد public/images
+            'url' => env('APP_URL') . '/images', // رابط الوصول للملفات من المتصفح
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
 
         's3' => [
             'driver' => 's3',

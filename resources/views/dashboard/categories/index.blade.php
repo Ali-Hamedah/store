@@ -5,7 +5,7 @@
 
 @section('content')
 @section('Starter_Page')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">Home</a></li>
     <li class="breadcrumb-item active">categories</li>
 @endsection
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
@@ -29,7 +29,7 @@
                 <th>description</th>
                 <th>status</th>
                 <th>Image</th>
-                
+
             </tr>
         </thead>
         <tbody>
@@ -41,19 +41,25 @@
                     <td>{{ $category->description }}</td>
                     <td>{{ $category->status }}</td>
                     <td>
-                        <img src="{{ asset('storage/images/' . $category->image_path) }}" alt="Category Image" style="width: 100px; height: auto;">
+                        <img src="{{ asset('images/' . $category->image) }}" alt="Category Image"
+                            style="width: 100px; height: auto;">
                     </td>
-                    
-                    
-                    
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.categories.edit', $category->id)  }}"><i
-                                class="las la-pen"></i></a>
-                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
-                            data-toggle="modal" href="#delete{{ $category->id }}"><i
-                                class="las la-trash"></i></a>
+                            href="{{ route('dashboard.categories.edit', $category->id) }}">
+                            <i class="las la-pen"></i>
+                        </a>
+                    
+                        <!-- زر لفتح المودال -->
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-{{ $category->id }}">
+                            <i class="las la-trash"></i>
+                        </button>
+                    
+                  <!-- Delete model inside a module -->  
+                       @include('dashboard.categories.delete')
                     </td>
+                    
+                    
                 </tr>
             @empty
                 <tr>
