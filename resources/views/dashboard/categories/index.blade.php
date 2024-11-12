@@ -45,9 +45,9 @@
                     </td>
                     <td>
                         <a href="{{ $category->image ? asset('images/' . $category->image) : '#' }}">
-                        <img src="{{ $category->image ? asset('images/' . $category->image) : asset('images/no_image.jpg') }}"
-                        style="width: 50px; height: 50px;">
-                       </a>
+                            <img src="{{ $category->image ? asset('images/' . $category->image) : asset('images/no_image.jpg') }}"
+                                style="width: 50px; height: 50px;">
+                        </a>
                     </td>
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
