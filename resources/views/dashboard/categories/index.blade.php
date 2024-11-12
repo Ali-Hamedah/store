@@ -29,7 +29,6 @@
                 <th>description</th>
                 <th>status</th>
                 <th>Image</th>
-
             </tr>
         </thead>
         <tbody>
@@ -39,27 +38,30 @@
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->parent_id }}</td>
                     <td>{{ $category->description }}</td>
-                    <td>{{ $category->status }}</td>
                     <td>
-                        <img src="{{ asset('images/' . $category->image) }}" alt="Category Image"
-                            style="width: 100px; height: auto;">
+                        <span class="badge {{ $category->status == 'active' ? 'badge-success' : 'badge-danger' }}">
+                            {{ $category->status == 'active' ? 'Active' : 'Archived' }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ $category->image ? asset('images/' . $category->image) : '#' }}">
+                        <img src="{{ $category->image ? asset('images/' . $category->image) : asset('images/no_image.jpg') }}"
+                        style="width: 50px; height: 50px;">
+                       </a>
                     </td>
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
                             href="{{ route('dashboard.categories.edit', $category->id) }}">
                             <i class="las la-pen"></i>
                         </a>
-                    
-                        <!-- زر لفتح المودال -->
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-{{ $category->id }}">
+                        <!-- Button to open the module-->
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                            data-target="#deleteModal-{{ $category->id }}">
                             <i class="las la-trash"></i>
                         </button>
-                    
-                  <!-- Delete model inside a module -->  
-                       @include('dashboard.categories.delete')
+                        <!-- Delete model inside a module -->
+                        @include('dashboard.categories.delete')
                     </td>
-                    
-                    
                 </tr>
             @empty
                 <tr>
