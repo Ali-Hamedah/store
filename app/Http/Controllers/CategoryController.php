@@ -99,16 +99,15 @@ class CategoryController extends Controller
         $category = Category::withTrashed()->find($id);
         if ($category) {
             $category->restore();
-            return redirect()->route('dashboard.categories.index')->with('success', 'Category restored successfully.');
+            return redirect()->route('dashboard.categories.trash')->with('success', 'Category restored successfully.');
         }
-        return redirect()->route('dashboard.categories.index')->with('error', 'Category not found.');
+        return redirect()->route('dashboard.categories.trash')->with('error', 'Category not found.');
     }
 
 
     public function forceDelete($id)
     {
         $category = Category::withTrashed()->find($id);
-
         if ($category) {
             if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
                 Storage::disk('images')->delete($category->image);
@@ -120,16 +119,12 @@ class CategoryController extends Controller
     }
 
     public function deleteSelected(Request $request)
-{
-    // تحقق من أن هناك عناصر محددة
-    if ($request->has('selected_items')) {
-        // حذف العناصر المحددة
-        Category::whereIn('id', $request->input('selected_items'))->delete();
-        return redirect()->route('dashboard.categories.index')->with('success', 'تم حذف العناصر المحددة بنجاح.');
+    {
+
+        if ($request->has('selected_items')) {
+            Category::whereIn('id', $request->input('selected_items'))->delete();
+            return redirect()->route('dashboard.categories.index')->with('success', 'تم حذف العناصر المحددة بنجاح.');
+        }
+        return redirect()->route('dashboard.categories.index')->with('error', 'لم يتم تحديد أي عنصر.');
     }
-
-    return redirect()->route('items.index')->with('error', 'لم يتم تحديد أي عنصر.');
-}
-
-
 }

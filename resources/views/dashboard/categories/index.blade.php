@@ -22,6 +22,8 @@
                 </span>
                 <span class="text">Add new Category</span>
             </a>
+           
+            
         </div>
     </div>
     <table class="table">
@@ -34,7 +36,11 @@
                 <th>status</th>
                 <th>Image</th>
                 <th>Image</th>
-                <th><input type="checkbox" id="select-all"></th>
+                <th><input type="checkbox" id="select-all"><button type="submit" class="btn btn-danger">
+                    <span class="icon text-white-50">
+                         <i class="fa fa-trash icon text-white-50"></i>
+                    </span>
+                </button></th>
             </tr>
         </thead>
         <tbody>
@@ -61,12 +67,13 @@
                             <i class="las la-pen"></i>
                         </a>
                         <!-- Button to open the module-->
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                            data-target="#deleteModal-{{ $category->id }}">
+                        
+                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal" data-target="#deleteModal-{{ $category->id }}">
                             <i class="las la-trash"></i>
-                        </button>
-                        <!-- Delete model inside a module -->
-                        @include('dashboard.categories.delete', ['route' => route('dashboard.categories.destroy', $category->id)])
+                        </a>
+                        
+                      <!-- Modal Delete -->
+                      @include('dashboard.categories.delete', ['route' => route('dashboard.categories.destroy', $category->id)])
 
                     </td>
                     <td><input type="checkbox" name="selected_items[]" value="{{ $category->id }}"></td>
@@ -88,7 +95,7 @@
             </tr>
         </tfoot>
     </table>
-    <button type="submit">حذف العناصر المحددة</button>
+   
 </form>
 </div>
 @endsection
