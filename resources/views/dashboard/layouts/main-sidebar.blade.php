@@ -3,25 +3,25 @@
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
       <!-- Add icons to the links using the .nav-icon class
            with font-awesome or any other icon font library -->
-      <li class="nav-item menu-open">
+      <li class="nav-item">
         <a href="#" class="nav-link active">
-          <i class="nav-icon fas fa-tachometer-alt"></i>
+          <i class="nav-icon fas fa-layer-group"></i>
           <p>
-            Starter Pages
+            Categories
             <i class="right fas fa-angle-left"></i>
           </p>
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="#" class="nav-link active">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Active Page</p>
+            <a href="{{ route('dashboard.categories.index')}}" class="nav-link">
+              <i></i>
+              <p>Categories </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Inactive Page</p>
+            <a href="{{ route('dashboard.categories.trash')}}" class="nav-link">
+              <i ></i>
+              <p>Categories Trash </p>
             </a>
           </li>
         </ul>

@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                <form action="{{ route('dashboard.categories.destroy', $category->id) }}" method="POST" style="display: inline;">
+                <form action="{{ $route }}" method="POST" style="display: inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">تأكيد الحذف</button>

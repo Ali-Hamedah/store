@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-   
+
     public function index()
     {
         $categories = Category::paginate(10);
@@ -25,7 +25,7 @@ class CategoryController extends Controller
         return view('dashboard.categories.create', compact('parents', 'category'));
     }
 
-       public function store(Request $request)
+    public function store(Request $request)
     {
 
         $request->validate(Category::rules($request->id ?? null));
@@ -44,13 +44,13 @@ class CategoryController extends Controller
         return redirect()->route('dashboard.categories.index')->with('success', 'Category created successfully');
     }
 
-   
+
     public function show(Category $category)
     {
         //
     }
 
-   
+
     public function edit(Category $category)
     {
 
@@ -59,7 +59,7 @@ class CategoryController extends Controller
         return view('dashboard.categories.edit', compact('category', 'parents'));
     }
 
-   
+
     public function update(Request $request, Category $category)
     {
 
@@ -81,14 +81,55 @@ class CategoryController extends Controller
     }
 
 
-
-   
     public function destroy(Category $category)
     {
-        if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
-            Storage::disk('images')->delete($category->image);
-        }
+
         $category->delete();
         return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
     }
+
+    public function trash_Category()
+    {
+        $categories = Category::onlyTrashed()->paginate(10);
+        return view('dashboard.categories.trash', compact('categories'));
+    }
+
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->find($id);
+        if ($category) {
+            $category->restore();
+            return redirect()->route('dashboard.categories.index')->with('success', 'Category restored successfully.');
+        }
+        return redirect()->route('dashboard.categories.index')->with('error', 'Category not found.');
+    }
+
+
+    public function forceDelete($id)
+    {
+        $category = Category::withTrashed()->find($id);
+
+        if ($category) {
+            if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
+                Storage::disk('images')->delete($category->image);
+            }
+            $category->forceDelete();
+            return redirect()->route('dashboard.categories.trash')->with('success', 'Category permanently deleted successfully.');
+        }
+        return redirect()->route('dashboard.categories.trash')->with('error', 'Category not found.');
+    }
+
+    public function deleteSelected(Request $request)
+{
+    // تحقق من أن هناك عناصر محددة
+    if ($request->has('selected_items')) {
+        // حذف العناصر المحددة
+        Category::whereIn('id', $request->input('selected_items'))->delete();
+        return redirect()->route('dashboard.categories.index')->with('success', 'تم حذف العناصر المحددة بنجاح.');
+    }
+
+    return redirect()->route('items.index')->with('error', 'لم يتم تحديد أي عنصر.');
+}
+
+
 }

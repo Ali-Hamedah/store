@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    categories
+   Trash categories
 @endsection
 
 @section('content')
@@ -8,20 +8,10 @@
     <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">Home</a></li>
     <li class="breadcrumb-item active">categories</li>
 @endsection
-
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
-    <form method="POST" action="{{ route('dashboard.items.delete') }}">
-        @csrf
-        @method('DELETE')
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">Products</h6>
         <div class="ml-auto">
-            <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
-                <span class="icon text-white-50">
-                    <i class="fa fa-plus"></i>
-                </span>
-                <span class="text">Add new Category</span>
-            </a>
         </div>
     </div>
     <table class="table">
@@ -33,8 +23,6 @@
                 <th>description</th>
                 <th>status</th>
                 <th>Image</th>
-                <th>Image</th>
-                <th><input type="checkbox" id="select-all"></th>
             </tr>
         </thead>
         <tbody>
@@ -56,21 +44,19 @@
                         </a>
                     </td>
                     <td>
-                        <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.categories.edit', $category->id) }}">
-                            <i class="las la-pen"></i>
-                        </a>
+                          <form action="{{ route('dashboard.categories.restore', $category->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-warning">Restore</button>
+                        </form>
+
                         <!-- Button to open the module-->
                         <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
                             data-target="#deleteModal-{{ $category->id }}">
                             <i class="las la-trash"></i>
                         </button>
                         <!-- Delete model inside a module -->
-                        @include('dashboard.categories.delete', ['route' => route('dashboard.categories.destroy', $category->id)])
-
+                        @include('dashboard.categories.delete', ['route' => route('dashboard.categories.forceDelete', $category->id)] )
                     </td>
-                    <td><input type="checkbox" name="selected_items[]" value="{{ $category->id }}"></td>
-
                 </tr>
             @empty
                 <tr>
@@ -88,17 +74,5 @@
             </tr>
         </tfoot>
     </table>
-    <button type="submit">حذف العناصر المحددة</button>
-</form>
 </div>
-@endsection
-@section('js')
-<script>
-    document.getElementById('select-all').onclick = function() {
-        let checkboxes = document.querySelectorAll('input[name="selected_items[]"]');
-        for (let checkbox of checkboxes) {
-            checkbox.checked = this.checked;
-        }
-    };
-</script>
 @endsection
