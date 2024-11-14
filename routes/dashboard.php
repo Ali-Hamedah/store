@@ -16,7 +16,9 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->as('dashboard.')->
 
     Route::get('/categories/trash', [CategoryController::class, 'trash_Category'])->name('categories.trash');
 
-    Route::post('/categories/restore{id}', [CategoryController::class, 'restore'])->name('categories.restore');
+    Route::put('/categories/restore/{id}', [CategoryController::class, 'restore'])->name('categories.restore');
+
+    Route::post('/categories/restoreAll{id}', [CategoryController::class, 'restoreAll'])->name('categories.restoreAll');
 
     Route::delete('/categories/force-delete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
    

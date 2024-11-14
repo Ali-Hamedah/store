@@ -94,8 +94,27 @@ class CategoryController extends Controller
         return view('dashboard.categories.trash', compact('categories'));
     }
 
-    public function restore($id)
+    public function restore(Request $request, $id)
     {
+        
+        $selectedItems = $request->selected_items;
+
+        if ($selectedItems && is_array($selectedItems)) {
+            // استعادة جميع الفئات المحددة
+            Category::withTrashed()
+                ->whereIn('id', $selectedItems)
+                ->restore();
+    
+            return redirect()->route('dashboard.categories.trash')->with('success', 'Categories restored successfully.');
+        }
+        return redirect()->route('dashboard.categories.trash')->with('error', 'Category not found.');
+    }
+
+
+    public function restoreAll($id)
+    {
+        
+
         $category = Category::withTrashed()->find($id);
         if ($category) {
             $category->restore();
@@ -103,7 +122,6 @@ class CategoryController extends Controller
         }
         return redirect()->route('dashboard.categories.trash')->with('error', 'Category not found.');
     }
-
 
     public function forceDelete($id)
     {

@@ -35,18 +35,18 @@
                 <th>description</th>
                 <th>status</th>
                 <th>Image</th>
-                <th>Image</th>
-                <th><input type="checkbox" id="select-all"><button type="submit" class="btn btn-danger">
+                <th>Processes</th>
+                <th><button type="submit" class="btn btn-danger">
                     <span class="icon text-white-50">
                          <i class="fa fa-trash icon text-white-50"></i>
                     </span>
-                </button></th>
+                </button><input type="checkbox" id="select-all"></th>
             </tr>
         </thead>
         <tbody>
             @forelse($categories as $category)
                 <tr>
-                    <td>{{ $category->id }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->parent_id }}</td>
                     <td>{{ $category->description }}</td>
