@@ -9,8 +9,6 @@
 @section('content')
 <form action="{{ route('dashboard.categories.restore', 'test') }}" method="POST" style="display:inline;">
     @csrf
-@method('post')
-    <button type="submit" class="btn btn-warning">Restore</button>
 
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
     <div class="card-header py-3 d-flex">
@@ -31,10 +29,7 @@
                 <th>
                     
                     
-                    <button type="submit" class="btn btn-danger">
-                    <span class="icon text-white-50">
-                         <i class="fa fa-trash icon text-white-50"></i>
-                    </span>
+                    <button type="submit" class="btn btn-warning">Restore
                 </button><input type="checkbox" id="select-all"></th>
             </tr>
         </thead>
@@ -67,18 +62,20 @@
                             data-target="#restoreModal-{{ $category->id }}">
                             <i class="las la-trash"></i>
                         </button>
-                        <!-- Button to open the module-->
+                        {{-- <!-- Button to open the module-->
                         <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
                             data-target="#deleteModal-{{ $category->id }}">
                             <i class="las la-trash"></i>
-                        </button>
+                        </button> --}}
+
+                        
                         <td><input type="checkbox" name="selected_items[]" value="{{ $category->id }}"></td>
                         <!-- Delete model inside a module -->
                       
                     </td>
                 </tr>
-                @include('dashboard.categories.delete', ['route' => route('dashboard.categories.forceDelete', $category->id)] )
-                @include('dashboard.categories.restore')
+                {{-- @include('dashboard.categories.delete', ['route' => route('dashboard.categories.forceDelete', $category->id)] )
+                @include('dashboard.categories.restore') --}}
                 @empty
                 <tr>
                     <td>No date</td>

@@ -81,12 +81,27 @@ class CategoryController extends Controller
     }
 
 
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
+        if ($request->page_id == 2) {
+            $delete_select_id = explode(",", $request->delete_select_id);
+        
+            Category::destroy($delete_select_id);
 
-        $category->delete();
-        return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
+        // $category->delete();
+         return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
     }
+    else {
+            // if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
+            //     // حذف الصورة إذا كانت موجودة
+            //     Storage::disk('images')->delete($category->image);
+            // }
+            $category->delete();
+        return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
+
+    }
+}
+    
 
     public function trash_Category()
     {
