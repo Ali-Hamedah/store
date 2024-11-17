@@ -10,9 +10,6 @@
 @endsection
 
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
-    {{-- <form method="POST" action="{{ route('dashboard.items.delete') }}">
-        @csrf
-        @method('DELETE') --}}
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">Products</h6>
         <div class="ml-auto">
@@ -20,28 +17,25 @@
                 <span class="icon text-white-50">
                     <i class="fa fa-plus"></i>
                 </span>
-                <span class="text">Add new Category</span>
+                <span class="text">{{ __('categories.add_new_category') }}</span>
             </a>
-           
-            
         </div>
     </div>
     <table id="example" class="table">
-    
         <thead>
             <tr>
                 <th>#</th>
-                <th>name</th>
-                <th>parent</th>
-                <th>description</th>
-                <th>status</th>
-                <th>Image</th>
-                <th>Processes</th>
+                <th>{{ __('categories.name') }}</th>
+                <th>{{ __('categories.parent') }}</th>
+                <th>{{ __('categories.description') }}</th>
+                <th>{{ __('categories.status') }}</th>
+                <th>{{ __('categories.Image') }}</th>
+                <th>{{ __('categories.Processes') }}</th>
                 <th><button id="btn_delete_all" class="btn btn-danger">
-                    <span class="icon text-white-50">
-                         <i class="fa fa-trash icon text-white-50"></i>
-                    </span>
-                </button><input type="checkbox" id="select-all"></th>
+                        <span class="icon text-white-50">
+                            <i class="fa fa-trash icon text-white-50"></i>
+                        </span>
+                    </button><input type="checkbox" id="select-all"></th>
             </tr>
         </thead>
         <tbody>
@@ -68,30 +62,22 @@
                             <i class="las la-pen"></i>
                         </a>
                         <!-- Button to open the module-->
-                        
-                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal" data-target="#delete{{ $category->id }}">
+                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal"
+                            data-target="#delete{{ $category->id }}">
                             <i class="las la-trash"></i>
                         </a>
-                        
-                    
-
                     </td>
-                    {{-- <td><input type="checkbox" name="selected_items[]" value="{{ $category->id }}"></td> --}}
-                    <td><input type="checkbox" name="delete_select" value="{{ $category->id }}"
-                        class="delete_select"></td>
+                    <td><input type="checkbox" name="delete_select" value="{{ $category->id }}" class="delete_select">
+                    </td>
                 </tr>
-                  <!-- Modal Delete -->
-                  @include('dashboard.categories.delete_select')
-                  @include('dashboard.categories.delete')
+                <!-- Modal Delete -->
+                @include('dashboard.categories.delete')
+                @include('dashboard.categories.delete_select')
             @empty
                 <tr>
                     <td>No date</td>
                 </tr>
             @endforelse
-            <!-- jQuery -->
-
-<!-- jQuery -->
-
         </tbody>
         <tfoot>
             <tr>
@@ -103,8 +89,6 @@
             </tr>
         </tfoot>
     </table>
-   
-{{-- </form> --}}
 </div>
 @endsection
 @section('js')
@@ -119,7 +103,6 @@
 
 <script>
     $(document).ready(function() {
-        // التأكد من أن jQuery جاهزة للعمل
         $("#btn_delete_all").click(function() {
             var selected = [];
             $("#example input[name=delete_select]:checked").each(function() {
@@ -129,9 +112,8 @@
             if (selected.length > 0) {
                 $('#deleteModal').modal('show')
                 $('input[id="delete_select_id"]').val(selected);
-            } 
+            }
         });
     });
 </script>
-
 @endsection

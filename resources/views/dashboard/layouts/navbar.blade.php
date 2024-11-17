@@ -11,7 +11,44 @@
         <a href="#" class="nav-link">Contact</a>
       </li>
     </ul>
-
+    <div class="main-header-right">
+    <ul class="nav">
+      <li class="">
+          <div class="dropdown  nav-itemd-none d-md-flex">
+            <a href="#" class="d-flex nav-item nav-link pl-0 country-flag1" data-toggle="dropdown" aria-expanded="false">
+           
+              @if (App::getLocale() == 'en')
+                  <span class="avatar country-Flag mr-0 align-self-center bg-transparent">
+                      <img src="{{ URL::asset('images/us_flag.jpg') }}" alt="US Flag" style="width: 20px; height: 20px; border-radius: 50%;">
+                  </span>
+                  <strong class="mr-2 ml-2 my-auto">{{ LaravelLocalization::getCurrentLocaleName() }}</strong>
+              @else
+                  <span class="avatar country-Flag mr-0 align-self-center bg-transparent">
+                      <img src="{{ URL::asset('images/AT.png') }}" alt="Austria Flag" style="width: 20px; height: 20px; border-radius: 50%;">
+                  </span>
+                  <strong class="mr-2 ml-2 my-auto">{{ LaravelLocalization::getCurrentLocaleName() }}</strong>
+              @endif
+              <div class="my-auto">
+              </div>
+          </a>          
+              <div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow" x-placement="bottom-end">
+                  @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                      <a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}"
+                          href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                          @if ($properties['native'] == 'English')
+                              <i class="flag-icon flag-icon-us"></i>
+                          @else ($properties['native'] == 'Deutsch')
+                              <i class="flag-icon flag-icon-at"></i>
+                        
+                          @endif
+                          {{ $properties['native'] }}
+                      </a>
+                  @endforeach
+              </div>
+          </div>
+      </li>
+  </ul>
+    </div>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->

@@ -41,7 +41,7 @@ class CategoryController extends Controller
             $data['image'] = $imagePath;
         }
         Category::create($data);
-        return redirect()->route('dashboard.categories.index')->with('success', 'Category created successfully');
+        return redirect()->route('dashboard.categories.index')->with('success', __('messages.add'));
     }
 
 
@@ -76,7 +76,7 @@ class CategoryController extends Controller
         }
 
         $category->update($data);
-        toastr()->success('Category updated successfully');
+        toastr()->success(__('messages.edit'));
         return redirect()->route('dashboard.categories.index');
     }
 
@@ -89,7 +89,7 @@ class CategoryController extends Controller
             Category::destroy($delete_select_id);
 
         // $category->delete();
-         return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
+         return redirect()->route('dashboard.categories.index')->with('success', __('messages.delete'));
     }
     else {
             // if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
