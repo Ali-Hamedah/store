@@ -6,18 +6,18 @@
 @section('content')
 @section('Starter_Page')
     <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">Home</a></li>
-    <li class="breadcrumb-item active">categories</li>
+    <li class="breadcrumb-item active">Products</li>
 @endsection
 
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
     <div class="card-header py-3 d-flex">
-        <h6 class="m-0 font-weight-bold text-primary">categories</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Products</h6>
         <div class="ml-auto">
             <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
                     <i class="fa fa-plus"></i>
                 </span>
-                <span class="text">{{ __('categories.add_new_category') }}</span>
+                <span class="text">{{ __('categories.add_new_product') }}</span>
             </a>
         </div>
     </div>
@@ -26,9 +26,9 @@
             <tr>
                 <th>#</th>
                 <th>{{ __('categories.name') }}</th>
-                <th>{{ __('categories.parent') }}</th>
-                <th>{{ __('categories.description') }}</th>
-                <th>{{ __('categories.status') }}</th>
+                <th>{{ __('products.store') }}</th>
+                <th>{{ __('products.category') }}</th>
+                <th>{{ __('products.status') }}</th>
                 <th>{{ __('categories.Image') }}</th>
                 <th>{{ __('categories.Processes') }}</th>
                 <th><button id="btn_delete_all" class="btn btn-danger">
@@ -39,40 +39,40 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($categories as $category)
+            @forelse($products as $product)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $category->name }}</td>
-                    <td>{{ $category->parent_id }}</td>
-                    <td>{{ $category->description }}</td>
+                    <td>{{ $product->name }}</td>
+                    <td>{{ $product->store->name }}</td>
+                    <td>{{ $product->category->name }}</td>
                     <td>
-                        <span class="badge {{ $category->status == 'active' ? 'badge-success' : 'badge-danger' }}">
-                            {{ $category->status == 'active' ? 'Active' : 'Archived' }}
+                        <span class="badge {{ $product->status == 'active' ? 'badge-success' : 'badge-danger' }}">
+                            {{ $product->status == 'active' ? 'Active' : 'Archived' }}
                         </span>
                     </td>
                     <td>
-                        <a href="{{ $category->image ? asset('images/' . $category->image) : '#' }}">
-                            <img src="{{ $category->image ? asset('images/' . $category->image) : asset('images/no_image.jpg') }}"
+                        <a href="{{ $product->image ? asset('images/' . $product->image) : '#' }}">
+                            <img src="{{ $product->image ? asset('images/' . $product->image) : asset('images/no_image.jpg') }}"
                                 style="width: 50px; height: 50px;">
                         </a>
                     </td>
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.categories.edit', $category->id) }}">
+                            href="{{ route('dashboard.categories.edit', $product->id) }}">
                             <i class="las la-pen"></i>
                         </a>
                         <!-- Button to open the module-->
                         <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal"
-                            data-target="#delete{{ $category->id }}">
+                            data-target="#delete{{ $product->id }}">
                             <i class="las la-trash"></i>
                         </a>
                     </td>
-                    <td><input type="checkbox" name="delete_select" value="{{ $category->id }}" class="delete_select">
+                    <td><input type="checkbox" name="delete_select" value="{{ $product->id }}" class="delete_select">
                     </td>
                 </tr>
                 <!-- Modal Delete -->
-                @include('dashboard.categories.delete')
-                @include('dashboard.categories.delete_select')
+                {{-- @include('dashboard.categories.delete')
+                @include('dashboard.categories.delete_select') --}}
             @empty
                 <tr>
                     <td>No date</td>
@@ -83,7 +83,7 @@
             <tr>
                 <td colspan="9">
                     <div class="d-flex align-items-center">
-                        {!! $categories->appends(request()->all())->links() !!}
+                        {!! $products->appends(request()->all())->links() !!}
                     </div>
                 </td>
             </tr>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
@@ -28,6 +29,8 @@ Route::group(
             Route::delete('/categories/force-delete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
                    
             Route::resource('categories', CategoryController::class);
+
+            Route::resource('products', ProductController::class);
         });
         
     });
