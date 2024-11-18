@@ -3,6 +3,7 @@
 return [
 
     'name' => 'name',
+    'products' => 'products',
     'parent' => 'parent',
     'description' => 'description',
     'status' => 'status',

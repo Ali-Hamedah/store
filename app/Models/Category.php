@@ -33,4 +33,9 @@ class Category extends Model
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
