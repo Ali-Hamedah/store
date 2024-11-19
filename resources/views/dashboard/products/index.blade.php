@@ -46,9 +46,11 @@
                     <td>{{ $product->store->name }}</td>
                     <td>{{ $product->category->name }}</td>
                     <td>
-                        <span class="badge {{ $product->status == 'active' ? 'badge-success' : 'badge-danger' }}">
-                            {{ $product->status == 'active' ? 'Active' : 'Archived' }}
-                        </span>
+                        <span class="badge 
+                        {{ $product->status == 'active' ? 'badge-success' : ($product->status == 'draft' ? 'badge-warning' : 'badge-danger') }}">
+                        {{ $product->status == 'active' ? 'Active' : ($product->status == 'draft' ? 'Draft' : 'Archived') }}
+                    </span>
+                    
                     </td>
                     <td>
                         <a href="{{ $product->image ? asset('images/' . $product->image) : '#' }}">
@@ -58,7 +60,7 @@
                     </td>
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.categories.edit', $product->id) }}">
+                            href="{{ route('dashboard.products.edit', $product->id) }}">
                             <i class="las la-pen"></i>
                         </a>
                         <!-- Button to open the module-->
@@ -71,8 +73,8 @@
                     </td>
                 </tr>
                 <!-- Modal Delete -->
-                {{-- @include('dashboard.categories.delete')
-                @include('dashboard.categories.delete_select') --}}
+                @include('dashboard.products.delete')
+                @include('dashboard.products.delete_select')
             @empty
                 <tr>
                     <td>No date</td>

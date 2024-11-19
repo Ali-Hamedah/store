@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mcamara/laravel-localization": "^2.0",
+        "symfony/intl": "^6.4",
         "yoeunes/toastr": "^2.3"
     },
     "require-dev": {

@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('phone_number')->nullable();
-            $table->foreignId('store_id')->nullable()->constrained('stores')->nullOnDelete();
-           
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('first_name');
+            $table->string('last_name');
             $table->date('birthday')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
             $table->string('street_address')->nullable();
@@ -28,8 +23,9 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
             $table->char('country', 2);
             $table->char('locale', 2)->default('en');
-            $table->rememberToken();
             $table->timestamps();
+
+            $table->primary('user_id');
         });
     }
 
@@ -38,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('profiles');
     }
 };
