@@ -7,6 +7,7 @@
 @endif
 
 <select 
+style="width: 100%; border-radius: 5px;" 
     name="{{ $name }}"
     {{ $attributes->class([
         'form-control',

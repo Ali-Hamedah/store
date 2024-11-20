@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Symfony\Component\Intl\Locales;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\Intl\Countries;
@@ -18,9 +19,11 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $countries = Countries::getNames();
+        $locales = Locales::getNames();
         return view('profile.edit', [
             'user' => $request->user(),
             'countries' => $countries,
+            'locales' => $locales,
         ]);
     }
 

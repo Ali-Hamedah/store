@@ -25,6 +25,11 @@
         </div>
 
         <div>
+            <x-input-label for="birthday" :value="__('Birthday')" />
+            <x-form.date :value="old('Birthday', $user->birthday)" />
+        </div>
+
+        <div>
             <x-input-label for="street_address" :value="__('street_address')" />
             <x-text-input id="street_address" name="street_address" type="text" class="mt-1 block w-full"
                 :value="old('street_address', $user->street_address)" required autofocus autocomplete="street_address" />
@@ -54,14 +59,12 @@
 
         <div>
             <x-input-label for="country" :value="__('country')" />
-            <x-select style="width: 100%;" name="country" :options="$countries" :selected="old('country', $user->country)" />
+            <x-form.select name="country" :options="$countries" :selected="old('country', $user->country)" />
         </div>
 
         <div>
             <x-input-label for="locale" :value="__('locale')" />
-            <x-text-input id="locale" name="state" type="text" class="mt-1 block w-full" :value="old('locale', $user->locale)"
-                required autofocus autocomplete="locale" />
-            <x-input-error class="mt-2" :messages="$errors->get('locale')" />
+            <x-form.select style="width: 100%;" name="locale" :options="$locales" :selected="old('locale', $user->locale)" />
         </div>
 
         <div>
@@ -88,6 +91,11 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="gender" :value="__('Gender')" />
+            <x-form.radio name="gender" :checked="$user->gender" :options="['male' => 'Male', 'female' => 'Female']" />
         </div>
 
         <div class="flex items-center gap-4">
