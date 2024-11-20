@@ -3,7 +3,7 @@
 </div>
 
 <div class="form-group">
-   <x-form.select label="Category" name="category_id" :options="App\Models\Category::pluck('name', 'id')" :selected="$product->category_id" />
+    <x-form.select label="Category" name="category_id" :options="App\Models\Category::pluck('name', 'id')" :selected="$product->category_id" />
 </div>
 
 <div class="form-group">
@@ -27,10 +27,9 @@
     <x-form.input label="Compare Price" name="compare_price" :value="$product->compare_price" />
 </div>
 
-{{-- <div class="form-group">
-            <x-form.input label="Tags" name="tags" :value="$tags" />
-        </div> --}}
-
+<div class="form-group">
+    <x-form.input label="Tags" name="tags" :value="$tags" />
+</div>
 <div class="form-group">
     <label for="">Status</label>
     <div>
@@ -42,3 +41,15 @@
     <button type="submit" class="btn btn-primary">{{ $button_label ?? 'Save' }}</button>
 </div>
 
+@push('styles')
+    <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('js/tagify.min.js') }}"></script>
+    <script src="{{ asset('js/tagify.polyfills.min.js') }}"></script>
+    <script>
+        var inputElm = document.querySelector('[name=tags]'),
+            tagify = new Tagify(inputElm);
+    </script>
+@endpush

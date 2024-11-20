@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Models\Tag;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -44,11 +46,13 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        $product = Product::findOrFail($product->id);
-      
-        return view('dashboard.products.edit', compact('product'));
+        $product = Product::findOrFail($id);
+
+        $tags = implode(',', $product->tags()->pluck('name')->toArray());
+
+        return view('dashboard.products.edit', compact('product', 'tags'));
     }
 
     /**
@@ -57,7 +61,28 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate(Product::rules($product->id));
-        $product->update($request->all());
+
+        $product->update($request->except('tags'));
+
+        $tags = json_decode($request->post('tags'));
+        $tag_ids = [];
+
+        $saved_tags = Tag::all();
+
+        foreach ($tags as $item) {
+            $slug = Str::slug($item->value);
+            $tag = $saved_tags->where('slug', $slug)->first();
+            if (!$tag) {
+                $tag = Tag::create([
+                    'name' => $item->value,
+                    'slug' => $slug,
+                ]);
+            }
+            $tag_ids[] = $tag->id;
+        }
+
+        $product->tags()->sync($tag_ids);
+
         return redirect()->route('dashboard.products.index', $product->id)->with('success', __('messages.update'));
     }
 
@@ -68,21 +93,19 @@ class ProductController extends Controller
     {
         if ($request->page_id == 2) {
             $delete_select_id = explode(",", $request->delete_select_id);
-        
+
             Product::destroy($delete_select_id);
 
-        // $category->delete();
-         return redirect()->route('dashboard.products.index')->with('success', __('messages.delete'));
-    }
-    else {
+            // $category->delete();
+            return redirect()->route('dashboard.products.index')->with('success', __('messages.delete'));
+        } else {
             // if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
             //     // حذف الصورة إذا كانت موجودة
             //     Storage::disk('images')->delete($category->image);
             // }
             $product->delete();
-        return redirect()->route('dashboard.products.index')->with('success', 'Product deleted successfully');
-
-    }
+            return redirect()->route('dashboard.products.index')->with('success', 'Product deleted successfully');
+        }
     }
 
     public function deleteSelected(Request $request)

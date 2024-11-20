@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
  @include('dashboard.layouts.head')
- 
+ @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -87,6 +87,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JavaScript -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+@stack('scripts')
 </body>
 </html>

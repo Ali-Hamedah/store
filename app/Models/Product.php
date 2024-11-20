@@ -10,8 +10,15 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'description', 'image', 'category_id', 'store_id',
-        'price', 'compare_price', 'status',
+        'name',
+        'slug',
+        'description',
+        'image',
+        'category_id',
+        'store_id',
+        'price',
+        'compare_price',
+        'status',
     ];
 
     public static function rules($id)
@@ -34,20 +41,22 @@ class Product extends Model
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'Price' => 'nullable|numeric|max:255',
             'compare_price' => 'nullable|numeric|max:1000',
-            
+
         ];
     }
-
 
     public function category()
     {
         return $this->belongsTo(Category::class)->withDefault();
-
     }
 
     public function store()
     {
         return $this->belongsTo(Store::class)->withDefault();
+    }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }
