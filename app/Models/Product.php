@@ -50,6 +50,10 @@ class Product extends Model
         return $this->belongsTo(Category::class)->withDefault();
     }
 
+    public function subCategory() {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class)->withDefault();

@@ -1,10 +1,25 @@
+@push('styles')
+    <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
+@endpush
 <div class="form-group">
     <x-form.input label="Product Name" class="form-control-lg" role="input" name="name" :value="$product->name" />
 </div>
 
+
 <div class="form-group">
-    <x-form.select label="Category" name="category_id" :options="App\Models\Category::pluck('name', 'id')" :selected="$product->category_id" />
+    <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id" />
 </div>
+
+<div>
+    <select id="sub_category" name="sub_category" style="width: 100%; border-radius: 5px; padding: 5pt">
+        @foreach ($subCategories as $subCategory)
+            <option value="{{ $subCategory->id }}" {{ $product->category_id == $subCategory->id ? 'selected' : '' }}>
+                {{ $subCategory->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
 <div class="form-group">
     <label for="">Description</label>
@@ -41,15 +56,37 @@
     <button type="submit" class="btn btn-primary">{{ $button_label ?? 'Save' }}</button>
 </div>
 
-@push('styles')
-    <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
-@endpush
-
 @push('scripts')
     <script src="{{ asset('js/tagify.min.js') }}"></script>
     <script src="{{ asset('js/tagify.polyfills.min.js') }}"></script>
     <script>
         var inputElm = document.querySelector('[name=tags]'),
             tagify = new Tagify(inputElm);
+    </script>
+
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
+
+    <script>
+        $(document).ready(function() {
+            $('select[name="category_id"]').on('change', function() {
+                var SectionId = $(this).val();
+                if (SectionId) {
+                    $.ajax({
+                        url: "{{ route('dashboard.section.get', ':id') }}".replace(':id',
+                            SectionId),
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('select[name="sub_category"]').empty(); // تفريغ القائمة السابقة
+                            $.each(data, function(key, value) {
+                                $('select[name="sub_category"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        },
+                    });
+                }
+            });
+        });
     </script>
 @endpush
