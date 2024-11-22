@@ -7,7 +7,7 @@
 
 
 <div class="form-group">
-    <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id" />
+    <x-form.select label="Category" name="category_id" :options="$categories"  :selected="$parentCategory->id ?? ''"  />
 </div>
 
 <div>
@@ -44,6 +44,7 @@
 
 <div class="form-group">
     <x-form.input label="Tags" name="tags" :value="$tags" />
+    <x-form.validation-feedback :name="$tags" />
 </div>
 <div class="form-group">
     <label for="">Status</label>
@@ -68,7 +69,7 @@
 
     <script>
         $(document).ready(function() {
-            $('select[name="category_id"]').on('change', function() {
+            $('[name=category_id]').on('change', function() {
                 var SectionId = $(this).val();
                 if (SectionId) {
                     $.ajax({
@@ -77,7 +78,7 @@
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
-                            $('select[name="sub_category"]').empty(); // تفريغ القائمة السابقة
+                            $('select[name="sub_category"]').empty();
                             $.each(data, function(key, value) {
                                 $('select[name="sub_category"]').append(
                                     '<option value="' + key + '">' + value +

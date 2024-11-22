@@ -18,4 +18,4 @@ style="width: 100%; border-radius: 5px;"
     @foreach($options as $value => $text)
     <option value="{{ $value }}" @selected($value == $selected)>{{ $text }}</option>
     @endforeach
-</select>
+        </select>

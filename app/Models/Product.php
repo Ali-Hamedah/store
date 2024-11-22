@@ -41,6 +41,7 @@ class Product extends Model
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'Price' => 'nullable|numeric|max:255',
             'compare_price' => 'nullable|numeric|max:1000',
+            'tags' => 'required|',
 
         ];
     }

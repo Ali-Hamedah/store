@@ -28,7 +28,7 @@ Route::group(
         
             Route::delete('/categories/force-delete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
                    
-                        // في ملف web.php
+                       
                         Route::get('/section/{id}', [ProductController::class, 'getSubcategories'])->name('section.get');
 
 

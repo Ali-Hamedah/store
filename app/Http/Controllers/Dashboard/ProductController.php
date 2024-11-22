@@ -51,14 +51,11 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-
         // تحويل التاجات إلى سلسلة نصية
         $tags = implode(',', $product->tags()->pluck('name')->toArray());
 
         // جلب الأقسام الأساسية (الأم)
-        $categories = Category::whereNull('parent_id')->pluck('name', 'id');
-
-        // جلب القسم الفرعي الذي ينتمي إليه المنتج
+        $categories = Category::whereNull('parent_id')->pluck('name', 'id');// جلب القسم الفرعي الذي ينتمي إليه المنتج
         $category = $product->category; // القسم الأساسي للمنتج
 
         // جلب الأقسام الفرعية بناءً على القسم الأساسي
@@ -69,15 +66,11 @@ class ProductController extends Controller
 
         return view('dashboard.products.edit', compact('product', 'tags', 'categories', 'subCategories', 'parentCategory'));
     }
-
-
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
     {
-
         $request->validate(Product::rules($product->id));
         $subCategoryId = $request->input('sub_category');
 
@@ -151,4 +144,9 @@ class ProductController extends Controller
         // إعادة الأقسام الفرعية كـ JSON
         return response()->json($subcategories);
     }
+
+   
 }
+
+
+
