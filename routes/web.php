@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Front\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,13 @@ Route::group(
         'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
     ], function(){ 
 
-        Route::get('/', function () {
-            return view('welcome');
-        });
+        // Route::get('/', function () {
+            
+        // });
+
+        Route::get('/', [HomeController::class, 'index'])->name('home');;
+
+
         require __DIR__.'/auth.php';
     });
  

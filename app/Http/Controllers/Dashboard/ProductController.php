@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -74,7 +75,7 @@ class ProductController extends Controller
         $request->validate(Product::rules($product->id));
         $subCategoryId = $request->input('sub_category');
 
-        $product->update($request->except('tags', 'category_id'));
+        $product->update($request->except('tags', 'category_id', 'image'));
         if ($request->has('sub_category') && $request->sub_category) {
             // تحديث المنتج باستخدام ID القسم الفرعي
             $product->update([
@@ -98,8 +99,19 @@ class ProductController extends Controller
             }
             $tag_ids[] = $tag->id;
         }
-
         $product->tags()->sync($tag_ids);
+
+        if ($request->hasFile('image')) {
+            if (!empty($product->image) && Storage::disk('images')->exists($product->image)) {
+                Storage::disk('images')->delete($product->image);
+            }
+            $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $data['image'] = $request->file('image')->storeAs('products', $fileName, 'images');
+            $product->update([
+                'image' => $data['image'],
+            ]);
+        }
+
 
         return redirect()->route('dashboard.products.index', $product->id)->with('success', __('messages.update'));
     }
@@ -138,12 +150,11 @@ class ProductController extends Controller
 
     public function getSubcategories($id)
     {
-        // جلب الأقسام الفرعية الخاصة بالقسم الأساسي المختار
         $subcategories = Category::where('parent_id', $id)->pluck('name', 'id');
-
-        // إعادة الأقسام الفرعية كـ JSON
         return response()->json($subcategories);
     }
+
+
 
    
 }

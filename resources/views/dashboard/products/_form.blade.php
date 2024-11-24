@@ -7,7 +7,7 @@
 
 
 <div class="form-group">
-    <x-form.select label="Category" name="category_id" :options="$categories"  :selected="$parentCategory->id ?? ''"  />
+    <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id ?? ''" />
 </div>
 
 <div>
@@ -81,7 +81,7 @@
                             $('select[name="sub_category"]').empty();
                             $.each(data, function(key, value) {
                                 $('select[name="sub_category"]').append(
-                                    '<option value="' + key + '">' + value +
+                                    '<option value="' + key + '">' + value + 
                                     '</option>');
                             });
                         },
@@ -90,4 +90,7 @@
             });
         });
     </script>
+
+
 @endpush
+

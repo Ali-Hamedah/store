@@ -64,4 +64,23 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function getImageUrl($default = 'no_image.jpg')
+    {
+        $imagePath = $this->image;
+        $imageFullPath = public_path('images/' . $imagePath);
+        
+        return $imagePath && file_exists($imageFullPath) ? asset('images/' . $imagePath) : asset('images/' . $default);
+    }
+
+    public function getDiscountPercentageAttribute()
+    {
+        if (!$this->compare_price) {
+            return 0;
+        }
+
+        $discountPercentage = (($this->compare_price - $this->price) / $this->compare_price) * 100;
+        return round($discountPercentage, 1);
+    }
+
 }
