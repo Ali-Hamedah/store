@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
             $table->char('country', 2);
             $table->char('locale', 2)->default('en');
+            $table->enum('type', ['user', 'admin', 'super-admin'])->default('user');
+            $table->timestamp('last_active_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

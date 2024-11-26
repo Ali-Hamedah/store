@@ -17,6 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $dates = ['last_active_at'];
     protected $fillable = [
         'name',
         'email',
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'postal_code',
         'country',
         'locale',
+        'last_active_at',
     ];
 
     /**
