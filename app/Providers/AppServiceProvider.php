@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('Debugbar', \Barryvdh\Debugbar\Facades\Debugbar::class);
         
-        $this->app->bind('currency.converter', function () {
-            return new CurrencyConverter(config('App'));
+        $this->app->singleton('currency', function () {
+            return new \App\Helpers\Currency;
         });
 
     }

@@ -160,8 +160,10 @@
                                         <span class="total-items">0</span>
                                     </a>
                                 </div>
+
                                <x-Cart-menu>
                                 </x-cart-menu>
+                                
                             </div>
                         </div>
                     </div>

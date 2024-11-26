@@ -135,7 +135,7 @@
                                         </li>
                                     </ul>
                                     <div class="button mt-3">
-                                        <a href="checkout.html" class="btn btn-primary">Checkout</a>
+                                        <a href="{{ route('checkout') }}" class="btn btn-primary">Checkout</a>
                                         <a href="product-grids.html" class="btn btn-secondary">Continue shopping</a>
                                     </div>
                                 </div>
