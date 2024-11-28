@@ -11,7 +11,11 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'store_id', 'user_id', 'payment_method', 'status', 'payment_status',
+        'store_id',
+        'user_id',
+        'payment_method',
+        'status',
+        'payment_status',
     ];
 
     public function store()
@@ -29,12 +33,19 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id', 'id', 'id')
-            ->using(OrderItem::class)
             ->as('order_item')
-            ->withPivot([
-                'product_name', 'price', 'quantity', 'options',
-            ]);
+            ->withPivot(['product_name', 'price', 'quantity', 'options']);
     }
+
+    // public function products()
+    // {
+    //     return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id', 'id', 'id')
+    //         ->using(OrderItem::class)
+    //         ->as('order_item')
+    //         ->withPivot([
+    //             'product_name', 'price', 'quantity', 'options',
+    //         ]);
+    // }
 
     public function items()
     {
@@ -67,7 +78,7 @@ class Order extends Model
 
     protected static function booted()
     {
-        static::creating(function(Order $order) {
+        static::creating(function (Order $order) {
             // 20220001, 20220002
             $order->number = Order::getNextOrderNumber();
         });

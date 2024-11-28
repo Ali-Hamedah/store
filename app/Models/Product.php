@@ -65,6 +65,11 @@ class Product extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function orderItems()
+{
+    return $this->hasMany(OrderItem::class, 'product_id', 'id');
+}
+
     public function getImageUrl($default = 'no_image.jpg')
     {
         $imagePath = $this->image;

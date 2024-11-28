@@ -154,6 +154,22 @@
                                 </h3>
                             </div>
                             <div class="navbar-cart">
+                                <div class="col-lg-6 col-md-6 col-12">
+                                
+                                        <ul class="useful-links">
+                                    <a class="new nav-link" href="#">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="header-icon-svgs" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="feather feather-bell">
+                                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                        </svg>
+                                        <!-- إظهار التنبيه عند وجود إشعارات -->
+                                        <span class="pulse"></span>
+                                    </a>
+                                      </ul>
+                             
+                            </div>
                                 <div class="wishlist">
                                     <a href="javascript:void(0)">
                                         <i class="lni lni-heart"></i>
@@ -163,6 +179,10 @@
 
                                <x-Cart-menu>
                                 </x-cart-menu>
+
+                                {{-- <x-notification>
+                                </x-notification> --}}
+                               
                                 
                             </div>
                         </div>

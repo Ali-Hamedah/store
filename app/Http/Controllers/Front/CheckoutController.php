@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Events\OrderCreated;
-use App\Exceptions\InvalidOrderException;
-use App\Http\Controllers\Controller;
+use Throwable;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Repositories\Cart\CartRepository;
+use App\Events\OrderCreated;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Intl\Countries;
-use Throwable;
+use App\Exceptions\InvalidOrderException;
+use App\Repositories\Cart\CartRepository;
+use App\Notifications\OrderCreatedNotification;
 
 class CheckoutController extends Controller
 {
@@ -61,15 +63,13 @@ class CheckoutController extends Controller
 
                 foreach ($request->post('addr') as $type => $address) {
                     $address['type'] = $type;
-                     $order->addresses()->create($address);
+                    $order->addresses()->create($address);
                 }
             }
-
+            event(new OrderCreated($order));
             DB::commit();
-
             //event('order.created', $order, Auth::user());
-            // event(new OrderCreated($order));
-
+           
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
