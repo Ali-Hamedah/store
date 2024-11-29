@@ -26,9 +26,10 @@
     <section class="checkout-wrapper section">
         <div class="container">
             <div class="row justify-content-center">
+                <form action="{{ route('checkout') }}" method="post" id="payment-form">
+                    @csrf
                 <div class="col-lg-8">
-                    <form action="{{ route('checkout') }}" method="post" id="payment-form">
-                        @csrf
+                   
                         <div class="checkout-steps-form-style-1">
                             <ul id="accordionExample">
                                 <li>
@@ -281,10 +282,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="checkout-payment-form">
-                                                    <div class="single-form form-default button">
-                                                        <button type="submit" id="submit" class="btn">pay
-                                                            now</button>
-                                                    </div>
+                                                   
                                                 </div>
                                             </div>
                                         </div>
@@ -292,7 +290,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </form>
+                 
                 </div>
                 <div class="col-lg-4">
                     <div class="checkout-sidebar">
@@ -314,29 +312,38 @@
 
                             <div class="sub-total-price">
                                 <div class="total-price">
-                                    <p class="value">Subotal Price:</p>
+                                    <p class="value">Subtotal Price:</p>
                                     <p class="price">{{ Currency::format($cart->total()) }}</p>
                                 </div>
                                 <div class="total-price shipping">
-                                    <p class="value">Subotal Price:</p>
-                                    <p class="price">$10.50</p>
+                                    <input type="hidden" name="discount" value="10"/> 
+                                    <p class="value">Discount:</p>
+                                    <p class="price">{{ Currency::format(10.50) }}</p>
                                 </div>
                                 <div class="total-price discount">
-                                    <p class="value">Subotal Price:</p>
-                                    <p class="price">$10.00</p>
+                                    <input type="hidden" name="shipping" value="5"/> 
+                                    <p class="value">Shipping:</p>
+                                    <p class="price">{{ Currency::format(5.00) }}</p>
                                 </div>
                             </div>
-
+                            
                             <div class="total-payable">
                                 <div class="payable-price">
-                                    <p class="value">Subotal Price:</p>
-                                    <p class="price">{{ Currency::format($cart->total()) }}</p>
+                                    <p class="value">Total Payable Price:</p>
+                                    @php
+                                        $totalWithDiscountAndShipping = floatval($cart->total()) - 10.50 - 5.00;
+                                    @endphp
+                                    <input type="hidden" name="total" value="{{ $totalWithDiscountAndShipping }}"/>
+                                    <p class="price">{{ Currency::format($totalWithDiscountAndShipping) }}</p>
                                 </div>
                             </div>
-                            <div class="price-table-btn button">
-                                <a href="javascript:void(0)" class="btn btn-alt">Checkout</a>
+                            
+                            <div class="single-form form-default button">
+                                <button type="submit" id="submit" class="btn">pay
+                                    now</button>
                             </div>
                         </div>
+                  
                         <div class="checkout-sidebar-banner mt-30">
                             <a href="product-grids.html">
                                 <img src="https://via.placeholder.com/400x330" alt="#">
@@ -344,6 +351,8 @@
                         </div>
                     </div>
                 </div>
+                </form>
+
             </div>
         </div>
     </section>

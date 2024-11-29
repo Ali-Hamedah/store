@@ -73,7 +73,7 @@ class OrderCreatedNotification extends Notification
         return [
             'body' => "A new order (#{$this->order->number}) created by {$addr->name} from {$addr->country_name}.",
             'icon' => 'fas fa-file',
-            'url' => url('/dashboard'),
+            'url' => url($this->order->number),
             'order_id' => $this->order->id,
         ];
     }

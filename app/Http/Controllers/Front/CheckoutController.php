@@ -31,6 +31,7 @@ class CheckoutController extends Controller
 
     public function store(Request $request, CartRepository $cart)
     {
+     
         $request->validate([
             'addr.billing.first_name' => ['required', 'string', 'max:255'],
             'addr.billing.last_name' => ['required', 'string', 'max:255'],
@@ -43,12 +44,17 @@ class CheckoutController extends Controller
 
         DB::beginTransaction();
         try {
+            $total = $request->input('total');
+             $total = str_replace(['$', ','], '', $total); 
             foreach ($items as $store_id => $cart_items) {
-
+           
                 $order = Order::create([
                     'store_id' => $store_id,
                     'user_id' => Auth::id(),
                     'payment_method' => 'cod',
+                    'total' =>  $total,
+                   
+                    
                 ]);
 
                 foreach ($cart_items as $item) {
