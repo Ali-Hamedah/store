@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Tag;
+use App\Models\Size;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -25,17 +27,66 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Product $product)
     {
-        //
-    }
+        $tags = implode(',', $product->tags()->pluck('name')->toArray());
 
+        $categories = Category::whereNull('parent_id')->whereStatus('active')->pluck('name', 'id');
+        $subCategories = collect();
+        $sizes = Size::orderBy('name', 'desc')->pluck('name');
+
+
+        return view('dashboard.products.create', compact('product', 'tags', 'categories', 'subCategories', 'sizes'));
+    }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user()->id;
+
+
+        $request->validate(Category::rules($request->id ?? null));
+
+        $categoryName = Str::slug($request->name, '-');
+        $data = $request->except(['tags', 'category_id', 'image', 'store_id']);
+        $data['slug'] = $categoryName;
+        $data['category_id'] = $request->sub_category;
+        $data['store_id'] = $user;
+
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+            foreach ($request->file('images') as $image) {
+                $extension = $image->getClientOriginalExtension();
+                $fileName = $categoryName . '-' . time() . '-' . uniqid() . '.' . $extension;
+                $imagePath = $image->storeAs('products', $fileName, 'images');
+                $imagePaths[] = $imagePath;
+            }
+            // إذا كنت ترغب في تخزين المسارات في الحقل 'image'، يمكنك حفظها كـ JSON أو كسلسلة من النصوص.
+            $data['image'] = json_encode($imagePaths);  // تخزين المسارات في قاعدة البيانات
+        }
+
+
+        $tags = json_decode($request->post('tags'));
+        $tag_ids = [];
+
+        $saved_tags = Tag::all();
+
+        foreach ($tags as $item) {
+            $slug = Str::slug($item->value);
+            $tag = $saved_tags->where('slug', $slug)->first();
+            if (!$tag) {
+                $tag = Tag::create([
+                    'name' => $item->value,
+                    'slug' => $slug,
+                ]);
+            }
+            $tag_ids[] = $tag->id;
+        }
+        $product = Product::create($data);
+        $product->tags()->sync($tag_ids);
+
+        return redirect()->route('dashboard.products.index')->with('success', __('messages.update'));
     }
 
     /**
@@ -56,7 +107,7 @@ class ProductController extends Controller
         $tags = implode(',', $product->tags()->pluck('name')->toArray());
 
         // جلب الأقسام الأساسية (الأم)
-        $categories = Category::whereNull('parent_id')->pluck('name', 'id');// جلب القسم الفرعي الذي ينتمي إليه المنتج
+        $categories = Category::whereNull('parent_id')->pluck('name', 'id'); // جلب القسم الفرعي الذي ينتمي إليه المنتج
         $category = $product->category; // القسم الأساسي للمنتج
 
         // جلب الأقسام الفرعية بناءً على القسم الأساسي
@@ -73,11 +124,9 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate(Product::rules($product->id));
-        $subCategoryId = $request->input('sub_category');
 
         $product->update($request->except('tags', 'category_id', 'image'));
         if ($request->has('sub_category') && $request->sub_category) {
-            // تحديث المنتج باستخدام ID القسم الفرعي
             $product->update([
                 'category_id' => $request->sub_category,
             ]);
@@ -153,11 +202,4 @@ class ProductController extends Controller
         $subcategories = Category::where('parent_id', $id)->pluck('name', 'id');
         return response()->json($subcategories);
     }
-
-
-
-   
 }
-
-
-

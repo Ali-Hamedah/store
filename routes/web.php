@@ -7,6 +7,7 @@ use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\CheckoutController;
+use App\Livewire\Counter;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,7 @@ Route::group(
         // Route::get('/', function () {
             
         // });
-
+     
         Route::get('/', [HomeController::class, 'index'])->name('home');;
 
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');

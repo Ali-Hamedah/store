@@ -1,5 +1,7 @@
 <?php
 
+use Livewire\Livewire;
+use App\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Dashboard\OrderController;
@@ -9,11 +11,13 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
+Route::get('/counter', Counter::class); // مسار Livewire لعداد
+
 Route::group(
     [
-        'prefix' => LaravelLocalization::setLocale(),
-        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
-    ], function(){ 
+        'prefix' => LaravelLocalization::setLocale(), // إضافة التوطين في المسار
+        'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+    ], function() { 
 
         Route::middleware(['auth', 'verified'])->prefix('dashboard')->as('dashboard.')->group(function() {
             Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -30,24 +34,23 @@ Route::group(
         
             Route::delete('/categories/force-delete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
                    
-                       
-                        Route::get('/section/{id}', [ProductController::class, 'getSubcategories'])->name('section.get');
-
-
-
+            Route::get('/section/{id}', [ProductController::class, 'getSubcategories'])->name('section.get');
 
             Route::resource('categories', CategoryController::class);
-
             Route::resource('products', ProductController::class);
-
             Route::resource('orders', OrderController::class);
 
-            Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('dashboard.markAsRead');
+            Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+            Route::get('/notifications_ReadAll', [NotificationController::class, 'ReadAll'])->name('ReadAll');
 
-
-
+            // تخصيص مسار التحديث الخاص بـ Livewire مع التوطين
+            Livewire::setUpdateRoute(function ($handle) {
+                return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
+                    ->middleware(['auth']);
+            });
+          
         });
         
     });
     
-    require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';

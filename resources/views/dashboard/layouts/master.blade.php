@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+
 <head>
  @include('dashboard.layouts.head')
  @stack('styles')
+ @livewireStyles
+
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -88,5 +92,12 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 @stack('scripts')
+
+
+@livewireScripts
+
+
+
+
 </body>
 </html>

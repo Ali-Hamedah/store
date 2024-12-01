@@ -21,6 +21,15 @@
            ]" 
        />
 
+       <x-sidebar 
+       classType="shopping-cart 9" 
+       title="Orders" 
+       :links="[
+           ['url' => route('dashboard.orders.index'), 'label' => 'Orders'],
+          //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
+       ]" 
+   />
+
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-th"></i>

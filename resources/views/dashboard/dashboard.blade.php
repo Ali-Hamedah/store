@@ -5,6 +5,10 @@ Wien Store
 @section('page-header')
 
 @endsection
+@push('styles')
+<link rel="stylesheet" href="{{ asset('custom.css') }}">
+@endpush
+
 @section('content')
 <div class="content">
   <div class="container-fluid">
@@ -13,7 +17,7 @@ Wien Store
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
-
+         
             <p class="card-text">
               Some quick example text to build on the card title and make up the bulk of the card's
               content.
@@ -69,3 +73,6 @@ Wien Store
   </div><!-- /.container-fluid -->
 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('custom.js') }}"></script>
+@endpush

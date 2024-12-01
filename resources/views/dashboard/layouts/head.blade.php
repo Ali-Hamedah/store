@@ -1,4 +1,13 @@
 @stack('css') 
+
+
+
+    @if ( app()->getLocale() === 'ar')
+    <link rel="stylesheet" href="{{ asset('dist-rtl/css/adminlte.min.css') }}">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+    @endif
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title> @yield('title') </title>
@@ -8,7 +17,7 @@
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
 <!-- Theme style -->
-<link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -19,3 +28,5 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JavaScript -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+

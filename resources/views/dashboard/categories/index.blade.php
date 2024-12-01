@@ -9,7 +9,7 @@
     <li class="breadcrumb-item active">categories</li>
 @endsection
 
-<div class="card shadow mb-4" style="width: 99%; margin: auto;">
+<div class="card shadow mb-4">
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">categories</h6>
         <div class="ml-auto">

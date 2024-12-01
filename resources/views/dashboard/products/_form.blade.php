@@ -1,6 +1,8 @@
 @push('styles')
     <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
+  
 @endpush
+
 <div class="form-group">
     <x-form.input label="Product Name" class="form-control-lg" role="input" name="name" :value="$product->name" />
 </div>
@@ -31,14 +33,6 @@
 </div>
 
 <div class="form-group">
-    <label for="exampleFormControlTextarea1">Iamge</label>
-    <input type="file" name="image" class="from-control">
-    @error('image')
-        <div class="text-danger">{{ $message }}</div>
-    @enderror
-</div>
-
-<div class="form-group">
     <x-form.input label="Compare Price" name="compare_price" :value="$product->compare_price" />
 </div>
 
@@ -46,12 +40,29 @@
     <x-form.input label="Tags" name="tags" :value="$tags" />
     <x-form.validation-feedback :name="$tags" />
 </div>
+
+<livewire:counter /> 
+
+<div class="form-group">
+    <label for="exampleFormControlTextarea1">Iamge</label>
+    <input type="file" lass="from-control" name="images[]" multiple>
+    @error('image')
+        <div class="text-danger">{{ $message }}</div>    
+    @enderror
+</div>
+
 <div class="form-group">
     <label for="">Status</label>
     <div>
         <x-form.radio name="status" :checked="$product->status" :options="['active' => 'Active', 'draft' => 'Draft', 'archived' => 'Archived']" />
     </div>
 </div>
+
+{{-- <div class="form-group">
+    <x-form.select label="Size" name="size_id" :options="$sizes" :selected="$parentCategory->id ?? ''" />
+</div> --}}
+
+
 
 <div class="form-group">
     <button type="submit" class="btn btn-primary">{{ $button_label ?? 'Save' }}</button>
@@ -91,6 +102,9 @@
         });
     </script>
 
+<script>
+    import 'livewire-vite';
 
+</script>
 @endpush
 

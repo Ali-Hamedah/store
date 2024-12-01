@@ -18,7 +18,7 @@ class Notifications extends Component
     public function __construct()
     {
         $user = Auth::user();
-        $this->notifications = $user->unreadNotifications()->latest()->get();
+        $this->notifications = $user->unreadNotifications()->latest()->take(4)->get();
         $this->count = $this->notifications->count();
         $this->newCount = $user->unreadNotifications()->count();
     }

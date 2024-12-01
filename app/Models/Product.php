@@ -39,8 +39,8 @@ class Product extends Model
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string|max:1000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'Price' => 'nullable|numeric|max:255',
-            'compare_price' => 'nullable|numeric|max:1000',
+            'Price' => 'nullable|numeric|max:10000',
+            'compare_price' => 'nullable|numeric|max:10000',
             'tags' => 'required|',
 
         ];

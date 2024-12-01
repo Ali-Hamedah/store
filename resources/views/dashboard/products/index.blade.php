@@ -13,11 +13,11 @@
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">Products</h6>
         <div class="ml-auto">
-            <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
+            <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
                     <i class="fa fa-plus"></i>
                 </span>
-                <span class="text">{{ __('categories.add_new_product') }}</span>
+                <span class="text">{{ __('products.add_new_product') }}</span>
             </a>
         </div>
     </div>
