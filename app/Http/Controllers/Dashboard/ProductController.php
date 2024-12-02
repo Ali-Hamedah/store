@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Tag;
 use App\Models\Size;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -33,10 +35,11 @@ class ProductController extends Controller
 
         $categories = Category::whereNull('parent_id')->whereStatus('active')->pluck('name', 'id');
         $subCategories = collect();
-        $sizes = Size::orderBy('name', 'desc')->pluck('name');
+        $sizes = Size::orderBy('name', 'desc')->get();
+        $colors = Color::orderBy('name', 'desc')->get();
 
 
-        return view('dashboard.products.create', compact('product', 'tags', 'categories', 'subCategories', 'sizes'));
+        return view('dashboard.products.create', compact('product', 'tags', 'categories', 'subCategories', 'sizes', 'colors'));
     }
     /**
      * Store a newly created resource in storage.
@@ -44,16 +47,32 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user()->id;
-
-
+    
+        // التحقق من صحة البيانات
         $request->validate(Category::rules($request->id ?? null));
-
+    
+        // إعداد البيانات
         $categoryName = Str::slug($request->name, '-');
-        $data = $request->except(['tags', 'category_id', 'image', 'store_id']);
+        $data = $request->except(['tags', 'category_id', 'image', 'sizes', 'colors', 'quantities']);
         $data['slug'] = $categoryName;
         $data['category_id'] = $request->sub_category;
-        $data['store_id'] = $user;
-
+        $data['store_id'] = 1;
+    
+        // حفظ المنتج الرئيسي
+        $product = Product::create($data);
+    
+        // حفظ خصائص المنتج (الألوان، الأحجام، والكميات)
+        foreach ($request->sizes as $index => $size) {
+            $variant = new ProductVariant();
+            $variant->product_id = $product->id; // استخدام معرف المنتج الرئيسي
+            $variant->size_id = $size;
+            $variant->color_id = $request->colors[$index];
+            $variant->quantity = $request->quantities[$index];
+            $variant->sku = Str::uuid()->toString();
+            $variant->save();
+        }
+    
+        // حفظ الصور
         if ($request->hasFile('images')) {
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
@@ -62,16 +81,14 @@ class ProductController extends Controller
                 $imagePath = $image->storeAs('products', $fileName, 'images');
                 $imagePaths[] = $imagePath;
             }
-            // إذا كنت ترغب في تخزين المسارات في الحقل 'image'، يمكنك حفظها كـ JSON أو كسلسلة من النصوص.
-            $data['image'] = json_encode($imagePaths);  // تخزين المسارات في قاعدة البيانات
+            $product->update(['image' => json_encode($imagePaths)]); // تخزين المسارات في قاعدة البيانات
         }
-
-
+    
+        // حفظ العلامات (Tags)
         $tags = json_decode($request->post('tags'));
         $tag_ids = [];
-
         $saved_tags = Tag::all();
-
+    
         foreach ($tags as $item) {
             $slug = Str::slug($item->value);
             $tag = $saved_tags->where('slug', $slug)->first();
@@ -83,11 +100,15 @@ class ProductController extends Controller
             }
             $tag_ids[] = $tag->id;
         }
-        $product = Product::create($data);
+    
         $product->tags()->sync($tag_ids);
-
-        return redirect()->route('dashboard.products.index')->with('success', __('messages.update'));
+    
+        // تحديث كود المنتج
+        $product->update(['product_code' => $product->id]);
+    
+        return redirect()->route('dashboard.products.index')->with('success', 'تم إنشاء المنتج بنجاح!');
     }
+    
 
     /**
      * Display the specified resource.

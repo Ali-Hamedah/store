@@ -16,14 +16,14 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Ali Hamedah',
-            'email' => 'ali@gmail.com',
+            'email' => 'aliali735522@gmail.com',
             'password' => Hash::make('12345678'),
             'phone_number' => '068181863821',
             'country' => fake()->countryCode(),
         ]);
         User::create([
-            'name' => 'Ali Hamedah',
-            'email' => 'ahmed@gmail.com',
+            'name' => 'Store',
+            'email' => 'aliali773355@gmail.com',
             'password' => Hash::make('12345678'),
             'phone_number' => '068181863821',
             'country' => fake()->countryCode(),

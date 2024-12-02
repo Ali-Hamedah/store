@@ -4,6 +4,7 @@ namespace App\Repositories\Cart;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -28,23 +29,50 @@ class CartModelRepository implements CartRepository
         return $this->items;
     }
 
-    public function add(Product $product, $quantity = 1)
+    public function add(ProductVariant $productVariant, $quantity = 1, $color_id = null, $size_id = null)
     {
-        $item =  Cart::where('product_id', '=', $product->id)
-            ->first();
-        
-        if (!$item) {
-            $cart = Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-            ]);
-            $this->get()->push($cart);
-            return $cart;
+        if (!$color_id || !$size_id) {
+            throw new \InvalidArgumentException('Color ID and Size ID are required.');
         }
-
-        return $item->increment('quantity', $quantity);
+    
+        // تحقق من وجود المنتج المتغير
+        $variant = ProductVariant::where('product_id', $productVariant->product_id)
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id)
+            ->first();
+    
+        if (!$variant) {
+            throw new \Exception('The selected product variant is not available.');
+        }
+    
+        // البحث عن المنتج بنفس المواصفات (المنتج + اللون + المقاس) في السلة
+        $existingCartItem = Cart::where('product_id', $productVariant->product_id)
+            ->where('color_id', $color_id)
+            ->where('size_id', $size_id)
+            ->first();
+  
+        if ($existingCartItem) {
+            // إذا كان المنتج بنفس المواصفات موجودًا، قم بزيادة العدد فقط
+          
+            $existingCartItem->increment('quantity', $quantity);
+            return $existingCartItem;
+        }
+    
+        // إذا لم يكن المنتج موجودًا بنفس المواصفات، قم بإضافته كعنصر جديد في السلة
+        $cart = Cart::create([
+            'id' => (string) Str::uuid(),
+            'cookie_id' => request()->cookie('cart_cookie_id', (string) Str::uuid()),
+            'user_id' => auth()->id(),
+            'product_id' => $productVariant->product_id,
+            'color_id' => $color_id,
+            'size_id' => $size_id,
+            'quantity' => $quantity,
+            'options' => json_encode([]), // خيارات إضافية إذا لزم الأمر
+        ]);
+    
+        return $cart;
     }
+    
 
     public function update($id, $quantity)
     {

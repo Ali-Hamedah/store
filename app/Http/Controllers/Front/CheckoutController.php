@@ -46,16 +46,14 @@ class CheckoutController extends Controller
         try {
             $total = $request->input('total');
              $total = str_replace(['$', ','], '', $total); 
-            foreach ($items as $store_id => $cart_items) {
-           
+             foreach ($items as $store_id => $cart_items) {
                 $order = Order::create([
                     'store_id' => $store_id,
                     'user_id' => Auth::id(),
                     'payment_method' => 'cod',
-                    'total' =>  $total,
-                   
-                    
+                    'total' => $total,
                 ]);
+            
 
                 foreach ($cart_items as $item) {
                     OrderItem::create([
@@ -72,8 +70,9 @@ class CheckoutController extends Controller
                     $order->addresses()->create($address);
                 }
             }
-            event(new OrderCreated($order));
+          
             DB::commit();
+            event(new OrderCreated($order));
             //event('order.created', $order, Auth::user());
            
         } catch (Throwable $e) {

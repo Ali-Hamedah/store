@@ -88,4 +88,15 @@ class Product extends Model
         return round($discountPercentage, 1);
     }
 
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function colors()
+{
+    return $this->hasManyThrough(Color::class, ProductVariant::class, 'product_id', 'id', 'id', 'color_id')->distinct();
 }
+}
+
+

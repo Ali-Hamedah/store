@@ -1,5 +1,5 @@
 <x-FrontLayout :title="$product->name">
- 
+
 
     <section class="item-details section">
         <div class="container">
@@ -23,52 +23,48 @@
                     </div>
                     <div class="col-lg-6 col-md-12 col-12">
                         <div class="product-info">
-                            <h2 class="title">{{$product->name}}</h2>
-                            <p class="category"><i class="lni lni-tag"></i> Drones:<a href="javascript:void(0)">Action cameras</a></p>
-                            <h3 class="price">${{$product->price}} @if($product->compare_price)<span>${{$product->compare_price}}</span>@endif</h3>
-                            <p class="info-text">{{$product->description}}</p>
-                            
-                          <!-- Add Product to Cart Form -->
+                            <h2 class="title">{{ $product->name }}</h2>
+                            <p class="category"><i class="lni lni-tag"></i> Drones:<a href="javascript:void(0)">Action
+                                    cameras</a></p>
+                            <h3 class="price">${{ $product->price }} @if ($product->compare_price)
+                                    <span>${{ $product->compare_price }}</span>
+                                @endif
+                            </h3>
+                            <p class="info-text">{{ $product->description }}</p>
+
+                            <!-- Add Product to Cart Form -->
                             <form action="{{ route('cart.store') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="product_id" value="{{$product->id}}">
-                                
+                                <input type="hidden" name="product_id" id="product_id" value="{{ $product->id }}">
+
                                 <div class="row">
-                                    <!-- اختيار اللون -->
+                               
+
+
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group color-option">
-                                            <label class="title-label" for="color">Choose color</label>
-                                            <div class="single-checkbox checkbox-style-1">
-                                                <input type="radio" name="color" value="Red" id="color-red">
-                                                <label for="color-red"><span>Red</span></label>
-                                            </div>
-                                            <div class="single-checkbox checkbox-style-2">
-                                                <input type="radio" name="color" value="Blue" id="color-blue">
-                                                <label for="color-blue"><span>Blue</span></label>
-                                            </div>
-                                            <div class="single-checkbox checkbox-style-3">
-                                                <input type="radio" name="color" value="Green" id="color-green">
-                                                <label for="color-green"><span>Green</span></label>
-                                            </div>
-                                            <div class="single-checkbox checkbox-style-4">
-                                                <input type="radio" name="color" value="Black" id="color-black" checked>
-                                                <label for="color-black"><span>Black</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                    
-                                    <!-- سعة البطارية -->
-                                    <div class="col-lg-4 col-md-4 col-12">
-                                        <div class="form-group">
-                                            <label for="battery">Battery capacity</label>
-                                            <select class="form-control" id="battery" name="battery">
-                                                <option value="5100 mAh">5100 mAh</option>
-                                                <option value="6200 mAh">6200 mAh</option>
-                                                <option value="8000 mAh">8000 mAh</option>
+                                            <label>Color</label>
+                                            <select name="color_id" id="colorSelect" class="form-control">
+                                                <option>Choose color</option>
+                                                @foreach ($colors as $color)
+                                                    <option value="{{ $color->color_id }}">{{ $color->color->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
-                    
+
+                                    <!-- HTML لعرض المقاسات -->
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="form-group size-option">
+                                            <label>Size</label>
+                                            <select name="size_id" id="sizeSelect" class="form-control">
+                                                <option value="">Choose size</option>
+                                                <!-- سيتم ملء الخيارات عبر AJAX -->
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <!-- الكمية -->
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group quantity">
@@ -83,27 +79,30 @@
                                         </div>
                                     </div>
                                 </div>
-                    
+
                                 <div class="bottom-content">
                                     <div class="row align-items-end">
                                         <!-- زر الإضافة إلى السلة -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="button cart-button">
-                                                <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+                                                <button type="submit" class="btn" style="width: 100%;">Add to
+                                                    Cart</button>
                                             </div>
                                         </div>
-                    
+
                                         <!-- زر المقارنة -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="wish-button">
-                                                <button type="button" class="btn"><i class="lni lni-reload"></i> Compare</button>
+                                                <button type="button" class="btn"><i class="lni lni-reload"></i>
+                                                    Compare</button>
                                             </div>
                                         </div>
-                    
+
                                         <!-- زر قائمة الرغبات -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="wish-button">
-                                                <button type="button" class="btn"><i class="lni lni-heart"></i> To Wishlist</button>
+                                                <button type="button" class="btn"><i class="lni lni-heart"></i> To
+                                                    Wishlist</button>
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +110,7 @@
                             </form>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             <div class="product-details-info">
@@ -281,6 +280,40 @@
     </section>
     <!-- End Item Details -->
 
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            // مثال باستخدام jQuery
+            $(document).ready(function() {
+                // عندما يتغير اللون في الـ Dropdown أو أي حدث آخر
+                $('#colorSelect').on('change', function() {
+                    var colorId = $(this).val(); // الحصول على color_id من الـ Dropdown
+                    var productId = $('#product_id').val(); // الحصول على product_id (يمكنك تمريره من HTML)
+
+                    // إرسال AJAX إلى السيرفر
+                    $.ajax({
+                        url: '/get-sizes/' + colorId, // تأكد من أن الرابط صحيح
+                        method: 'GET',
+                        data: {
+                            product_id: productId, // إرسال product_id مع الـ request
+                        },
+                        success: function(response) {
+                            // التعامل مع المقاسات المسترجعة (مصفوفة من أسماء المقاسات)
+                            $('#sizeSelect').empty(); // إفراغ قائمة المقاسات الحالية
+                            $.each(response, function(id, sizeName) {
+                                // إضافة كل مقاس إلى القائمة
+                                $('#sizeSelect').append('<option value="' + id +
+                                    '">' + sizeName + '</option>');
+                                   
+                            });
+                        },
+                        error: function() {
+                            alert('حدث خطأ في جلب المقاسات!');
+                        }
+                    });
+                });
+            });
+        </script>
+    @endpush
 
 </x-FrontLayout>
-

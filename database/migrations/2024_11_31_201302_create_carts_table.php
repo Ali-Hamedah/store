@@ -23,8 +23,10 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->unsignedSmallInteger('quantity')->default(1);
             $table->json('options')->nullable();
+            $table->foreignId('color_id')->constrained('colors');
+            $table->foreignId('size_id')->constrained('sizes');
             $table->timestamps();
-            $table->unique(['cookie_id', 'product_id']);
+            $table->unique(['cookie_id', 'product_id', 'color_id', 'size_id'], 'carts_cookie_id_product_id_color_size_unique');
         });
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Repositories\Cart\CartRepository;
 use App\Repositories\Cart\CartModelRepository;
+use App\Models\ProductVariant;
 
 class CartController extends Controller
 {
@@ -39,24 +40,31 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'product_id' => ['required', 'int', 'exists:products,id'],
-            'quantity' => ['nullable', 'int', 'min:1'],
+        $validatedData = $request->validate([
+            'product_id' => ['required', 'exists:products,id'],
+            'color_id' => ['required', 'exists:colors,id'],
+            'size_id' => ['required', 'exists:sizes,id'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ]);
-
-        $product = Product::findOrFail($request->post('product_id'));
-        $this->cart->add($product, $request->post('quantity'));
-
-        if ($request->expectsJson()) {
-            
-            return response()->json([
-                'message' => 'Item added to cart!',
-            ], 201);
+    
+        $productVariant = ProductVariant::where('product_id', $validatedData['product_id'])
+            ->where('color_id', $validatedData['color_id'])
+            ->where('size_id', $validatedData['size_id'])
+            ->first();
+    
+        if (!$productVariant) {
+            return redirect()->back()->withErrors(['variant' => 'The selected variant is not available.']);
         }
-        
-        return redirect()->route('home')
-            ->with('success', 'Product added to cart!');
+    
+        // استدعاء دالة add
+        $this->cart->add($productVariant, $validatedData['quantity'], $validatedData['color_id'], $validatedData['size_id']);
+
+    
+        return response()->json(['message' => 'Item added to cart!'], 201);
     }
+    
+    
+    
 
     /**
      * Update the specified resource in storage.

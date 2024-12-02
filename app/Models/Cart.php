@@ -16,7 +16,7 @@ class Cart extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'cookie_id', 'user_id', 'product_id', 'quantity', 'options',
+        'cookie_id', 'user_id', 'product_id', 'quantity', 'options', 'color_id', 'size_id',
     ];
 
     // Events (Observers)
@@ -57,4 +57,14 @@ class Cart extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function color()
+{
+    return $this->belongsTo(Color::class);
+}
+
+public function size()
+{
+    return $this->belongsTo(Size::class);
+}
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Size;
+use App\Models\Color;
 use App\Models\Store;
 use App\Models\Category;
 use Illuminate\Support\Str;

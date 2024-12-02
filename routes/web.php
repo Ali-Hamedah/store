@@ -44,6 +44,8 @@ Route::group(
         Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout');
         Route::post('checkout', [CheckoutController::class, 'store']);
     
+      // routes/web.php أو routes/api.php
+Route::get('/get-sizes/{colorId}', [ProductController::class, 'getSizes']);
 
     });
  
