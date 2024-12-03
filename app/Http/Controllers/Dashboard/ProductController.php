@@ -47,20 +47,20 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user()->id;
-    
+
         // التحقق من صحة البيانات
         $request->validate(Category::rules($request->id ?? null));
-    
+
         // إعداد البيانات
         $categoryName = Str::slug($request->name, '-');
         $data = $request->except(['tags', 'category_id', 'image', 'sizes', 'colors', 'quantities']);
         $data['slug'] = $categoryName;
         $data['category_id'] = $request->sub_category;
         $data['store_id'] = 1;
-    
+
         // حفظ المنتج الرئيسي
         $product = Product::create($data);
-    
+
         // حفظ خصائص المنتج (الألوان، الأحجام، والكميات)
         foreach ($request->sizes as $index => $size) {
             $variant = new ProductVariant();
@@ -71,7 +71,7 @@ class ProductController extends Controller
             $variant->sku = Str::uuid()->toString();
             $variant->save();
         }
-    
+
         // حفظ الصور
         if ($request->hasFile('images')) {
             $imagePaths = [];
@@ -83,12 +83,12 @@ class ProductController extends Controller
             }
             $product->update(['image' => json_encode($imagePaths)]); // تخزين المسارات في قاعدة البيانات
         }
-    
+
         // حفظ العلامات (Tags)
         $tags = json_decode($request->post('tags'));
         $tag_ids = [];
         $saved_tags = Tag::all();
-    
+
         foreach ($tags as $item) {
             $slug = Str::slug($item->value);
             $tag = $saved_tags->where('slug', $slug)->first();
@@ -100,15 +100,15 @@ class ProductController extends Controller
             }
             $tag_ids[] = $tag->id;
         }
-    
+
         $product->tags()->sync($tag_ids);
-    
+
         // تحديث كود المنتج
         $product->update(['product_code' => $product->id]);
-    
+
         return redirect()->route('dashboard.products.index')->with('success', 'تم إنشاء المنتج بنجاح!');
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -124,17 +124,10 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        // تحويل التاجات إلى سلسلة نصية
         $tags = implode(',', $product->tags()->pluck('name')->toArray());
-
-        // جلب الأقسام الأساسية (الأم)
-        $categories = Category::whereNull('parent_id')->pluck('name', 'id'); // جلب القسم الفرعي الذي ينتمي إليه المنتج
-        $category = $product->category; // القسم الأساسي للمنتج
-
-        // جلب الأقسام الفرعية بناءً على القسم الأساسي
+        $categories = Category::whereNull('parent_id')->pluck('name', 'id');
+        $category = $product->category;
         $subCategories = $category->parent_id ? Category::where('parent_id', $category->parent_id)->get() : collect();
-
-        // إذا كان القسم الفرعي موجوداً، نحاول تحديد القسم الأساسي
         $parentCategory = $category->parent_id ? Category::find($category->parent_id) : null;
 
         return view('dashboard.products.edit', compact('product', 'tags', 'categories', 'subCategories', 'parentCategory'));
@@ -144,47 +137,54 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // التحقق من صحة المدخلات
         $request->validate(Product::rules($product->id));
 
+        // تحديث المنتج مع استثناء بعض الحقول
         $product->update($request->except('tags', 'category_id', 'image'));
-        if ($request->has('sub_category') && $request->sub_category) {
-            $product->update([
-                'category_id' => $request->sub_category,
-            ]);
+
+        // تحديث التصنيف الفرعي إذا تم إرساله
+        if ($request->has('sub_category')) {
+            $product->update(['category_id' => $request->sub_category]);
         }
 
+        // التعامل مع الوسوم (Tags)
         $tags = json_decode($request->post('tags'));
-        $tag_ids = [];
-
-        $saved_tags = Tag::all();
-
-        foreach ($tags as $item) {
+        $tag_ids = collect($tags)->map(function ($item) {
             $slug = Str::slug($item->value);
-            $tag = $saved_tags->where('slug', $slug)->first();
-            if (!$tag) {
-                $tag = Tag::create([
-                    'name' => $item->value,
-                    'slug' => $slug,
-                ]);
-            }
-            $tag_ids[] = $tag->id;
-        }
+            return Tag::firstOrCreate(['slug' => $slug], ['name' => $item->value])->id;
+        });
+
+        // ربط الوسوم بالمنتج
         $product->tags()->sync($tag_ids);
 
+        // التعامل مع صورة المنتج
         if ($request->hasFile('image')) {
             if (!empty($product->image) && Storage::disk('images')->exists($product->image)) {
                 Storage::disk('images')->delete($product->image);
             }
+
             $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request->file('image')->getClientOriginalExtension();
-            $data['image'] = $request->file('image')->storeAs('products', $fileName, 'images');
-            $product->update([
-                'image' => $data['image'],
-            ]);
+            $imagePath = $request->file('image')->storeAs('products', $fileName, 'images');
+            $product->update(['image' => $imagePath]);
+        }
+
+        // تحديث المتغيرات (variants) والكميات
+        if ($request->has('variant') && $request->has('quantities')) {
+            $variants = $request->input('variant');
+            $quantities = $request->input('quantities');
+
+            // تحديث الكميات للمتغيرات المرسلة
+            foreach ($variants as $index => $variant_id) {
+                ProductVariant::where('id', $variant_id)
+                    ->update(['quantity' => $quantities[$index]]);
+            }
         }
 
 
         return redirect()->route('dashboard.products.index', $product->id)->with('success', __('messages.update'));
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -84,11 +84,12 @@
         </div>
     </div>
 
-    <button type="button" id="addVariant" class="btn btn-primary">إضافة</button>
-    <button type="button" id="saveVariants" class="btn btn-primary">حفظ</button>
+    
+  
 </div>
-
-
+<div class="form-group">
+<button type="button" id="addVariant" class="btn btn-secondary">Add options size or color</button>
+</div>
 <div class="form-group">
     <button type="submit" class="btn btn-primary">{{ $button_label ?? 'Save' }}</button>
 </div>
