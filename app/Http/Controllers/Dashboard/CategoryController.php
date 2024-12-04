@@ -6,7 +6,10 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 
 class CategoryController extends Controller
@@ -36,11 +39,30 @@ class CategoryController extends Controller
         $data = $request->only(['name', 'parent_id', 'description', 'status']);
         $data['slug'] = $categoryName;
 
-        if ($request->hasFile('image')) {
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $fileName = $categoryName . '-' . time() . '.' . $extension;
-            $imagePath = $request->file('image')->storeAs('categories', $fileName, 'images');
-            $data['image'] = $imagePath;
+        // if ($request->hasFile('image')) {
+        //     $extension = $request->file('image')->getClientOriginalExtension();
+        //     $fileName = $categoryName . '-' . time() . '.' . $extension;
+        //     $imagePath = $request->file('image')->storeAs('categories', $fileName, 'images');
+        //     $data['image'] = $imagePath;
+        // }
+        // if ($image = $request->file('cover')) {
+        //     $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
+        //     $path = public_path('/assets/product_categories/' . $file_name);
+        //     Image::make($image->getRealPath())->resize(500, null, function ($constraint) {
+        //         $constraint->aspectRatio();
+        //     })->save($path, 100);
+        //     $input['cover'] = $file_name;
+        // }
+        if ($image = $request->file('image')) {
+            $manager = new ImageManager( New Driver); 
+            $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
+            $path = public_path('/assets/categories/' . $file_name);
+            $img = $manager->read($image->getRealPath());
+            $img->resize(500, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($path, 100);
+
+            $data['image'] = $file_name;
         }
         Category::create($data);
         return redirect()->route('dashboard.categories.index')->with('success', __('messages.add'));
@@ -65,19 +87,25 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-
         $request->validate(Category::rules($category->id));
 
         $data['slug'] = $request->slug ?: Str::slug($request->name, '-');
         $data = $request->only(['name', 'parent_id', 'description', 'status']);
-        if ($request->hasFile('image')) {
-            if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
-                Storage::disk('images')->delete($category->image);
-            }
-            $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request->file('image')->getClientOriginalExtension();
-            $data['image'] = $request->file('image')->storeAs('categories', $fileName, 'images');
-        }
 
+        if ($image = $request->file('image')) {
+            $manager = new ImageManager( New Driver); 
+            if ($category->image != null && File::exists('assets/categories/'. $category->image)){
+                unlink('assets/categories/'. $category->image);
+            }
+            $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
+            $path = public_path('/assets/categories/' . $file_name);
+            $img = $manager->read($image->getRealPath());
+            $img->resize(500, 500, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($path, 100);
+
+            $data['image'] = $file_name;
+        }
         $category->update($data);
         toastr()->success(__('messages.edit'));
         return redirect()->route('dashboard.categories.index');
@@ -88,17 +116,30 @@ class CategoryController extends Controller
     {
         if ($request->page_id == 2) {
             $delete_select_id = explode(",", $request->delete_select_id);
-        
+            foreach ($delete_select_id as $id) {
+                // جلب الكائن المرتبط بالمعرف
+                $category = Category::find($id);
+            
+                // التحقق مما إذا كان الكائن موجودًا
+                if ($category) {
+                    // التحقق مما إذا كانت الصورة موجودة في المسار المحدد
+                    if (File::exists('assets/categories/' . $category->image)) {
+                        // حذف الصورة
+                        unlink('assets/categories/' . $category->image);
+                    }
+                }
+            }
+    
             Category::destroy($delete_select_id);
 
         // $category->delete();
          return redirect()->route('dashboard.categories.index')->with('success', __('messages.delete'));
     }
     else {
-            // if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
-            //     // حذف الصورة إذا كانت موجودة
-            //     Storage::disk('images')->delete($category->image);
-            // }
+        if (File::exists('assets/categories/'. $category->image)){
+            unlink('assets/categories/'. $category->image);
+        }
+
             $category->delete();
         return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
 

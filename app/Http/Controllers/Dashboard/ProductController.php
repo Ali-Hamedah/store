@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -25,7 +26,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category', 'store')->paginate(10);
+        $products = Product::with('category', 'store', 'variants') // استخدام الحجج الموضعية فقط
+    ->withSum('variants', 'quantity')
+    ->paginate(10);
+
+    
         return view('dashboard.products.index', compact('products'));
     }
 
@@ -85,29 +90,24 @@ class ProductController extends Controller
                 $variant->save();
             }
     
-            // إضافة الصور
             if ($request->images && count($request->images) > 0) {
                 $i = 1;
-                $manager = new ImageManager( New Driver); // أو 'imagick' حسب الحاجة
+                $manager = new ImageManager( New Driver); 
                 
                 foreach ($request->images as $image) {
                     $file_name = $product->slug . '_' . time() . '_' . $i . '.' . $image->getClientOriginalExtension();
                     $file_size = $image->getSize();
                     $file_type = $image->getMimeType();
                     $path = public_path('assets/products/' . $file_name);
-    
-                    // قراءة الصورة باستخدام ImageManager
+
                     $img = $manager->read($image->getRealPath());
-    
-                    // تغيير حجم الصورة بشكل تناسبي
+
                     $img->resize(500, null, function ($constraint) {
                         $constraint->aspectRatio();
                     });
     
-                    // حفظ الصورة بعد التعديل
                     $img->save($path, 100);
     
-                    // إضافة السجل في جدول media
                     $product->media()->create([
                         'file_name' => $file_name,
                         'file_size' => $file_size,
@@ -119,7 +119,6 @@ class ProductController extends Controller
                 }
             }
     
-            // إضافة العلامات
             $tags = json_decode($request->post('tags'));
             $tag_ids = [];
             $saved_tags = Tag::all();
@@ -206,16 +205,33 @@ class ProductController extends Controller
 
         $product->tags()->sync($tag_ids);
 
-        if ($request->hasFile('image')) {
-            if (!empty($product->image) && Storage::disk('images')->exists($product->image)) {
-                Storage::disk('images')->delete($product->image);
-            }
+        if ($request->images && count($request->images) > 0) {
+            $i = $product->media()->count() + 1;
+            $manager = new ImageManager( New Driver); 
+            
+            foreach ($request->images as $image) {
+                $file_name = $product->slug . '_' . time() . '_' . $i . '.' . $image->getClientOriginalExtension();
+                $file_size = $image->getSize();
+                $file_type = $image->getMimeType();
+                $path = public_path('assets/products/' . $file_name);
 
-            $fileName = Str::slug($request->name, '-') . '-' . time() . '.' . $request
-                ->file('image')->getClientOriginalExtension();
-            $imagePath = $request->file('image')
-                ->storeAs('products', $fileName, 'images');
-            $product->update(['image' => $imagePath]);
+                $img = $manager->read($image->getRealPath());
+
+                $img->resize(500, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+
+                $img->save($path, 100);
+
+                $product->media()->create([
+                    'file_name' => $file_name,
+                    'file_size' => $file_size,
+                    'file_type' => $file_type,
+                    'file_status' => true,
+                    'file_sort' => $i,
+                ]);
+                $i++;
+            }
         }
 
         if ($request->has('variant') && $request->has('quantities')) {
@@ -271,4 +287,16 @@ class ProductController extends Controller
         $subcategories = Category::where('parent_id', $id)->pluck('name', 'id');
         return response()->json($subcategories);
     }
+
+    public function remove_image(Request $request)
+    {    
+        $product = Product::findOrFail($request->product_id);
+        $image = $product->media()->whereId($request->image_id)->first();
+        if (File::exists('assets/products/'. $image->file_name)){
+            unlink('assets/products/'. $image->file_name);
+        }
+        $image->delete();
+        return true;
+    }
+
 }

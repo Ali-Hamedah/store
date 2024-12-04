@@ -43,8 +43,12 @@ Route::group(
             Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('markAsRead');
             Route::get('/notifications_ReadAll', [NotificationController::class, 'ReadAll'])->name('ReadAll');
             Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+            Route::post('/products/remove-image', [ProductController::class, 'remove_image'])->name('products.remove_image');
+        
+            
 
-            // تخصيص مسار التحديث الخاص بـ Livewire مع التوطين
+
+
             Livewire::setUpdateRoute(function ($handle) {
                 return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
                     ->middleware(['auth']);

@@ -57,7 +57,7 @@
     
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Image</label>
-        <input type="file" class="from-control" name="images[]" multiple>
+        <input type="file" name="images[]" id="product-images"  class="file-input-overview" multiple="multiple">
         @error('image')
             <div class="text-danger">{{ $message }}</div>    
         @enderror
@@ -125,7 +125,7 @@
             var inputElm = document.querySelector('[name=tags]'),
                 tagify = new Tagify(inputElm);
         </script>
-    
+
         <script>
             $(document).ready(function() {
                 $('[name=category_id]').on('change', function() {
@@ -146,49 +146,43 @@
                 });
             });
         </script>
-    
+
         <script>
-   
-  
-    // إرسال البيانات عبر AJAX عند الضغط على زر "حفظ"
-    $('#saveVariants').click(function() {
-        var sizes = [];
-        var colors = [];
-        var quantities = [];
-    
-        // جمع البيانات من النماذج
-        $('.product-size').each(function() {
-            sizes.push($(this).val());
-        });
-        $('.product-color').each(function() {
-            colors.push($(this).val());
-        });
-        $('.product-quantity').each(function() {
-            quantities.push($(this).val());
-        });
-    
-        // إرسال البيانات عبر AJAX
-        $.ajax({
-            url: '{{ route("dashboard.product.store") }}',  // URL الخاصة بالمسار في Laravel
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                sizes: sizes,
-                colors: colors,
-                quantities: quantities,
-            },
-            success: function(response) {
-                // عملية ناجحة، التعامل مع الاستجابة من السيرفر
-                alert("تم حفظ البيانات بنجاح");
-            },
-            error: function(xhr, status, error) {
-                // في حالة حدوث خطأ
-                alert("حدث خطأ أثناء الحفظ");
-            }
-        });
-    });
-    
-        </script>
+             $("#product-images").fileinput({
+                theme: "fas",
+                maxFileCount: 5,
+                allowedFileTypes: ['image'],
+                showCancel: true,
+                showRemove: false,
+                showUpload: false,
+                overwriteInitial: false,
+                initialPreview: [
+                    @if($product->media()->count() > 0)
+                        @foreach($product->media as $media)
+                            "{{ asset('assets/products/' . $media->file_name) }}",
+                        @endforeach
+                    @endif
+                ],
+                initialPreviewAsData: true,
+                initialPreviewFileType: 'image',
+                initialPreviewConfig: [
+                    @if($product->media()->count() > 0)
+                        @foreach($product->media as $media)
+                            {
+                                caption: "{{ $media->file_name }}",
+                                size: '{{ $media->file_size }}',
+                                width: "120px",
+                                url: "{{ route('dashboard.products.remove_image', ['image_id' => $media->id, 'product_id' => $product->id, '_token' => csrf_token()]) }}",
+                                key: {{ $media->id }}
+                            },
+                        @endforeach
+                    @endif
+                ]
+            }).on('filesorted', function (event, params) {
+                console.log(params.previewId, params.oldIndex, params.newIndex, params.stack);
+            });
+
+            </script>
        
     @endpush
     

@@ -53,8 +53,8 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ $category->image ? asset('images/' . $category->image) : '#' }}">
-                            <img src="{{ $category->image ? asset('images/' . $category->image) : asset('images/no_image.jpg') }}"
+                        <a href="{{ $category->image ? asset('assets/categories/' . $category->image) : '#' }}">
+                            <img src="{{ $category->image ? asset('assets/categories/' . $category->image) : asset('assets/categories/no_image.jpg') }}"
                                 style="width: 50px; height: 50px;">
                         </a>
                     </td>

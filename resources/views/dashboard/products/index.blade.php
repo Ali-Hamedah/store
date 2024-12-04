@@ -28,6 +28,7 @@
                 <th>{{ __('categories.name') }}</th>
                 <th>{{ __('products.store') }}</th>
                 <th>{{ __('products.category') }}</th>
+                <th>{{ __('products.quantity') }}</th>
                 <th>{{ __('products.status') }}</th>
                 <th>{{ __('categories.Image') }}</th>
                 <th>{{ __('categories.Processes') }}</th>
@@ -45,6 +46,7 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->store->name }}</td>
                     <td>{{ $product->category->name }}</td>
+                    <td>{{ $product->variants_sum_quantity ?? 0 }}</td>
                     <td>
                         <span class="badge 
                         {{ $product->status == 'active' ? 'badge-success' : ($product->status == 'draft' ? 'badge-warning' : 'badge-danger') }}">
@@ -52,11 +54,18 @@
                     </span>
                     
                     </td>
-                    <td>
-                        <a href="{{ $product->image ? asset('images/' . $product->image) : '#' }}">
-                            <img src="{{ $product->image ? asset('images/' . $product->image) : asset('images/no_image.jpg') }}"
+                    {{-- <td>
+                        <a href="{{ $product->variants->filee_name ? asset('assets/products/' . $product->image) : '#' }}">
+                            <img src="{{ $product->image ? asset('assets/products/' . $product->image) : asset('images/no_image.jpg') }}"
                                 style="width: 50px; height: 50px;">
                         </a>
+                    </td> --}}
+                    <td>
+                        @if ($product->firstMedia)
+                            <img src="{{ asset('assets/products/' . $product->firstMedia->file_name) }}" width="60" height="60" alt="{{ $product->name }}">
+                        @else
+                            <img src="{{ asset('assets/no-image.jpg') }}" width="60" height="60" alt="{{ $product->name }}">
+                        @endif
                     </td>
                     <td>
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"

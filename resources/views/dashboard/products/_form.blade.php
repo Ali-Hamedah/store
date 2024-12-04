@@ -106,6 +106,8 @@
         var inputElm = document.querySelector('[name=tags]'),
             tagify = new Tagify(inputElm);
     </script>
+    
+    {{-- images --}}
 <script>
     $("#product-images").fileinput({
                 theme: "fas",
@@ -177,44 +179,6 @@ $('#addVariant').click(function() {
 // حذف السطر عند الضغط على زر "حذف"
 $(document).on('click', '.remove-variant', function() {
     $(this).closest('.variant-row').remove();
-});
-
-// إرسال البيانات عبر AJAX عند الضغط على زر "حفظ"
-$('#saveVariants').click(function() {
-    var sizes = [];
-    var colors = [];
-    var quantities = [];
-
-    // جمع البيانات من النماذج
-    $('.product-size').each(function() {
-        sizes.push($(this).val());
-    });
-    $('.product-color').each(function() {
-        colors.push($(this).val());
-    });
-    $('.product-quantity').each(function() {
-        quantities.push($(this).val());
-    });
-
-    // إرسال البيانات عبر AJAX
-    $.ajax({
-        url: '{{ route("dashboard.product.store") }}',  // URL الخاصة بالمسار في Laravel
-        type: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}',
-            sizes: sizes,
-            colors: colors,
-            quantities: quantities,
-        },
-        success: function(response) {
-            // عملية ناجحة، التعامل مع الاستجابة من السيرفر
-            alert("تم حفظ البيانات بنجاح");
-        },
-        error: function(xhr, status, error) {
-            // في حالة حدوث خطأ
-            alert("حدث خطأ أثناء الحفظ");
-        }
-    });
 });
 
 

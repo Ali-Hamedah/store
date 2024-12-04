@@ -1,3 +1,6 @@
+  @push('css')
+      
+  @endpush
   <div class="form-group">
             <label for="exampleFormControlInput1">Name</label>
             <input value="{{ $category->name }}" type="text" name="name" class="form-control">
@@ -29,7 +32,7 @@
         </div>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Iamge</label>
-            <input type="file" name="image" class="from-control">
+            <input type="file" name="image" id="category-image" class="file-input-overview">
             @error('image')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -60,3 +63,25 @@
         <div class="form-group">
             <button type="submit" class="but btn-primary">Save</button>
         </div>
+
+        @push('scripts')
+               {{-- images --}}
+<script>
+    $("#category-image").fileinput({
+                theme: "fas",
+                maxFileCount: 5,
+                allowedFileTypes: ['image'],
+                showCancel: true,
+                showRemove: false,
+                showUpload: false,
+                overwriteInitial: false,
+                initialPreview: [
+                    @if($category->image != '')
+                    "{{ asset('assets/categories/' . $category->image) }}",
+                    @endif
+                ],
+                initialPreviewAsData: true,
+                
+            });
+    </script>
+        @endpush
