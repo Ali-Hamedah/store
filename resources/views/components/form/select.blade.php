@@ -15,6 +15,7 @@ style="width: 100%; border-radius: 5px;"
         'is-invalid' => $errors->has($name)
     ]) }}
 >
+<option >Select Categories</option>
     @foreach($options as $value => $text)
     <option value="{{ $value }}" @selected($value == $selected)>{{ $text }}</option>
     @endforeach

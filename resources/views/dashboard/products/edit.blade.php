@@ -2,12 +2,12 @@
 @section('title')
    Edit product
 @endsection
-@push('styles')
+@push('css')
 <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 @section('Starter_Page')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">Home</a></li>
-    <li class="breadcrumb-item active">products</li>
+<li class="breadcrumb-item"><a href="{{ route('dashboard.dashboard') }}">{{__('main.home')}}</a></li>
+<li class="breadcrumb-item active"><a href="{{ route('dashboard.products.index') }}">{{__('main.products')}}</a></li>
 @endsection
 
 @section('content')

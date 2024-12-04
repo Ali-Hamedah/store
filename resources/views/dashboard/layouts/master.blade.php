@@ -3,9 +3,9 @@
 
 <head>
  @include('dashboard.layouts.head')
- @stack('styles')
+ @stack('css')
  @livewireStyles
-
+ <link rel="stylesheet" href="{{ asset('bootstrap-fileinput/css/fileinput.min.css') }}">
 
 </head>
 <body class="hold-transition sidebar-mini">
@@ -90,7 +90,13 @@
  <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JavaScript -->
+
+<!-- Bootstrap-fileinput -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="{{ asset('bootstrap-fileinput/js/plugins/piexif.min.js') }}"></script>
+<script src="{{ asset('bootstrap-fileinput/js/plugins/sortable.min.js') }}"></script>
+<script src="{{ asset('bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+<script src="{{ asset('bootstrap-fileinput/themes/fas/theme.min.js') }}"></script>
 @stack('scripts')
 
 

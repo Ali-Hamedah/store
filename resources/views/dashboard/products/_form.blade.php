@@ -1,5 +1,6 @@
-@push('styles')
+@push('css')
     <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
+  
 @endpush
 
 <div class="form-group">
@@ -12,6 +13,7 @@
 
 <div>
     <select id="sub_category" name="sub_category" style="width: 100%; border-radius: 5px; padding: 5pt">
+     
         @foreach ($subCategories as $subCategory)
             <option value="{{ $subCategory->id }}" {{ $product->category_id == $subCategory->id ? 'selected' : '' }}>
                 {{ $subCategory->name }}
@@ -40,7 +42,7 @@
 
 <div class="form-group">
     <label for="exampleFormControlTextarea1">Image</label>
-    <input type="file" class="from-control" name="images[]" multiple>
+    <input type="file" name="images[]" id="product-images" class="file-input-overview" multiple="multiple">
     @error('image')
         <div class="text-danger">{{ $message }}</div>    
     @enderror
@@ -62,6 +64,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <select class="form-select product-size" name="sizes[]">
+                        <option>Size</option>
                         @foreach ($sizes as $size)
                             <option value="{{ $size->id }}">{{ $size->name }}</option>
                         @endforeach
@@ -69,6 +72,7 @@
                 </div>
                 <div class="col-md-3">
                     <select class="form-select product-color" name="colors[]">
+                        <option>Color</option>
                         @foreach ($colors as $color)
                             <option value="{{ $color->id }}">{{ $color->name }}</option>
                         @endforeach
@@ -95,12 +99,25 @@
 </div>
 
 @push('scripts')
+
     <script src="{{ asset('js/tagify.min.js') }}"></script>
     <script src="{{ asset('js/tagify.polyfills.min.js') }}"></script>
     <script>
         var inputElm = document.querySelector('[name=tags]'),
             tagify = new Tagify(inputElm);
     </script>
+<script>
+    $("#product-images").fileinput({
+                theme: "fas",
+                maxFileCount: 5,
+                allowedFileTypes: ['image'],
+                showCancel: true,
+                showRemove: false,
+                showUpload: false,
+                overwriteInitial: false
+            });
+    </script>
+  
 
     <script>
         $(document).ready(function() {
@@ -131,6 +148,7 @@ $('#addVariant').click(function() {
             <div class="row">
                 <div class="col-md-3">
                     <select class="form-select product-size" name="sizes[]">
+                          <option>Size</option>
                         @foreach ($sizes as $size)
                             <option value="{{ $size->id }}">{{ $size->name }}</option>
                         @endforeach
@@ -138,6 +156,7 @@ $('#addVariant').click(function() {
                 </div>
                 <div class="col-md-3">
                     <select class="form-select product-color" name="colors[]">
+                          <option>Color</option>
                         @foreach ($colors as $color)
                             <option value="{{ $color->id }}">{{ $color->name }}</option>
                         @endforeach
@@ -197,6 +216,7 @@ $('#saveVariants').click(function() {
         }
     });
 });
+
 
     </script>
    

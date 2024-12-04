@@ -2,10 +2,10 @@
 
 return [
 
-    'name' => 'name',
+    'name' => 'Name',
     'store' => 'store',
-    'category' => 'category',
-    'status' => 'status',
+    'category' => 'Category',
+    'status' => 'Status',
     'Image' => 'Image',
     'Processes' => 'Processes',
     'add_new_product' => 'Add New Product',

@@ -1,17 +1,17 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    categories
+    {{__('main.products')}}
 @endsection
 
 @section('content')
 @section('Starter_Page')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">Home</a></li>
-    <li class="breadcrumb-item active">Products</li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard.categories.index') }}">{{__('main.home')}}</a></li>
+    <li class="breadcrumb-item active">{{__('main.products')}}</li>
 @endsection
 
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
     <div class="card-header py-3 d-flex">
-        <h6 class="m-0 font-weight-bold text-primary">Products</h6>
+        <h6 class="m-0 font-weight-bold text-primary">{{__('main.products')}}</h6>
         <div class="ml-auto">
             <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
