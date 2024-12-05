@@ -1,24 +1,43 @@
+
 <x-FrontLayout :title="$product->name">
-
-
     <section class="item-details section">
         <div class="container">
             <div class="top-area">
                 <div class="row align-items-center">
                     <div class="col-lg-6 col-md-12 col-12">
                         <div class="product-images">
-                            <main id="gallery">
-                                <div class="main-img">
-                                    <img src="{{ $product->getImageUrl() }}" id="current" alt="#">
+                            <div id="mainImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach ($product->media->sortBy('id') as $index => $media)
+                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                            <img 
+                                                src="{{ asset('assets/products/' . $media->file_name) }}" 
+                                                class="d-block w-100" 
+                                                alt="Product Image">
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="images">
-                                    <img src="https://via.placeholder.com/1000x670" class="img" alt="#">
-                                    <img src="https://via.placeholder.com/1000x670" class="img" alt="#">
-                                    <img src="https://via.placeholder.com/1000x670" class="img" alt="#">
-                                    <img src="https://via.placeholder.com/1000x670" class="img" alt="#">
-                                    <img src="https://via.placeholder.com/1000x670" class="img" alt="#">
-                                </div>
-                            </main>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#mainImageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            <div class="thumbnail-images mt-3 d-flex justify-content-center">
+                                @foreach ($product->media->sortBy('id')->take(5) as $index => $media)
+                                    <div class="thumb-container mx-1">
+                                        <img 
+                                            src="{{ asset('assets/products/' . $media->file_name) }}" 
+                                            class="img-thumbnail thumb-img" 
+                                            alt="Thumbnail Image" 
+                                            onclick="changeImage(this, {{ $index }})"
+                                            id="thumb-{{ $index }}">
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-12 col-12">
@@ -36,11 +55,7 @@
                             <form action="{{ route('cart.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="product_id" id="product_id" value="{{ $product->id }}">
-
                                 <div class="row">
-                               
-
-
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group color-option">
                                             <label>Color</label>
@@ -53,14 +68,11 @@
                                             </select>
                                         </div>
                                     </div>
-
-                                    <!-- HTML لعرض المقاسات -->
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group size-option">
                                             <label>Size</label>
                                             <select name="size_id" id="sizeSelect" class="form-control">
                                                 <option value="">Choose size</option>
-                                                <!-- سيتم ملء الخيارات عبر AJAX -->
                                             </select>
                                         </div>
                                     </div>
@@ -82,23 +94,18 @@
 
                                 <div class="bottom-content">
                                     <div class="row align-items-end">
-                                        <!-- زر الإضافة إلى السلة -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="button cart-button">
                                                 <button type="submit" class="btn" style="width: 100%;">Add to
                                                     Cart</button>
                                             </div>
                                         </div>
-
-                                        <!-- زر المقارنة -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="wish-button">
                                                 <button type="button" class="btn"><i class="lni lni-reload"></i>
                                                     Compare</button>
                                             </div>
                                         </div>
-
-                                        <!-- زر قائمة الرغبات -->
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="wish-button">
                                                 <button type="button" class="btn"><i class="lni lni-heart"></i> To
@@ -119,10 +126,8 @@
                         <div class="col-lg-6 col-12">
                             <div class="info-body custom-responsive-margin">
                                 <h4>Details</h4>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                                    irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.</p>
+                               
+                                <h7>{{__($product->description)}}.</h7>
                                 <h4>Features</h4>
                                 <ul class="features">
                                     <li>Capture 4K30 Video and 12MP Photos</li>
@@ -281,30 +286,34 @@
     <!-- End Item Details -->
 
     @push('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
         <script>
-            // مثال باستخدام jQuery
+            function changeImage(image, index) {
+                const mainImage = document.querySelector('#mainImageCarousel .carousel-item.active img');
+                mainImage.src = image.src;
+                const thumbnails = document.querySelectorAll('.thumb-img');
+                thumbnails.forEach((thumb, i) => {
+                    thumb.style.opacity = i === index ? '0.5' : '1'; 
+                });
+            }
+        </script>
+        
+        <script>
             $(document).ready(function() {
-                // عندما يتغير اللون في الـ Dropdown أو أي حدث آخر
                 $('#colorSelect').on('change', function() {
-                    var colorId = $(this).val(); // الحصول على color_id من الـ Dropdown
-                    var productId = $('#product_id').val(); // الحصول على product_id (يمكنك تمريره من HTML)
-
-                    // إرسال AJAX إلى السيرفر
+                    var colorId = $(this).val();
+                    var productId = $('#product_id').val();
                     $.ajax({
-                        url: '/get-sizes/' + colorId, // تأكد من أن الرابط صحيح
+                        url: '/get-sizes/' + colorId, 
                         method: 'GET',
                         data: {
-                            product_id: productId, // إرسال product_id مع الـ request
+                            product_id: productId, 
                         },
                         success: function(response) {
-                            // التعامل مع المقاسات المسترجعة (مصفوفة من أسماء المقاسات)
-                            $('#sizeSelect').empty(); // إفراغ قائمة المقاسات الحالية
+                            $('#sizeSelect').empty(); 
                             $.each(response, function(id, sizeName) {
-                                // إضافة كل مقاس إلى القائمة
                                 $('#sizeSelect').append('<option value="' + id +
-                                    '">' + sizeName + '</option>');
-                                   
+                                    '">' + sizeName + '</option>');       
                             });
                         },
                         error: function() {

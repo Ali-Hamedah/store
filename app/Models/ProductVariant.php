@@ -26,8 +26,31 @@ class ProductVariant extends Model
         return $this->belongsTo(Size::class);
     }
 
-    public static function generateSKU($productName, $colorName, $sizeName)
+    public static function generateSKU($productName, $color, $size)
     {
-        return strtoupper(substr($productName, 0, 3)) . '-' . strtoupper(substr($colorName, 0, 3)) . '-' . strtoupper($sizeName);
+        $convertToEnglish = function ($text) {
+            if (!preg_match('/^[A-Za-z0-9]+$/', $text)) {
+                return 'AT';
+            }
+            return strtoupper(preg_replace('/[^A-Z0-9]/', '', $text ?? 'UNK'));
+        };
+    
+        $productPart = strtoupper(substr($convertToEnglish($productName), 0, 2));
+        $colorPart = strtoupper(substr($convertToEnglish($color), 0, 2));
+        $sizePart = strtoupper(substr($convertToEnglish($size), 0, 1));
+        $datePart = date('ymd');
+    
+        // الرقم التسلسلي يبدأ بـ 01
+        $newSerial = 1;
+    
+        do {
+            $sku = "{$productPart}{$colorPart}{$sizePart}{$datePart}" . str_pad($newSerial, 2, '0', STR_PAD_LEFT);
+            $newSerial++;
+        } while (ProductVariant::where('sku', $sku)->exists());
+    
+        return $sku;
     }
+    
+    
+    
 }

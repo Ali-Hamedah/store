@@ -22,9 +22,10 @@ return new class extends Migration
             $table->float('price')->default(0);
             $table->float('compare_price')->nullable();
             $table->unsignedSmallInteger('quantity')->default(0);
-            $table->json('options')->nullable();
             $table->float('rating')->default(0);
-            $table->boolean('featured')->default(0);
+            $table->boolean('is_featured')->default(0);
+            $table->boolean('is_new')->default(1);
+            $table->boolean('is_offer')->default(0);
             $table->enum('status', ['active', 'draft', 'archived'])->default('active');
             $table->timestamps();
             $table->softDeletes();

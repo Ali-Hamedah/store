@@ -31,7 +31,7 @@ class ProductFactory extends Factory
             'compare_price' => $this->faker->randomFloat(1, 500, 999),
             'quantity' => 10,
             'category_id' => Category::inRandomOrder()->first()->id,
-            'featured' => rand(0, 1),
+            'is_featured' => rand(0, 1),
             'store_id' => Store::inRandomOrder()->first()->id,
         ];
     }

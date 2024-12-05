@@ -21,6 +21,9 @@ class Product extends Model
         'price',
         'compare_price',
         'status',
+        'is_featured',
+         'is_new', 
+        'is_offer'
     ];
 
     public static function rules($id)
@@ -44,6 +47,10 @@ class Product extends Model
             'Price' => 'nullable|numeric|max:10000',
             'compare_price' => 'nullable|numeric|max:10000',
             'tags' => 'required|',
+            'is_featured' => 'nullable|boolean',
+            'is_new' => 'nullable|boolean',
+            'is_offer' => 'nullable|boolean',
+           
 
         ];
     }
@@ -72,24 +79,6 @@ class Product extends Model
     return $this->hasMany(OrderItem::class, 'product_id', 'id');
 }
 
-    public function getImageUrl($default = 'no_image.jpg')
-    {
-        $imagePath = $this->image;
-        $imageFullPath = public_path('images/' . $imagePath);
-        
-        return $imagePath && file_exists($imageFullPath) ? asset('images/' . $imagePath) : asset('images/' . $default);
-    }
-
-    public function getDiscountPercentageAttribute()
-    {
-        if (!$this->compare_price) {
-            return 0;
-        }
-
-        $discountPercentage = (($this->compare_price - $this->price) / $this->compare_price) * 100;
-        return round($discountPercentage, 1);
-    }
-
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
@@ -109,6 +98,31 @@ public function media(): MorphMany
 {
     return $this->MorphMany(Media::class, 'mediable');
 }
+
+public function getImageUrl($default = 'no_image.jpg')
+{
+    
+    $imagePath = $this->media;
+
+    $imageFullPath = public_path('assets/products/' . $imagePath);
+
+    if ($imagePath && file_exists($imageFullPath)) {
+        return asset('assets/products/' . $imagePath);
+    }
+
+    return asset('assets/products/' . $default);
+}
+
+public function getDiscountPercentageAttribute()
+{
+    if (!$this->compare_price) {
+        return 0;
+    }
+
+    $discountPercentage = (($this->compare_price - $this->price) / $this->compare_price) * 100;
+    return round($discountPercentage, 1);
+}
+
 
 }
 

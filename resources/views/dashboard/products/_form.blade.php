@@ -5,35 +5,45 @@
 
 <div class="form-group">
     <x-form.input label="Product Name" class="form-control-lg" role="input" name="name" :value="$product->name" />
+        @error('name')
+        <div class="text-danger">{{ $message }}</div>
+    @enderror
+ </div>
+
+
+<div class="form-group-wrapper" style="display: flex; gap: 15px; align-items: center;">
+    <div class="form-group" style="flex: 1;">
+        <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id ?? ''" />
+    </div>
+
+    <div style="flex: 1;">
+        <label for="">Sub Category</label>
+        <select id="sub_category" name="sub_category" style="width: 100%; border-radius: 5px; padding: 5pt">
+            @foreach ($subCategories as $subCategory)
+                <option value="{{ $subCategory->id }}" {{ $product->category_id == $subCategory->id ? 'selected' : '' }}>
+                    {{ $subCategory->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 </div>
 
-<div class="form-group">
-    <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id ?? ''" />
-</div>
-
-<div>
-    <select id="sub_category" name="sub_category" style="width: 100%; border-radius: 5px; padding: 5pt">
-     
-        @foreach ($subCategories as $subCategory)
-            <option value="{{ $subCategory->id }}" {{ $product->category_id == $subCategory->id ? 'selected' : '' }}>
-                {{ $subCategory->name }}
-            </option>
-        @endforeach
-    </select>
-</div>
 
 <div class="form-group">
     <label for="">Description</label>
     <x-form.textarea name="description" :value="$product->description" />
 </div>
 
-<div class="form-group">
-    <x-form.input label="Price" class="form-control-lg" role="input" name="price" :value="$product->price" />
+<div style="display: flex; gap: 15px; align-items: center;">
+    <div class="form-group" style="flex: 1;">
+        <x-form.input label="Price" class="form-control-lg" role="input" name="price" :value="$product->price" />
+    </div>
+
+    <div class="form-group" style="flex: 1;">
+        <x-form.input label="Compare Price" name="compare_price" :value="$product->compare_price" />
+    </div>
 </div>
 
-<div class="form-group">
-    <x-form.input label="Compare Price" name="compare_price" :value="$product->compare_price" />
-</div>
 
 <div class="form-group">
     <x-form.input label="Tags" name="tags" :value="$tags" />
@@ -48,22 +58,46 @@
     @enderror
 </div>
 
-<div class="form-group">
-    <label for="">Status</label>
-    <div>
-        <x-form.radio name="status" :checked="$product->status" :options="['active' => 'Active', 'draft' => 'Draft', 'archived' => 'Archived']" />
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: start;">
+    <div class="form-group">
+        <label for="">Status</label>
+        <div>
+            <x-form.radio name="status" :checked="$product->status" :options="['active' => 'Active', 'draft' => 'Draft', 'archived' => 'Archived']" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="">Favorite</label>
+        <div>
+            <x-form.radio name="is_featured" :checked="$product->is_featured" :options="[ 1 => 'Yes', 0 => 'No']" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="">New</label>
+        <div>
+            <x-form.radio name="is_new" :checked="$product->is_new" :options="[1 => 'Yes', 0 => 'No']" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="">Offer</label>
+        <div>
+            <x-form.radio name="is_offer" :checked="$product->is_offer" :options="[1 => 'Yes', 0 => 'No']" />
+        </div>
     </div>
 </div>
+
 
 <input type="hidden" name="variants" value="{{ json_encode($variants ?? []) }}">
 
 <div id="productVariants">
     <div id="variantContainer">
         <!-- سيتم تكرار هذه البلوك عند إضافة سطر جديد -->
-        <div class="variant-row mb-2">
-            <div class="row">
+        <div class="variant-row mb-3 p-2 border rounded">
+            <div class="row g-3 align-items-center">
                 <div class="col-md-3">
-                    <select class="form-select product-size" name="sizes[]">
+                    <select class="form-select product-size" name="sizes[]" style="height: 45px;">
                         <option>Size</option>
                         @foreach ($sizes as $size)
                             <option value="{{ $size->id }}">{{ $size->name }}</option>
@@ -71,7 +105,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select product-color" name="colors[]">
+                    <select class="form-select product-color" name="colors[]" style="height: 45px;">
                         <option>Color</option>
                         @foreach ($colors as $color)
                             <option value="{{ $color->id }}">{{ $color->name }}</option>
@@ -79,18 +113,17 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control product-quantity" name="quantities[]" placeholder="العدد" min="1">
+                    <input type="number" class="form-control product-quantity" name="quantities[]" placeholder="العدد" min="0" style="height: 45px;">
                 </div>
-                <div class="col-md-3">
-                    <button type="button" class="btn btn-danger remove-variant">حذف</button>
+                <div class="col-md-3 text-center">
+                    <button type="button" class="btn btn-danger remove-variant w-100" style="height: 45px;">حذف</button>
                 </div>
             </div>
         </div>
-    </div>
-
-    
-  
+    </div> 
 </div>
+
+
 <div class="form-group">
 <button type="button" id="addVariant" class="btn btn-secondary">Add options size or color</button>
 </div>

@@ -63,7 +63,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // بدء المعاملة
-        DB::beginTransaction();
+        // DB::beginTransaction();
         
         try {
             // التحقق من صحة البيانات
@@ -86,7 +86,8 @@ class ProductController extends Controller
                 $variant->size_id = $size;
                 $variant->color_id = $request->colors[$index];
                 $variant->quantity = $request->quantities[$index];
-                $variant->sku = Str::uuid()->toString();
+                $variant->sku = ProductVariant::generateSKU($product->name, $product->color, $product->size);
+
                 $variant->save();
             }
     
@@ -146,13 +147,10 @@ class ProductController extends Controller
     
             return redirect()->route('dashboard.products.index')->with('success', 'تم إنشاء المنتج بنجاح!');
         
-        } catch (\Exception $e) {
-            // التراجع في حالة حدوث خطأ
-            DB::rollBack();
-            
-            // يمكن تسجيل الخطأ أو معالجته هنا
-            return redirect()->back()->with('error', 'حدث خطأ أثناء إنشاء المنتج. يرجى المحاولة مرة أخرى.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
         }
+        
     }
     
 
@@ -217,11 +215,11 @@ class ProductController extends Controller
 
                 $img = $manager->read($image->getRealPath());
 
-                $img->resize(500, null, function ($constraint) {
+                $img->resize(1000, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
 
-                $img->save($path, 100);
+                $img->save($path, 90);
 
                 $product->media()->create([
                     'file_name' => $file_name,

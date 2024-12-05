@@ -60,7 +60,7 @@ class CartController extends Controller
         $this->cart->add($productVariant, $validatedData['quantity'], $validatedData['color_id'], $validatedData['size_id']);
 
     
-        return response()->json(['message' => 'Item added to cart!'], 201);
+        return redirect()->back()->with('success', __('messages.add'));
     }
     
     

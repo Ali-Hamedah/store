@@ -33,6 +33,27 @@
     --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))
 }
 
+ .carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgb(231, 229, 229); 
+    border-radius: 50%;
+    width: 40px; 
+    height: 40px;
+}
+
+.carousel-control-prev-icon:hover, .carousel-control-next-icon:hover {
+    background-color: rgb(159, 159, 160); /* تغيير اللون عند التمرير */
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-control-prev-icon::after, .carousel-control-next-icon::after {
+    font-size: 20px; /* حجم الأيقونة داخل الشكل الدائري */
+}
+
 *,
 ::after,
 ::before {
