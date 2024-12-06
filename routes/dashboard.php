@@ -1,14 +1,19 @@
 <?php
 
+
 use Livewire\Livewire;
 use App\Livewire\Counter;
+use App\Models\ProductCoupon;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
+
 use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\Dashboard\ProductCouponController;
+use App\Http\Controllers\Dashboard\ProductReviewController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 Route::get('/counter', Counter::class); // مسار Livewire لعداد
@@ -45,7 +50,10 @@ Route::group(
             Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
             Route::post('/products/remove-image', [ProductController::class, 'remove_image'])->name('products.remove_image');
         
-            
+            Route::resource('product_coupons', ProductCouponController::class);
+
+            Route::resource('product_reviews', ProductReviewController::class);
+
 
 
 

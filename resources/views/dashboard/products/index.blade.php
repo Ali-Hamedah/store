@@ -68,15 +68,18 @@
                         @endif
                     </td>
                     <td>
-                        <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.products.edit', $product->id) }}">
-                            <i class="las la-pen"></i>
+                        <div class="btn-group btn-group-sm">
+                        <a data-effect="effect-scale"
+                            href="{{ route('dashboard.products.edit', $product->id) }}" class="btn btn-primary">
+                            <i class="fa fa-edit"></i>
                         </a>
+                      
                         <!-- Button to open the module-->
-                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal"
-                            data-target="#delete{{ $product->id }}">
-                            <i class="las la-trash"></i>
+                        <a data-effect="effect-scale" data-toggle="modal"
+                            data-target="#delete{{ $product->id }}" class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
                         </a>
+                    </div>
                     </td>
                     <td><input type="checkbox" name="delete_select" value="{{ $product->id }}" class="delete_select">
                     </td>

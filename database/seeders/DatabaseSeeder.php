@@ -41,5 +41,12 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $product->id, // ربط المتغير بالمنتج
             ]);
         });
+
+        $this->call([
+            ProductCouponSeeder::class,
+        ]);
+        $this->call([
+            ProductReviewSeeder::class,
+        ]);
     }
 }

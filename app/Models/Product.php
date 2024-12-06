@@ -99,6 +99,16 @@ public function media(): MorphMany
     return $this->MorphMany(Media::class, 'mediable');
 }
 
+public function reviews()
+{
+    return $this->hasMany(ProductReview::class);
+}
+
+public function averageRating()
+{
+    return $this->reviews()->avg('rating');
+}
+
 public function getImageUrl($default = 'no_image.jpg')
 {
     
