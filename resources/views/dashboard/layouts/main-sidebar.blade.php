@@ -48,6 +48,14 @@ title="Reviews"
 ]" 
 />
 
+<x-sidebar 
+classType="fa-solid fa-star" 
+title="Customer"  
+:links="[
+    ['url' => route('dashboard.customer.index'), 'label' => 'Customer'],
+   //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
+]" 
+/>
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-th"></i>

@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductCouponController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware(['permission:view coupon|create coupon|edit coupon|delete coupon'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:create coupon'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:update coupon'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:delete coupon'], ['only' => ['destroy']]);
+    }
+
     public function index()
     {
 
@@ -34,10 +42,7 @@ class ProductCouponController extends Controller
       
         ProductCoupon::create($request->validated());
 
-        return redirect()->route('dashboard.product_coupons.index')->with([
-            'message' => 'Created successfully',
-            'alert-type' => 'success'
-        ]);
+        return redirect()->route('dashboard.product_coupons.index')->with('success', __('messages.add'));
     }
 
     public function show($id)
@@ -54,19 +59,13 @@ class ProductCouponController extends Controller
     {
         $productCoupon->update($request->validated());
 
-        return redirect()->route('dashboard.product_coupons.index')->with([
-            'message' => 'Updated successfully',
-            'alert-type' => 'success'
-        ]);
+        return redirect()->route('dashboard.product_coupons.index')->with('success', __('messages.update'));
     }
 
     public function destroy(ProductCoupon $productCoupon)
     {
         $productCoupon->delete();
 
-        return redirect()->route('dashboard.product_coupons.index')->with([
-            'message' => 'Deleted successfully',
-            'alert-type' => 'success'
-        ]);
+        return redirect()->route('dashboard.product_coupons.index')->with('success', __('messages.delete'));
     }
 }

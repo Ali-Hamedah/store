@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'aliali735522@gmail.com',
             'password' => Hash::make('12345678'),
             'phone_number' => '068181863821',
-            'country' => fake()->countryCode(),
+          'country' => fake()->countryCode(),  
         ]);
         User::create([
             'name' => 'Store',

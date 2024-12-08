@@ -8,9 +8,14 @@ use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    function __construct()
+    {
+        $this->middleware(['permission:view order|create order|edit order|delete order'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:create order'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:update order'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:delete order'], ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         

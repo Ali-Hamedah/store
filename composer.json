@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.5",
         "mcamara/laravel-localization": "^2.0",
+        "spatie/laravel-permission": "6.0",
         "symfony/intl": "^6.4",
         "yoeunes/toastr": "2.3"
     },

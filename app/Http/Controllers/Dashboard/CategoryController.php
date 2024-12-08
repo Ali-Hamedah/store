@@ -14,6 +14,13 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class CategoryController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware(['permission:view category|create category|edit category|delete category'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:create category'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:update category'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:delete category'], ['only' => ['destroy']]);
+    }
 
     public function index()
     {
