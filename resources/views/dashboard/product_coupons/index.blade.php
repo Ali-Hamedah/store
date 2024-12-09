@@ -4,6 +4,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex">
             <h6 class="m-0 font-weight-bold text-primary">Product Coupons</h6>
+            @can('create coupon')
             <div class="ml-auto">
                 <a href="{{ route('dashboard.product_coupons.create') }}" class="btn btn-primary">
                     <span class="icon text-white-50">
@@ -12,6 +13,7 @@
                     <span class="text">Add new coupon</span>
                 </a>
             </div>
+            @endcan
         </div>
 
         {{-- @include('backend.product_coupons.filter.filter') --}}
@@ -42,12 +44,16 @@
                         <td>{{ $coupon->created_at->format('Y-m-d h:i a') }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
+                                @can('update coupon')
                                 <a href="{{ route('dashboard.product_coupons.edit', $coupon->id) }}" class="btn btn-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                @endcan
+                                @can('delete coupon')
                                 <a href="javascript:void(0);" onclick="if (confirm('Are you sure to delete this record?')) { document.getElementById('delete-product-coupon-{{ $coupon->id }}').submit(); } else { return false; }" class="btn btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
+                                @endcan
                             </div>
                             <form action="{{ route('dashboard.product_coupons.destroy', $coupon->id) }}" method="post" id="delete-product-coupon-{{ $coupon->id }}" class="d-none">
                                 @csrf

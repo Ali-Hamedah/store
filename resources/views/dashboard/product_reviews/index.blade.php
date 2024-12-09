@@ -46,12 +46,16 @@
                         <td>{{ $review->created_at }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
+                                @can('update review')
                                 <a href="{{ route('dashboard.product_reviews.edit', $review->id) }}" class="btn btn-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                @endcan
+                                @can('delete review')
                                 <a href="javascript:void(0);" onclick="if (confirm('Are you sure to delete this record?')) { document.getElementById('delete-product-review-{{ $review->id }}').submit(); } else { return false; }" class="btn btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
+                                @endcan
                             </div>
                             <form action="{{ route('dashboard.product_reviews.destroy', $review->id) }}" method="post" id="delete-product-review-{{ $review->id }}" class="d-none">
                                 @csrf

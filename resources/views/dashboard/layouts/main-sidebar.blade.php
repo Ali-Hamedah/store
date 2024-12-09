@@ -3,7 +3,8 @@
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
       <!-- Add icons to the links using the .nav-icon class
            with font-awesome or any other icon font library -->
-           <x-sidebar 
+           @can('view category')
+                 <x-sidebar 
            classType="layer-group" 
            title="Categories" 
            :links="[
@@ -11,7 +12,9 @@
                ['url' => route('dashboard.categories.trash'), 'label' => 'Categories Trash']
            ]" 
        />
+           @endcan
        
+           @can('view product')
        <x-sidebar 
            classType="shopping-bag" 
            title="Products" 
@@ -20,7 +23,8 @@
                // ['url' => route('dashboard.products.trash'), 'label' => 'Products Trash']
            ]" 
        />
-
+@endcan
+       @can('view order')
        <x-sidebar 
        classType="shopping-cart 9" 
        title="Orders" 
@@ -29,7 +33,8 @@
           //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
        ]" 
    />
-
+@endcan
+ @can('view coupon')
    <x-sidebar 
    classType="fa fa-tags" 
    title="Coupons" 
@@ -38,7 +43,8 @@
       //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
    ]" 
 />
-
+@endcan
+@can('view review')
 <x-sidebar 
 classType="fa-solid fa-star" 
 title="Reviews"  
@@ -47,7 +53,8 @@ title="Reviews"
    //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
 ]" 
 />
-
+@endcan
+@can('view customer')
 <x-sidebar 
 classType="fa-solid fa-star" 
 title="Customer"  
@@ -56,6 +63,7 @@ title="Customer"
    //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
 ]" 
 />
+@endcan
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-th"></i>

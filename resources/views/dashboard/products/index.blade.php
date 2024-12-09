@@ -12,6 +12,7 @@
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">{{__('main.products')}}</h6>
+          @can('create product')
         <div class="ml-auto">
             <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
@@ -20,6 +21,7 @@
                 <span class="text">{{ __('products.add_new_product') }}</span>
             </a>
         </div>
+        @endcan
     </div>
     <table id="example" class="table">
         <thead>
@@ -32,11 +34,14 @@
                 <th>{{ __('products.status') }}</th>
                 <th>{{ __('categories.Image') }}</th>
                 <th>{{ __('categories.Processes') }}</th>
+                @can('delete product')
                 <th><button id="btn_delete_all" class="btn btn-danger">
                         <span class="icon text-white-50">
                             <i class="fa fa-trash icon text-white-50"></i>
                         </span>
+                   
                     </button><input type="checkbox" id="select-all"></th>
+                    @endcan
             </tr>
         </thead>
         <tbody>
@@ -69,20 +74,24 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
+                            @can('update product')
                         <a data-effect="effect-scale"
                             href="{{ route('dashboard.products.edit', $product->id) }}" class="btn btn-primary">
                             <i class="fa fa-edit"></i>
                         </a>
-                      
-                        <!-- Button to open the module-->
+                      @endcan
+                      @can('delete product')
                         <a data-effect="effect-scale" data-toggle="modal"
                             data-target="#delete{{ $product->id }}" class="btn btn-danger">
                             <i class="fa fa-trash"></i>
                         </a>
+                        @endcan
                     </div>
                     </td>
+                    @can('delete product')
                     <td><input type="checkbox" name="delete_select" value="{{ $product->id }}" class="delete_select">
                     </td>
+                    @endcan
                 </tr>
                 <!-- Modal Delete -->
                 @include('dashboard.products.delete')

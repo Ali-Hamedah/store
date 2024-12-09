@@ -12,6 +12,7 @@
 <div class="card shadow mb-4" style="width: 99%; margin: auto;">
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">Products</h6>
+        @can('create order')
         <div class="ml-auto">
             <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
@@ -20,6 +21,7 @@
                 <span class="text">{{ __('categories.add_new_product') }}</span>
             </a>
         </div>
+        @endcan
     </div>
     <table id="example" class="table">
         <thead>

@@ -25,13 +25,8 @@ class CustomerController extends Controller
 
     public function index()
     {
-        // if (!auth()->user()->ability('admin', 'manage_customers, show_customers')) {
-        //     return redirect('admin/index');
-        // }
-
-        $customers = User::where('type', function ($query) {
-            $query->where('type', 'customer');
-        })
+      
+        $customers = User::where('type', 'user')
             ->when(\request()->keyword != null, function ($query) {
                 $query->search(\request()->keyword);
             })
@@ -45,9 +40,6 @@ class CustomerController extends Controller
 
     public function create()
     {
-        // if (!auth()->user()->ability('admin', 'create_customers')) {
-        //     return redirect('admin/index');
-        // }
 
         return view('backend.customers.create');
     }

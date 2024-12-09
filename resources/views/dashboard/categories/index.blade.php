@@ -12,7 +12,8 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex">
         <h6 class="m-0 font-weight-bold text-primary">categories</h6>
-        <div class="ml-auto">
+        @can('create category')
+            <div class="ml-auto">
             <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
                 <span class="icon text-white-50">
                     <i class="fa fa-plus"></i>
@@ -20,7 +21,10 @@
                 <span class="text">{{ __('categories.add_new_category') }}</span>
             </a>
         </div>
+        @endcan
+        
     </div>
+    @include('dashboard.categories.filter.filter')
     <table id="example" class="table">
         <thead>
             <tr>
@@ -32,11 +36,13 @@
                 <th>{{ __('categories.status') }}</th>
                 <th>{{ __('categories.Image') }}</th>
                 <th>{{ __('categories.Processes') }}</th>
+                @can('delete category')
                 <th><button id="btn_delete_all" class="btn btn-danger">
                         <span class="icon text-white-50">
                             <i class="fa fa-trash icon text-white-50"></i>
                         </span>
                     </button><input type="checkbox" id="select-all"></th>
+                    @endcan
             </tr>
         </thead>
         <tbody>
@@ -46,7 +52,7 @@
                     <td><a href="{{ route('dashboard.categories.show', $category->id) }}" >{{ $category->name }} </td>
                     <td>{{ $category->parent_id }}</td>
                     <td>{{ $category->description }}</td>
-                    <td>{{ $category->products->count() }}</td>
+                    <td>{{ $category->products_count}}</td>
                     <td>
                         <span class="badge {{ $category->status == 'active' ? 'badge-success' : 'badge-danger' }}">
                             {{ $category->status == 'active' ? 'Active' : 'Archived' }}
@@ -59,15 +65,19 @@
                         </a>
                     </td>
                     <td>
+                        @can('update category')
                         <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
                             href="{{ route('dashboard.categories.edit', $category->id) }}">
                             <i class="las la-pen"></i>
                         </a>
-                        <!-- Button to open the module-->
+                        @endcan
+                       
+                        @can('delete category')
                         <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal"
                             data-target="#delete{{ $category->id }}">
                             <i class="las la-trash"></i>
                         </a>
+                        @endcan
                     </td>
                     <td><input type="checkbox" name="delete_select" value="{{ $category->id }}" class="delete_select">
                     </td>

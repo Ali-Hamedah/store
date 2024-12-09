@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SearchableTrait;
 
     protected $fillable = ['name', 'parent_id', 'slug', 'description', 'image', 'status'];
 
@@ -35,6 +36,11 @@ class Category extends Model
         ];
     }
 
+ protected $searchable = [
+        'columns' => [
+            'categories.name' => 10,
+       ],    
+    ];
     public function products()
     {
         return $this->hasMany(Product::class);

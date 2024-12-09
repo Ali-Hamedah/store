@@ -24,8 +24,16 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = Category::with('products')->paginate(10);
-       
+        $categories = Category::withCount('products')
+            ->when(\request()->keyword != null, function ($query) {
+                $query->search(\request()->keyword);
+            })
+            ->when(\request()->status != null, function ($query) {
+                $query->whereStatus(\request()->status);
+            })
+            ->orderBy(\request()->sort_by ?? 'id', \request()->order_by ?? 'desc')
+            ->paginate(\request()->limit_by ?? 10);
+
         return view('dashboard.categories.index', compact('categories'));
     }
 
@@ -61,8 +69,8 @@ class CategoryController extends Controller
         //     $input['cover'] = $file_name;
         // }
         if ($image = $request->file('image')) {
-            $manager = new ImageManager( New Driver); 
-            $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
+            $manager = new ImageManager(new Driver);
+            $file_name = Str::slug($request->name) . "." . $image->getClientOriginalExtension();
             $path = public_path('/assets/categories/' . $file_name);
             $img = $manager->read($image->getRealPath());
             $img->resize(500, null, function ($constraint) {
@@ -78,7 +86,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        
+
         return view('dashboard.categories.show', compact('category'));
     }
 
@@ -100,11 +108,11 @@ class CategoryController extends Controller
         $data = $request->only(['name', 'parent_id', 'description', 'status']);
 
         if ($image = $request->file('image')) {
-            $manager = new ImageManager( New Driver); 
-            if ($category->image != null && File::exists('assets/categories/'. $category->image)){
-                unlink('assets/categories/'. $category->image);
+            $manager = new ImageManager(new Driver);
+            if ($category->image != null && File::exists('assets/categories/' . $category->image)) {
+                unlink('assets/categories/' . $category->image);
             }
-            $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
+            $file_name = Str::slug($request->name) . "." . $image->getClientOriginalExtension();
             $path = public_path('/assets/categories/' . $file_name);
             $img = $manager->read($image->getRealPath());
             $img->resize(500, 500, function ($constraint) {
@@ -126,7 +134,7 @@ class CategoryController extends Controller
             foreach ($delete_select_id as $id) {
                 // جلب الكائن المرتبط بالمعرف
                 $category = Category::find($id);
-            
+
                 // التحقق مما إذا كان الكائن موجودًا
                 if ($category) {
                     // التحقق مما إذا كانت الصورة موجودة في المسار المحدد
@@ -136,23 +144,21 @@ class CategoryController extends Controller
                     }
                 }
             }
-    
+
             Category::destroy($delete_select_id);
 
-        // $category->delete();
-         return redirect()->route('dashboard.categories.index')->with('success', __('messages.delete'));
-    }
-    else {
-        if (File::exists('assets/categories/'. $category->image)){
-            unlink('assets/categories/'. $category->image);
-        }
+            // $category->delete();
+            return redirect()->route('dashboard.categories.index')->with('success', __('messages.delete'));
+        } else {
+            if (File::exists('assets/categories/' . $category->image)) {
+                unlink('assets/categories/' . $category->image);
+            }
 
             $category->delete();
-        return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
-
+            return redirect()->route('dashboard.categories.index')->with('success', 'Category deleted successfully');
+        }
     }
-}
-    
+
 
     public function trash_Category()
     {
@@ -162,7 +168,7 @@ class CategoryController extends Controller
 
     public function restore(Request $request, $id)
     {
-        
+
         $selectedItems = $request->selected_items;
 
         if ($selectedItems && is_array($selectedItems)) {
@@ -170,7 +176,7 @@ class CategoryController extends Controller
             Category::withTrashed()
                 ->whereIn('id', $selectedItems)
                 ->restore();
-    
+
             return redirect()->route('dashboard.categories.trash')->with('success', 'Categories restored successfully.');
         }
         return redirect()->route('dashboard.categories.trash')->with('error', 'Category not found.');
@@ -179,7 +185,7 @@ class CategoryController extends Controller
 
     public function restoreAll($id)
     {
-        
+
 
         $category = Category::withTrashed()->find($id);
         if ($category) {

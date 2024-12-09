@@ -4,6 +4,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex">
             <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
+            @can('create customer')
             <div class="ml-auto">
                 <a href="{{ route('admin.customers.create') }}" class="btn btn-primary">
                     <span class="icon text-white-50">
@@ -12,6 +13,7 @@
                     <span class="text">Add new customer</span>
                 </a>
             </div>
+            @endcan
         </div>
 
         @include('backend.customers.filter.filter')
@@ -50,12 +52,16 @@
                         <td>{{ $customer->created_at->format('Y-m-d') }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
+                                @can('update customer')
                                 <a href="{{ route('dashboard.customers.edit', $customer->id) }}" class="btn btn-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                @endcan
+                                @can('delete customer')
                                 <a href="javascript:void(0);" onclick="if (confirm('Are you sure to delete this record?')) { document.getElementById('delete-customer-{{ $customer->id }}').submit(); } else { return false; }" class="btn btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
+                                @endcan
                             </div>
                             <form action="{{ route('dashboard.customers.destroy', $customer->id) }}" method="post" id="delete-customer-{{ $customer->id }}" class="d-none">
                                 @csrf

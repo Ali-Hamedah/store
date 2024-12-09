@@ -21,17 +21,18 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
 {
-    // function __construct()
-    // {
-    //     $this->middleware(['permission:product-list|product-create|product-edit|product-delete'], ['only' => ['index', 'show']]);
-    //     $this->middleware(['permission:product-create'], ['only' => ['create', 'store']]);
-    //     $this->middleware(['permission:product-edit'], ['only' => ['edit', 'update']]);
-    //     $this->middleware(['permission:product-delete'], ['only' => ['destroy']]);
-    // }
+    function __construct()
+    {
+        $this->middleware(['permission:view product|create product|edit product|delete product'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:create product'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:update product'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:delete product'], ['only' => ['destroy']]);
+    }
+
 
     public function index()
     {
-        $products = Product::with('category', 'store', 'variants') // استخدام الحجج الموضعية فقط
+        $products = Product::with('category', 'store', 'variants', 'media', 'firstMedia')
     ->withSum('variants', 'quantity')
     ->paginate(10);
 
