@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('dashboard.layouts.master')
 @section('content')
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex">
             <h6 class="m-0 font-weight-bold text-primary">Edit Customer ({{ $customer->full_name }})</h6>
             <div class="ml-auto">
-                <a href="{{ route('admin.customers.index') }}" class="btn btn-primary">
+                <a href="{{ route('dashboard.customers.index') }}" class="btn btn-primary">
                     <span class="icon text-white-50">
                         <i class="fa fa-home"></i>
                     </span>
@@ -15,31 +15,18 @@
         </div>
         <div class="card-body">
 
-            <form action="{{ route('admin.customers.update', $customer->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('dashboard.customers.update', $customer->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 <div class="row">
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="first_name">First Name</label>
-                            <input type="text" name="first_name" value="{{ old('first_name', $customer->first_name) }}" class="form-control">
+                            <label for="name">First Name</label>
+                            <input type="text" name="name" value="{{ old('name', $customer->name) }}" class="form-control">
                             @error('first_name')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
                     </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label for="last_name">Last Name</label>
-                            <input type="text" name="last_name" value="{{ old('last_name', $customer->last_name) }}" class="form-control">
-                            @error('last_name')<span class="text-danger">{{ $message }}</span>@enderror
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" name="username" value="{{ old('username', $customer->username) }}" class="form-control">
-                            @error('username')<span class="text-danger">{{ $message }}</span>@enderror
-                        </div>
-                    </div>
+                   
                     <div class="col-3">
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -47,14 +34,49 @@
                             @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-3">
                         <div class="form-group">
                             <label for="mobile">Mobile</label>
-                            <input type="text" name="mobile" value="{{ old('mobile', $customer->mobile) }}" class="form-control">
-                            @error('mobile')<span class="text-danger">{{ $message }}</span>@enderror
+                            <input type="text" name="phone_number" value="{{ old('phone_number', $customer->phone_number) }}" class="form-control">
+                            @error('phone_number')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div>
+                                <x-input-label for="birthday" :value="__('Birthday')" />
+                                <x-form.date :value="old('Birthday', $customer->birthday)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div>
+                                <x-input-label for="country" :value="__('country')" />
+                                <x-form.select name="country" :options="$countries" :selected="old('country', $customer->country)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="street_address">Street Address</label>
+                            <input type="text" name="street_address" value="{{ old('street_address', $customer->street_address) }}" class="form-control">
+                            @error('street_address')<span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select type="text" name="gender" value="{{old('gender', $customer->gender == 'male' ? 'female' : '' )}}" class="form-control">
+                           <option value="male">Male</option>
+                           <option value="female">Female</option>
+                            </select>
+                            @error('gender')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
                     </div>
                     <div class="col-3">
@@ -64,29 +86,14 @@
                             @error('password')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
                     </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select name="status" class="form-control">
-                                <option value="1" {{ old('status', $customer->status) == '1' ? 'selected' : null }}>Active</option>
-                                <option value="0" {{ old('status', $customer->status) == '0' ? 'selected' : null }}>Inactive</option>
-                            </select>
-                            @error('status')<span class="text-danger">{{ $message }}</span>@enderror
-                        </div>
-                    </div>
-                    <div class="col-3">
-                    </div>
                 </div>
-
                 <div class="row pt-4">
-                    <div class="col-12">
-                        <label for="cover">User Image</label>
-                        <br>
-                        <div class="file-loading">
-                            <input type="file" name="user_image" id="customer-image" class="file-input-overview">
-                            <span class="form-text text-muted">Image width should be 300px x 300px</span>
-                            @error('user_image')<span class="text-danger">{{ $message }}</span>@enderror
-                        </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Iamge</label>
+                        <input type="file" name="image" id="image" class="file-input-overview">
+                        @error('image')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 

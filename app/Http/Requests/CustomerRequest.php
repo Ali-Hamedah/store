@@ -27,28 +27,26 @@ class CustomerRequest extends FormRequest
             case 'POST':
             {
                 return [
-                    'first_name'    => 'required',
-                    'last_name'     => 'required',
-                    'username'      => 'required|max:20|unique:users',
-                    'email'         => 'required|email|max:255|unique:users',
-                    'mobile'        => 'required|numeric|unique:users',
-                    'status'        => 'required',
+                    'name'    => 'required',
+                    'birthday'    => 'required',
+                    'country'    => 'required',
+                    'street_address'    => 'required',
                     'password'      => 'required|min:8',
-                    'user_image'    => 'nullable|mimes:jpg,jpeg,png,svg|max:20000'
+                    'email'         => 'required|email|max:255|unique:users',
+                    'phone_number'        => 'required|numeric|unique:users',
                 ];
             }
             case 'PUT':
             case 'PATCH':
             {
                 return [
-                    'first_name'    => 'required',
-                    'last_name'     => 'required',
-                    'username'      => 'required|max:20|unique:users,username,'.$this->route()->customer->id,
-                    'email'         => 'required|email|max:255|unique:users,email,'.$this->route()->customer->id,
-                    'mobile'        => 'required|numeric|unique:users,mobile,'.$this->route()->customer->id,
-                    'status'        => 'required',
+                    'name'    => 'required',
+                    'birthday'    => 'required',
+                    'country'    => 'required',
+                    'street_address'    => 'required',
                     'password'      => 'nullable|min:8',
-                    'user_image'    => 'nullable|mimes:jpg,jpeg,png,svg|max:20000'
+                    'email'         => 'required|email|max:255|unique:users,email,'.$this->route()->customer->id,
+                    'phone_number'        => 'required|numeric|unique:users,phone_number,'.$this->route()->customer->id,
                 ];
             }
             default: break;

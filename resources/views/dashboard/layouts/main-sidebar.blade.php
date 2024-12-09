@@ -59,7 +59,7 @@ title="Reviews"
 classType="fa-solid fa-star" 
 title="Customer"  
 :links="[
-    ['url' => route('dashboard.customer.index'), 'label' => 'Customer'],
+    ['url' => route('dashboard.customers.index'), 'label' => 'Customer'],
    //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
 ]" 
 />

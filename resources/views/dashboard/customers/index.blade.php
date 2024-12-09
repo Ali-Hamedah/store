@@ -6,7 +6,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
             @can('create customer')
             <div class="ml-auto">
-                <a href="{{ route('admin.customers.create') }}" class="btn btn-primary">
+                <a href="{{ route('dashboard.customers.create') }}" class="btn btn-primary">
                     <span class="icon text-white-50">
                         <i class="fa fa-plus"></i>
                     </span>
@@ -16,7 +16,7 @@
             @endcan
         </div>
 
-        @include('backend.customers.filter.filter')
+        @include('dashboard.customers.filter.filter')
 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -25,7 +25,6 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>Email & Mobile</th>
-                    <th>Status</th>
                     <th>Created at</th>
                     <th class="text-center" style="width: 30px;">Actions</th>
                 </tr>
@@ -34,21 +33,22 @@
                 @forelse($customers as $customer)
                     <tr>
                         <td>
-                            @if ($customer->user_image != '')
-                                <img src="{{ asset('assets/users/'. $customer->user_image) }}" width="60" height="60" alt="{{ $customer->name }}">
+                         
+                            @if ($customer->media != '')
+                        
+                                <img src="{{ asset('assets/customers/'. $customer->media->file_name) }}" width="60" height="60" alt="{{ $customer->name }}">
                             @else
                                 <img src="{{ asset('assets/users/avatar.svg') }}" width="60" height="60" alt="{{ $customer->name }}">
                             @endif
                         </td>
                         <td>
-                            {{ $customer->full_name }}<br>
-                            <strong>{{ $customer->username }}</strong>
+                            {{ $customer->name }}
                         </td>
                         <td>
                             {{ $customer->email }}<br>
                             {{ $customer->mobile }}
                         </td>
-                        <td>{{ $customer->status() }}</td>
+                      
                         <td>{{ $customer->created_at->format('Y-m-d') }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">

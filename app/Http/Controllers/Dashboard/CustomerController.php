@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\CustomerRequest;
+use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use Symfony\Component\Intl\Countries;
+use App\Http\Requests\CustomerRequest;
 
 class CustomerController extends Controller
 {
@@ -35,13 +36,13 @@ class CustomerController extends Controller
             })
             ->orderBy(\request()->sort_by ?? 'id', \request()->order_by ?? 'desc')
             ->paginate(\request()->limit_by ?? 10);
-        return view('backend.customers.index', compact('customers'));
+        return view('dashboard.customers.index', compact('customers'));
     }
 
     public function create()
     {
-
-        return view('backend.customers.create');
+        $countries = Countries::getNames();
+        return view('dashboard.customers.create', compact('countries'));
     }
 
     public function store(CustomerRequest $request)
@@ -50,28 +51,25 @@ class CustomerController extends Controller
         //     return redirect('admin/index');
         // }
 
-        $input['first_name'] = $request->first_name;
-        $input['last_name'] = $request->last_name;
-        $input['username'] = $request->username;
+        $input['name'] = $request->name;
         $input['email'] = $request->email;
-        $input['mobile'] = $request->mobile;
+        $input['phone_number'] = $request->phone_number;
+        $input['birthday'] = $request->birthday;
+        $input['country'] = $request->country;
+        $input['street_address'] = $request->street_address;
         $input['password'] = bcrypt($request->password);
-        $input['status'] = $request->status;
-
-        if ($image = $request->file('user_image')) {
-            $file_name = Str::slug($request->username).".".$image->getClientOriginalExtension();
-            $path = public_path('/assets/users/' . $file_name);
-            Image::make($image->getRealPath())->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save($path, 100);
-            $input['user_image'] = $file_name;
-        }
+        $customerName = Str::slug($request->name, '-');
+        if ($request->hasFile('image')) {
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $fileName = $customerName . '-' . time() . '.' . $extension;
+                $imagePath = $request->file('image')->storeAs('customers', $fileName, 'assets');
+                $input['image'] = $imagePath;
+            }
 
         $customer = User::create($input);
         $customer->markEmailAsVerified();
-        $customer->attachRole(Role::whereName('customer')->first()->id);
 
-        return redirect()->route('admin.customers.index')->with([
+        return redirect()->route('dashboard.customers.index')->with([
             'message' => 'Created successfully',
             'alert-type' => 'success'
         ]);
@@ -83,7 +81,7 @@ class CustomerController extends Controller
         //     return redirect('admin/index');
         // }
 
-        return view('backend.customers.show', compact('customer'));
+        return view('dashboard.customers.show', compact('customer'));
     }
 
     public function edit(User $customer)
@@ -91,8 +89,8 @@ class CustomerController extends Controller
         // if (!auth()->user()->ability('admin', 'update_customers')) {
         //     return redirect('admin/index');
         // }
-
-        return view('backend.customers.edit', compact('customer'));
+$countries = Countries::getNames();
+        return view('dashboard.customers.edit', compact('customer', 'countries'));
     }
 
     public function update(CustomerRequest $request, User $customer)
@@ -100,36 +98,41 @@ class CustomerController extends Controller
         // if (!auth()->user()->ability('admin', 'update_customers')) {
         //     return redirect('admin/index');
         // }
+   
 
-        $input['first_name'] = $request->first_name;
-        $input['last_name'] = $request->last_name;
-        $input['username'] = $request->username;
+        $input['name'] = $request->name;
         $input['email'] = $request->email;
-        $input['mobile'] = $request->mobile;
+        $input['phone_number'] = $request->phone_number;
+        $input['birthday'] = $request->birthday;
+        $input['country'] = $request->country;
+        $input['street_address'] = $request->street_address;
         if (trim($request->password) != ''){
             $input['password'] = bcrypt($request->password);
         }
-        $input['status'] = $request->status;
 
-        if ($image = $request->file('user_image')) {
-            if ($customer->user_image != null && File::exists('assets/users/'. $customer->user_image)){
-                unlink('assets/users/'. $customer->user_image);
-            }
-            $file_name = Str::slug($request->username).".".$image->getClientOriginalExtension();
-            $path = public_path('/assets/users/' . $file_name);
-            Image::make($image->getRealPath())->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save($path, 100);
-            $input['user_image'] = $file_name;
-        }
+        $customerName = Str::slug($request->name, '-');
+        if ($request->hasFile('image')) {
+$file_name = $customerName . '_' . time() . '_' . '.' . $request->image->getClientOriginalExtension();
+            $file_size = $request->image->getSize();
+            $file_type = $request->image->getMimeType();
+            // $path = public_path('assets/customers/' . $file_name);
+            $request->image->move(public_path('assets/customers/'), $file_name);
+            $customer->update($input);
+            $customer->media()->create([
+                'file_name' => $file_name,
+                'file_size' => $file_size,
+                'file_type' => $file_type,
+                'file_status' => true,
+                'file_sort' => 1,
+            ]);
+      
 
-        $customer->update($input);
-
-        return redirect()->route('admin.customers.index')->with([
+        return redirect()->route('dashboard.customers.index')->with([
             'message' => 'Updated successfully',
             'alert-type' => 'success'
         ]);
     }
+}
 
     public function destroy(User $customer)
     {
@@ -142,7 +145,7 @@ class CustomerController extends Controller
         }
         $customer->delete();
 
-        return redirect()->route('admin.customers.index')->with([
+        return redirect()->route('dashboard.customers.index')->with([
             'message' => 'Deleted successfully',
             'alert-type' => 'success'
         ]);

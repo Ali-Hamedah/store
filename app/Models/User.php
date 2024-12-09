@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'password',
         'birthday',
         'gender',
@@ -59,5 +60,9 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class, 'user_id', 'id' ); 
     }
 
+    public function media()
+{
+    return $this->MorphOne(Media::class, 'mediable');
+}
    
 }

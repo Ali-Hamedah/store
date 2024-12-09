@@ -54,20 +54,7 @@ class CategoryController extends Controller
         $data = $request->only(['name', 'parent_id', 'description', 'status']);
         $data['slug'] = $categoryName;
 
-        // if ($request->hasFile('image')) {
-        //     $extension = $request->file('image')->getClientOriginalExtension();
-        //     $fileName = $categoryName . '-' . time() . '.' . $extension;
-        //     $imagePath = $request->file('image')->storeAs('categories', $fileName, 'images');
-        //     $data['image'] = $imagePath;
-        // }
-        // if ($image = $request->file('cover')) {
-        //     $file_name = Str::slug($request->name).".".$image->getClientOriginalExtension();
-        //     $path = public_path('/assets/product_categories/' . $file_name);
-        //     Image::make($image->getRealPath())->resize(500, null, function ($constraint) {
-        //         $constraint->aspectRatio();
-        //     })->save($path, 100);
-        //     $input['cover'] = $file_name;
-        // }
+        
         if ($image = $request->file('image')) {
             $manager = new ImageManager(new Driver);
             $file_name = Str::slug($request->name) . "." . $image->getClientOriginalExtension();

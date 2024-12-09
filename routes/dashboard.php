@@ -67,7 +67,7 @@ Route::group(
 
             Route::resource('product_reviews', ProductReviewController::class);
 
-            Route::resource('customer', CustomerController::class);
+            Route::resource('customers', CustomerController::class);
 
             Route::resource('permissions', PermissionController::class);
             Route::get('permissions/{permissionId}/delete', [PermissionController::class, 'destroy'])->name('delete.permissions');
