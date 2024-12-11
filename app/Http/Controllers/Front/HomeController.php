@@ -10,15 +10,22 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $products = Product::where('status', 'active') // المنتجات النشطة فقط
-        ->whereHas('variants', function ($query) { // التحقق من وجود المتغيرات
-            $query->where('quantity', '>', 0); // الكمية أكبر من 0
-        })
-        ->with('variants') // لتحميل المتغيرات المرتبطة بالمنتج
-        ->latest() // ترتيب المنتجات حسب الأحدث
-        ->limit(8) // الحد الأقصى لعدد المنتجات المعروضة
-        ->get();
-    
-        return view('front.home', compact('products'));
+        $favorites = Product::favorite()
+    ->with('variants', 'media', 'category') // تحميل المتغيرات المرتبطة لتحسين الأداء
+    ->latest() // ترتيب حسب الأحدث
+    ->limit(8) // عرض 8 منتجات فقط
+    ->get();
+    $newProducts = Product::new()
+    ->with('variants', 'media')
+    ->latest()
+    ->limit(8)
+    ->get();
+    $discounts = Product::discounted()
+    ->with('variants', 'media')
+    ->latest()
+    ->limit(8)
+    ->get();
+
+        return view('front.home', compact('favorites', 'newProducts', 'discounts'));
     }
 }

@@ -76,12 +76,15 @@ class ProductController extends Controller
             $request->validate(Category::rules($request->id ?? null));
     
             // إعداد البيانات
-            $categoryName = Str::slug($request->name, '-');
-            $data = $request->except(['tags', 'category_id', 'image', 'sizes', 'colors', 'quantities']);
+            $categoryName = Str::slug($request->name_en, '-');
+            $data = $request->except(['name', 'tags', 'category_id', 'image', 'sizes', 'colors', 'quantities']);
             $data['slug'] = $categoryName;
             $data['category_id'] = $request->sub_category;
             $data['store_id'] = 1;
-    
+            $data['name']  = ['en' => $request->name_en,'ar' => $request->name_ar];
+            $data['description']  = ['en' => $request->description_en,'ar' => $request->description_ar];
+            
+
             // إنشاء المنتج
             $product = Product::create($data);
     
@@ -92,7 +95,7 @@ class ProductController extends Controller
                 $variant->size_id = $size;
                 $variant->color_id = $request->colors[$index];
                 $variant->quantity = $request->quantities[$index];
-                $variant->sku = ProductVariant::generateSKU($product->name, $product->color, $product->size);
+                $variant->sku = ProductVariant::generateSKU($product->name_en, $product->color, $product->size);
 
                 $variant->save();
             }
@@ -188,45 +191,37 @@ class ProductController extends Controller
             'parentCategory'
         ));
     }
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Product $product)
     {
-        $request->validate(Product::rules($product->id));
-
-        $product->update($request->except('tags', 'category_id', 'image'));
-
+        $data = $request->except('name','tags', 'category_id', 'image');  // Exclude unnecessary fields
+        $data['name'] = ['en' => $request->name_en, 'ar' => $request->name_ar];
+        $data['description'] = ['en' => $request->description_en, 'ar' => $request->description_ar];
+   
+        $product->update($data);
         if ($request->has('sub_category')) {
             $product->update(['category_id' => $request->sub_category]);
         }
-
         $tags = json_decode($request->post('tags'));
         $tag_ids = collect($tags)->map(function ($item) {
             $slug = Str::slug($item->value);
             return Tag::firstOrCreate(['slug' => $slug], ['name' => $item->value])->id;
         });
-
         $product->tags()->sync($tag_ids);
 
         if ($request->images && count($request->images) > 0) {
             $i = $product->media()->count() + 1;
             $manager = new ImageManager( New Driver); 
-            
             foreach ($request->images as $image) {
                 $file_name = $product->slug . '_' . time() . '_' . $i . '.' . $image->getClientOriginalExtension();
                 $file_size = $image->getSize();
                 $file_type = $image->getMimeType();
                 $path = public_path('assets/products/' . $file_name);
-
                 $img = $manager->read($image->getRealPath());
-
                 $img->resize(1000, null, function ($constraint) {
                     $constraint->aspectRatio();
                 });
-
                 $img->save($path, 90);
-
                 $product->media()->create([
                     'file_name' => $file_name,
                     'file_size' => $file_size,
@@ -247,16 +242,10 @@ class ProductController extends Controller
                     ->update(['quantity' => $quantities[$index]]);
             }
         }
-
-
         return redirect()->route('dashboard.products.index', $product->id)
             ->with('success', __('messages.update'));
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Product $product, Request $request)
     {
         if ($request->page_id == 2) {
@@ -264,7 +253,6 @@ class ProductController extends Controller
 
             Product::destroy($delete_select_id);
 
-            // $category->delete();
             return redirect()->route('dashboard.products.index')->with('success', __('messages.delete'));
         } else {
             // if (!empty($category->image) && Storage::disk('images')->exists($category->image)) {
@@ -278,7 +266,6 @@ class ProductController extends Controller
 
     public function deleteSelected(Request $request)
     {
-
         if ($request->has('selected_items')) {
             Product::whereIn('id', $request->input('selected_items'))->delete();
             return redirect()->route('dashboard.categories.index')->with('success', 'تم حذف العناصر المحددة بنجاح.');

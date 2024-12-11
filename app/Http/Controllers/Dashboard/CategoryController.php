@@ -50,11 +50,12 @@ class CategoryController extends Controller
 
         $request->validate(Category::rules($request->id ?? null));
 
-        $categoryName = Str::slug($request->name, '-');
-        $data = $request->only(['name', 'parent_id', 'description', 'status']);
+        $categoryName = Str::slug($request->name_en, '-');
+        $data = $request->only(['parent_id', 'status']);
         $data['slug'] = $categoryName;
-
-        
+        $data['name']  = ['en' => $request->name_en,'ar' => $request->name_ar];
+        $data['description']  = ['en' => $request->description_en,'ar' => $request->description_ar];
+    
         if ($image = $request->file('image')) {
             $manager = new ImageManager(new Driver);
             $file_name = Str::slug($request->name) . "." . $image->getClientOriginalExtension();
@@ -93,7 +94,8 @@ class CategoryController extends Controller
 
         $data['slug'] = $request->slug ?: Str::slug($request->name, '-');
         $data = $request->only(['name', 'parent_id', 'description', 'status']);
-
+        $data['name']  = ['en' => $request->name_en,'ar' => $request->name_ar];
+        $data['description']  = ['en' => $request->description_en,'ar' => $request->description_ar];
         if ($image = $request->file('image')) {
             $manager = new ImageManager(new Driver);
             if ($category->image != null && File::exists('assets/categories/' . $category->image)) {

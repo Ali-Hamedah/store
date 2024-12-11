@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-lg-6 col-md-12 col-12">
                         <div class="product-info">
-                            <h2 class="title">{{ $product->name }}</h2>
+                            <h2 class="title">{{ $product->getTranslation('name', app()->getLocale())}}</h2>
                             <p class="category"><i class="lni lni-tag"></i> Drones:<a href="javascript:void(0)">Action
                                     cameras</a></p>
                             <h3 class="price">${{ $product->price }} @if ($product->compare_price)
@@ -58,9 +58,9 @@
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group color-option">
-                                            <label>Color</label>
+                                            <label>{{__('frontend.color')}}</label>
                                             <select name="color_id" id="colorSelect" class="form-control">
-                                                <option>Choose color</option>
+                                                <option>{{__('frontend.choose')}} {{__('frontend.color')}}</option>
                                                 @foreach ($colors as $color)
                                                     <option value="{{ $color->color_id }}">{{ $color->color->name }}
                                                     </option>
@@ -70,9 +70,9 @@
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group size-option">
-                                            <label>Size</label>
+                                            <label>{{__('frontend.color')}}</label>
                                             <select name="size_id" id="sizeSelect" class="form-control">
-                                                <option value="">Choose size</option>
+                                                <option value="">{{__('frontend.choose')}} {{__('frontend.size')}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -80,7 +80,7 @@
                                     <!-- الكمية -->
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group quantity">
-                                            <label for="quantity">Quantity</label>
+                                            <label for="quantity">{{__('frontend.quantity')}}</label>
                                             <select class="form-control" id="quantity" name="quantity">
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
@@ -96,8 +96,7 @@
                                     <div class="row align-items-end">
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="button cart-button">
-                                                <button type="submit" class="btn" style="width: 100%;">Add to
-                                                    Cart</button>
+                                                <button type="submit" class="btn" style="width: 100%;">{{__('frontend.add_to_cart')}}</button>
                                             </div>
                                         </div>
                                         <div class="col-lg-4 col-md-4 col-12">
@@ -125,7 +124,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-12">
                             <div class="info-body custom-responsive-margin">
-                                <h4>Details</h4>
+                                <h4>{{__('frontend.details')}}</h4>
                                
                                 <h7>{{__($product->description)}}.</h7>
                                 <h4>Features</h4>

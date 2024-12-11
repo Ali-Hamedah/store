@@ -10,5 +10,6 @@ return [
     'Image' => 'Image',
     'Processes' => 'Processes',
     'add_new_category' => 'Add New Category',
+    'main_category' => 'Main Category',
 
 ];

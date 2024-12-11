@@ -64,6 +64,16 @@ title="Customer"
 ]" 
 />
 @endcan
+@can('view permission')
+<x-sidebar 
+classType="fa-solid fa-star" 
+title="Permissions"  
+:links="[
+    ['url' => route('dashboard.permissions.index'), 'label' => 'Permissions'],
+   //  ['url' => route('dashboard.orders.trash'), 'label' => 'Categories Trash']
+]" 
+/>
+@endcan
       <li class="nav-item">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-th"></i>

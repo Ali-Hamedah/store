@@ -45,28 +45,42 @@ class CustomerController extends Controller
         return view('dashboard.customers.create', compact('countries'));
     }
 
-    public function store(CustomerRequest $request)
+    public function store(CustomerRequest $request, User $customer)
     {
         // if (!auth()->user()->ability('admin', 'create_customers')) {
         //     return redirect('admin/index');
         // }
 
-        $input['name'] = $request->name;
-        $input['email'] = $request->email;
-        $input['phone_number'] = $request->phone_number;
-        $input['birthday'] = $request->birthday;
-        $input['country'] = $request->country;
-        $input['street_address'] = $request->street_address;
+        $input = $request->only([
+            'name', 'email', 'phone_number', 
+            'birthday', 'country', 'street_address'
+        ]);
         $input['password'] = bcrypt($request->password);
-        $customerName = Str::slug($request->name, '-');
-        if ($request->hasFile('image')) {
-                $extension = $request->file('image')->getClientOriginalExtension();
-                $fileName = $customerName . '-' . time() . '.' . $extension;
-                $imagePath = $request->file('image')->storeAs('customers', $fileName, 'assets');
-                $input['image'] = $imagePath;
-            }
-
+    
+        // Create the customer (User) object
         $customer = User::create($input);
+    
+        // If an image is uploaded, handle the media association
+        if ($request->hasFile('image')) {
+            $customerName = Str::slug($request->name, '-');
+            $file_name = $customerName . '_' . time() . '.' . $request->image->getClientOriginalExtension();
+            $file_size = $request->image->getSize();
+            $file_type = $request->image->getMimeType();
+    
+            // Move the uploaded file to the public directory
+            $request->image->move(public_path('assets/customers/'), $file_name);
+    
+            // Create the media record associated with the customer
+            $customer->media()->create([
+                'file_name' => $file_name,
+                'file_size' => $file_size,
+                'file_type' => $file_type,
+                'file_status' => true,
+                'file_sort' => 1,
+            ]);
+        }
+    
+        // Mark the customer's email as verified
         $customer->markEmailAsVerified();
 
         return redirect()->route('dashboard.customers.index')->with([
@@ -74,6 +88,7 @@ class CustomerController extends Controller
             'alert-type' => 'success'
         ]);
     }
+
 
     public function show(User $customer)
     {

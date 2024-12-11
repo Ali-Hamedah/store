@@ -19,9 +19,27 @@
         @method('PATCH')
        
     
+   
+
+    <div class="row">
+        <div class="col-6">
     <div class="form-group">
-        <x-form.input label="Product Name" class="form-control-lg" role="input" name="name" :value="$product->name" />
-    </div>
+        <x-form.input label="Product Name English" class="form-control-lg" role="input" name="name_en" :value="$product->getTranslation('name', 'en')" />
+            @error('name_en')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
+     </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <x-form.input label="Product Name Arabic" class="form-control-lg" role="input" name="name_ar" :value="$product->getTranslation('name', 'ar')" />
+                    @error('name_ar')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+             </div>
+                </div>
+    </div>        
+    
     
     <div class="form-group">
         <x-form.select label="Category" name="category_id" :options="$categories" :selected="$parentCategory->id ?? ''" />
@@ -37,9 +55,23 @@
         </select>
     </div>
     
+    <div class="row">
+        <div class="col-6">
     <div class="form-group">
-        <label for="">Description</label>
-        <x-form.textarea name="description" :value="$product->description" />
+        <x-form.input label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->getTranslation('description', 'en')" />
+            @error('description_en')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
+     </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <x-form.input label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->getTranslation('description', 'ar')" />
+                    @error('description_ar')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+             </div>
+                </div>
     </div>
     
     <div class="form-group">
@@ -63,10 +95,33 @@
         @enderror
     </div>
     
-    <div class="form-group">
-        <label for="">Status</label>
-        <div>
-            <x-form.radio name="status" :checked="$product->status" :options="['active' => 'Active', 'draft' => 'Draft', 'archived' => 'Archived']" />
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: start;">
+        <div class="form-group">
+            <label for="">Status</label>
+            <div>
+                <x-form.radio name="status" :checked="$product->status" :options="['active' => 'Active', 'draft' => 'Draft', 'archived' => 'Archived']" />
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label for="">Favorite</label>
+            <div>
+                <x-form.radio name="is_featured" :checked="$product->is_featured" :options="[ 1 => 'Yes', 0 => 'No']" />
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label for="">New</label>
+            <div>
+                <x-form.radio name="is_new" :checked="$product->is_new" :options="[1 => 'Yes', 0 => 'No']" />
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label for="">Offer</label>
+            <div>
+                <x-form.radio name="is_offer" :checked="$product->is_offer" :options="[1 => 'Yes', 0 => 'No']" />
+            </div>
         </div>
     </div>
     

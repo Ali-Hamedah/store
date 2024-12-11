@@ -2,13 +2,25 @@
     <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
   
 @endpush
-
+<div class="row">
+    <div class="col-6">
 <div class="form-group">
-    <x-form.input label="Product Name" class="form-control-lg" role="input" name="name" :value="$product->name" />
-        @error('name')
+    <x-form.input label="Product Name English" class="form-control-lg" role="input" name="name_en" :value="$product->name" />
+        @error('name_en')
         <div class="text-danger">{{ $message }}</div>
     @enderror
  </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <x-form.input label="Product Name Arabic" class="form-control-lg" role="input" name="name_ar" :value="$product->name" />
+                @error('name_ar')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+         </div>
+            </div>
+</div>        
+
 
 
 <div class="form-group-wrapper" style="display: flex; gap: 15px; align-items: center;">
@@ -28,11 +40,24 @@
     </div>
 </div>
 
-
+<div class="row">
+    <div class="col-6">
 <div class="form-group">
-    <label for="">Description</label>
-    <x-form.textarea name="description" :value="$product->description" />
-</div>
+    <x-form.input label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->description" />
+        @error('description_en')
+        <div class="text-danger">{{ $message }}</div>
+    @enderror
+ </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <x-form.input label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->description" />
+                @error('description_ar')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+         </div>
+            </div>
+</div>  
 
 <div style="display: flex; gap: 15px; align-items: center;">
     <div class="form-group" style="flex: 1;">

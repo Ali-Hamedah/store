@@ -2,16 +2,23 @@
       
   @endpush
   <div class="form-group">
-            <label for="exampleFormControlInput1">Name</label>
-            <input value="{{ $category->name }}" type="text" name="name" class="form-control">
-            @error('name')
+            <label for="exampleFormControlInput1">Name English</label>
+            <input value="{{ $category->name }}" type="text" name="name_en" class="form-control">
+            @error('name_en')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Name Arabic</label>
+            <input value="{{ $category->name }}" type="text" name="name_ar" class="form-control">
+            @error('name_ar')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group">
             <label>parents </label>
             <select name="parent_id" class="form-control">
-                <option value="">categories parent</option>
+                <option value="">{{__('categories.main_category')}}</option>
                 @foreach ($parents as $parent)
                     <option value="{{ $parent->id }}"
                         {{ old('parent_id', $category->parent_id) == $parent->id ? 'selected' : '' }}>
@@ -24,9 +31,16 @@
             @enderror
         </div>
         <div class="form-group">
-            <label for="exampleFormControlTextarea1">description</label>
-            <textarea name="description" class="form-control" rows="3">{{ old('description', $category->description) }}</textarea>
-            @error('description')
+            <label for="exampleFormControlTextarea1">description English</label>
+            <textarea name="description_en" class="form-control" rows="3">{{ old('description', $category->description) }}</textarea>
+            @error('description_en')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">description Arabic</label>
+            <textarea name="description_ar" class="form-control" rows="3">{{ old('description', $category->description) }}</textarea>
+            @error('description_ar')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>

@@ -8,23 +8,30 @@
                         <!-- Start Hero Slider -->
                         <div class="hero-slider">
                             <!-- Start Single Slider -->
-                            <div class="single-slider"
-                                style="background-image: url(https://via.placeholder.com/800x500);">
-                                <div class="content">
-                                    <h2><span>No restocking fee ($35 savings)</span>
-                                        M75 Sport Watch
-                                    </h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod tempor incididunt ut
-                                        labore dolore magna aliqua.</p>
-                                    <h3><span>Now Only</span> $320.99</h3>
-                                    <div class="button">
-                                        <a href="product-grids.html" class="btn">Shop Now</a>
-                                    </div>
+                            @foreach ($newProducts as $newProduct)
+                            <div class="single-slider">
+                              
+                                <img src="{{ $newProduct->firstMedia ? asset('assets/products/' . $newProduct->firstMedia->file_name) : asset('assets/products/no_image.jpg') }}">
+                            <div class="content">
+                                <h2><span>No restocking fee ($35 savings)</span>
+                                   {{$newProduct->getTranslation('name', app()->getLocale())}}
+                                </h2>
+                                <p>{{$newProduct->getTranslation('description', app()->getLocale())}}</p>
+                                <div class="price">
+                                <h3><span>Now Only</span> {{$newProduct->price}} 
+                                    <span class="discount-price" style="text-decoration: line-through;">{{ $newProduct->compare_price }}</span>
+
+                                </div>
+                                <div class="button">
+                                    <a href="product-grids.html" class="btn">Shop Now</a>
                                 </div>
                             </div>
+                        </div>
+                            @endforeach
+                           
                             <!-- End Single Slider -->
                             <!-- Start Single Slider -->
-                            <div class="single-slider"
+                            {{-- <div class="single-slider"
                                 style="background-image: url(https://via.placeholder.com/800x500);">
                                 <div class="content">
                                     <h2><span>Big Sale Offer</span>
@@ -37,7 +44,7 @@
                                         <a href="product-grids.html" class="btn">Shop Now</a>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- End Single Slider -->
                         </div>
                         <!-- End Hero Slider -->
@@ -212,22 +219,23 @@
                 </div>
             </div>
             <div class="row">
-                @foreach ($products as $product)
+                @foreach ($favorites as $favorite)
                     <div class="col-lg-3 col-md-6 col-12">
                         <!-- Start Single Product -->
                         <div class="single-product">
                             <div class="product-image">
-                                <img src="{{ $product->getImageUrl() }}" width="50px" height="150px">
+                                <img src="{{ $favorite->firstMedia ? asset('assets/products/' . $favorite->firstMedia->file_name) : asset('assets/products/no_image.jpg') }}" width="50px" height="150px">
 
-                                <span class="{{ $product->discount_percentage ? 'sale-tag' : '' }}">
-                                    -{{ $product->discount_percentage }}%
+
+                                <span class="{{ $favorite->discount_percentage ? 'sale-tag' : '' }}">
+                                    -{{ $favorite->discount_percentage }}%
                                 </span>
 
 
                                 <!-- Add Product to Cart Form -->
                                 <form action="{{ route('cart.store') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="product_id" value="{{ $favorite->id }}">
                                     <input type="hidden" name="quantity" value="{{ 1 }}">
                                     <div class="button">
                                         <button type="submit" class="btn" style="width: 100%;">Add to
@@ -236,9 +244,9 @@
                                 </form>
                             </div>
                             <div class="product-info">
-                                <span class="category">{{ $product->category->name }}</span>
+                                <span class="category">{{ $favorite->category->getTranslation('name', app()->getLocale()) }}</span>
                                 <h4 class="title">
-                                    <a href="{{ route('products.show', $product->slug) }}">{{ $product->name }}</a>
+                                    <a href="{{ route('products.show', $favorite->slug) }}">{{ $favorite->getTranslation('name', app()->getLocale()) }}</a>
                                 </h4>
                                 <ul class="review">
                                     <li><i class="lni lni-star-filled"></i></li>
@@ -249,8 +257,8 @@
                                     <li><span>4.0 Review(s)</span></li>
                                 </ul>
                                 <div class="price">
-                                    <span>${{ $product->price }}</span>
-                                    <span class="discount-price">{{ $product->compare_price }}</span>
+                                    <span>${{ $favorite->price }}</span>
+                                    <span class="discount-price">{{ $favorite->compare_price }}</span>
                                 </div>
                             </div>
                         </div>
@@ -308,165 +316,51 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-8 col-md-12 col-12">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <!-- Start Single Product -->
-                            <div class="single-product">
-                                <div class="product-image">
-                                    <img src="https://via.placeholder.com/335x335" alt="#">
+                @foreach ($discounts as $discount)
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <!-- Start Single Product -->
+                        <div class="single-product">
+                            <div class="product-image">
+                                <img src="{{ $discount->getImageUrl() }}" width="50px" height="150px">
+
+                                <span class="{{ $discount->discount_percentage ? 'sale-tag' : '' }}">
+                                    -{{ $discount->discount_percentage }}%
+                                </span>
+
+
+                                <!-- Add Product to Cart Form -->
+                                <form action="{{ route('cart.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $discount->id }}">
+                                    <input type="hidden" name="quantity" value="{{ 1 }}">
                                     <div class="button">
-                                        <a href="product-details.html" class="btn"><i class="lni lni-cart"></i>
-                                            Add to
-                                            Cart</a>
+                                        <button type="submit" class="btn" style="width: 100%;">Add to
+                                            Cart</button>
                                     </div>
-                                </div>
-                                <div class="product-info">
-                                    <span class="category">Camera</span>
-                                    <h4 class="title">
-                                        <a href="product-grids.html">WiFi Security Camera</a>
-                                    </h4>
-                                    <ul class="review">
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><span>5.0 Review(s)</span></li>
-                                    </ul>
-                                    <div class="price">
-                                        <span>$399.00</span>
-                                    </div>
+                                </form>
+                            </div>
+                            <div class="product-info">
+                                <span class="category">{{ $discount->category->getTranslation('name', app()->getLocale()) }}</span>
+                                <h4 class="title">
+                                    <a href="{{ route('products.show', $discount->slug) }}">{{ $discount->getTranslation('name', app()->getLocale()) }}</a>
+                                </h4>
+                                <ul class="review">
+                                    <li><i class="lni lni-star-filled"></i></li>
+                                    <li><i class="lni lni-star-filled"></i></li>
+                                    <li><i class="lni lni-star-filled"></i></li>
+                                    <li><i class="lni lni-star-filled"></i></li>
+                                    <li><i class="lni lni-star"></i></li>
+                                    <li><span>4.0 Review(s)</span></li>
+                                </ul>
+                                <div class="price">
+                                    <span>${{ $discount->price }}</span>
+                                    <span class="discount-price">{{ $discount->compare_price }}</span>
                                 </div>
                             </div>
-                            <!-- End Single Product -->
                         </div>
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <!-- Start Single Product -->
-                            <div class="single-product">
-                                <div class="product-image">
-                                    <img src="https://via.placeholder.com/335x335" alt="#">
-                                    <div class="button">
-                                        <a href="product-details.html" class="btn"><i class="lni lni-cart"></i>
-                                            Add to
-                                            Cart</a>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <span class="category">Laptop</span>
-                                    <h4 class="title">
-                                        <a href="product-grids.html">Apple MacBook Air</a>
-                                    </h4>
-                                    <ul class="review">
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><span>5.0 Review(s)</span></li>
-                                    </ul>
-                                    <div class="price">
-                                        <span>$899.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Product -->
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <!-- Start Single Product -->
-                            <div class="single-product">
-                                <div class="product-image">
-                                    <img src="https://via.placeholder.com/335x335" alt="#">
-                                    <div class="button">
-                                        <a href="product-details.html" class="btn"><i class="lni lni-cart"></i>
-                                            Add to
-                                            Cart</a>
-                                    </div>
-                                </div>
-                                <div class="product-info">
-                                    <span class="category">Speaker</span>
-                                    <h4 class="title">
-                                        <a href="product-grids.html">Bluetooth Speaker</a>
-                                    </h4>
-                                    <ul class="review">
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star-filled"></i></li>
-                                        <li><i class="lni lni-star"></i></li>
-                                        <li><span>4.0 Review(s)</span></li>
-                                    </ul>
-                                    <div class="price">
-                                        <span>$70.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Product -->
-                        </div>
+                        <!-- End Single Product -->
                     </div>
-                    <!-- Start Banner -->
-                    <div class="single-banner right"
-                        style="background-image:url('https://via.placeholder.com/730x310');margin-top: 30px;">
-                        <div class="content">
-                            <h2>Samsung Notebook 9 </h2>
-                            <p>Lorem ipsum dolor sit amet, <br>eiusmod tempor
-                                incididunt ut labore.</p>
-                            <div class="price">
-                                <span>$590.00</span>
-                            </div>
-                            <div class="button">
-                                <a href="product-grids.html" class="btn">Shop Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Banner -->
-                </div>
-                <div class="col-lg-4 col-md-12 col-12">
-                    <div class="offer-content">
-                        <div class="image">
-                            <img src="https://via.placeholder.com/510x600" alt="#">
-                            <span class="sale-tag">-50%</span>
-                        </div>
-                        <div class="text">
-                            <h2><a href="product-grids.html">Bluetooth Headphone</a></h2>
-                            <ul class="review">
-                                <li><i class="lni lni-star-filled"></i></li>
-                                <li><i class="lni lni-star-filled"></i></li>
-                                <li><i class="lni lni-star-filled"></i></li>
-                                <li><i class="lni lni-star-filled"></i></li>
-                                <li><i class="lni lni-star-filled"></i></li>
-                                <li><span>5.0 Review(s)</span></li>
-                            </ul>
-                            <div class="price">
-                                <span>$200.00</span>
-                                <span class="discount-price">$400.00</span>
-                            </div>
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry incididunt ut
-                                eiusmod tempor labores.</p>
-                        </div>
-                        <div class="box-head">
-                            <div class="box">
-                                <h1 id="days">000</h1>
-                                <h2 id="daystxt">Days</h2>
-                            </div>
-                            <div class="box">
-                                <h1 id="hours">00</h1>
-                                <h2 id="hourstxt">Hours</h2>
-                            </div>
-                            <div class="box">
-                                <h1 id="minutes">00</h1>
-                                <h2 id="minutestxt">Minutes</h2>
-                            </div>
-                            <div class="box">
-                                <h1 id="seconds">00</h1>
-                                <h2 id="secondstxt">Secondes</h2>
-                            </div>
-                        </div>
-                        <div style="background: rgb(204, 24, 24);" class="alert">
-                            <h1 style="padding: 50px 80px;color: white;">We are sorry, Event ended ! </h1>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>

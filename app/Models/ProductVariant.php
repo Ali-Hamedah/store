@@ -26,6 +26,12 @@ class ProductVariant extends Model
         return $this->belongsTo(Size::class);
     }
 
+    public function scopeAvailable($query)
+{
+    return $query->where('quantity', '>', 0);
+}
+
+
     public static function generateSKU($productName, $color, $size)
     {
         $convertToEnglish = function ($text) {

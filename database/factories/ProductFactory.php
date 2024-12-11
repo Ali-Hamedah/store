@@ -22,9 +22,10 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->unique()->word;
+        $name_ar = $this->faker->unique()->word;
         return [
-            'name' => $name,
-            'slug' => Str::slug($name),
+            'name' =>  ['en' => $name,'ar' => $name_ar],
+          'slug' => Str::slug($name . '-' . $name_ar) . '-' . uniqid(),  
             'description' => $this->faker->sentence(15),
             'image' => $this->faker->imageUrl(600, 600),
             'price' => $this->faker->randomFloat(1, 1, 499),

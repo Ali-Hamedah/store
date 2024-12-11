@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
 
     protected $fillable = [
         'name',
@@ -25,31 +26,22 @@ class Product extends Model
          'is_new', 
         'is_offer'
     ];
+    public $translatable = ['name', 'description'];
 
     public static function rules($id)
     {
         return [
-            'name' => [
-                "required",
-                "string",
-                "max:255",
-                "unique:categories,name,$id",
-                function ($attribute, $value, $fail) {
-                    $forbiddenNames = ['admin', 'superadmin'];
-                    if (in_array(strtolower($value), $forbiddenNames)) {
-                        $fail("The {$attribute} cannot be one of the reserved names.");
-                    }
-                },
-            ],
-            'slug' => 'nullable|string|max:255|unique:categories,slug',
-            'description' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'Price' => 'nullable|numeric|max:10000',
-            'compare_price' => 'nullable|numeric|max:10000',
-            'tags' => 'required|',
-            'is_featured' => 'nullable|boolean',
-            'is_new' => 'nullable|boolean',
-            'is_offer' => 'nullable|boolean',
+            'name_en' => 'required|string|max:255',
+    'name_ar' => 'required|string|max:255',
+    'description_en' => 'required|string',
+    'description_ar' => 'required|string',
+    'price' => 'required|numeric|min:0',
+    'compare_price' => 'nullable|numeric|min:0',
+    'sub_category' => 'required|exists:categories,id',
+    'sizes' => 'required|array|min:1',
+    'colors' => 'required|array|min:1',
+    'quantities' => 'required|array|min:1',
+    'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
            
 
         ];
@@ -97,6 +89,7 @@ public function firstMedia(): MorphOne
 public function media(): MorphMany
 {
     return $this->MorphMany(Media::class, 'mediable');
+
 }
 
 public function reviews()
@@ -132,6 +125,25 @@ public function getDiscountPercentageAttribute()
     $discountPercentage = (($this->compare_price - $this->price) / $this->compare_price) * 100;
     return round($discountPercentage, 1);
 }
+
+// المنتجات المفضلة
+public function scopeFavorite($query)
+{
+    return $query->where('is_featured', true);
+}
+
+// المنتجات الجديدة
+public function scopeNew($query)
+{
+    return $query->where('created_at', '>=', now()->subDays(30)); // أُضيفت خلال آخر 30 يومًا
+}
+
+// المنتجات التي عليها تخفيض
+public function scopeDiscounted($query)
+{
+    return $query->where('compare_price', '>', 'price'); // الحقول المخفضة
+}
+
 
 
 }
