@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -112,7 +113,7 @@ class ProductController extends Controller
 
                     $img = $manager->read($image->getRealPath());
 
-                    $img->resize(500, null, function ($constraint) {
+                    $img->resize(1000, null, function ($constraint) {
                         $constraint->aspectRatio();
                     });
     
@@ -147,7 +148,7 @@ class ProductController extends Controller
     
             // ربط المنتج بالعلامات
             $product->tags()->sync($tag_ids);
-    
+            Cache::forget('shop_tags_menu');
             // تحديث رمز المنتج
             $product->update(['product_code' => $product->id]);
     
@@ -206,9 +207,10 @@ class ProductController extends Controller
         $tag_ids = collect($tags)->map(function ($item) {
             $slug = Str::slug($item->value);
             return Tag::firstOrCreate(['slug' => $slug], ['name' => $item->value])->id;
+         
         });
         $product->tags()->sync($tag_ids);
-
+        Cache::forget('shop_tags_menu');
         if ($request->images && count($request->images) > 0) {
             $i = $product->media()->count() + 1;
             $manager = new ImageManager( New Driver); 
@@ -218,7 +220,7 @@ class ProductController extends Controller
                 $file_type = $image->getMimeType();
                 $path = public_path('assets/products/' . $file_name);
                 $img = $manager->read($image->getRealPath());
-                $img->resize(1000, null, function ($constraint) {
+                $img->resize(1000, 667, function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $img->save($path, 90);

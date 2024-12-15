@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_featured')->default(0);
             $table->boolean('is_new')->default(1);
             $table->boolean('is_offer')->default(0);
+            $table->timestamp('offer_end')->nullable(); 
             $table->enum('status', ['active', 'draft', 'archived'])->default('active');
             $table->timestamps();
             $table->softDeletes();

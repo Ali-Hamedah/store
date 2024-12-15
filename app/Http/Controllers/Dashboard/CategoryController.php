@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -68,6 +69,7 @@ class CategoryController extends Controller
             $data['image'] = $file_name;
         }
         Category::create($data);
+        Cache::forget('shop_categories_menu');
         return redirect()->route('dashboard.categories.index')->with('success', __('messages.add'));
     }
 

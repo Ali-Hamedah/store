@@ -97,9 +97,10 @@ public function reviews()
     return $this->hasMany(ProductReview::class);
 }
 
-public function averageRating()
+public function getAverageRatingAttribute()
 {
-    return $this->reviews()->avg('rating');
+    // إذا كنت تريد حساب متوسط التقييمات من علاقة ratings
+    return $this->reviews()->avg('rating') ?? 0; // احصل على المتوسط أو 0
 }
 
 public function getImageUrl($default = 'no_image.jpg')
@@ -129,7 +130,7 @@ public function getDiscountPercentageAttribute()
 // المنتجات المفضلة
 public function scopeFavorite($query)
 {
-    return $query->where('is_featured', true);
+    return $query->where('is_featured', 1);
 }
 
 // المنتجات الجديدة

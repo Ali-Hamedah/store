@@ -22,13 +22,6 @@ use App\Http\Controllers\Dashboard\ProductReviewController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
-Route::get('/counter', Counter::class); // مسار Livewire لعداد
-// Route::middleware('guest')->group(function () {
-//     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-//     Route::post('register', [RegisteredUserController::class, 'store']);
-//     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-//     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-// });
 
 Route::group(
     [
@@ -80,10 +73,10 @@ Route::group(
             Route::resource('users', UserController::class);
             Route::get('users/{userId}/delete', [UserController::class, 'destroy']);
 
-            Livewire::setUpdateRoute(function ($handle) {
-                return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
-                    ->middleware(['auth']);
-            });
+            // Livewire::setUpdateRoute(function ($handle) {
+            //     return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
+            //         ->middleware(['auth']);
+            // });
           
         });
         

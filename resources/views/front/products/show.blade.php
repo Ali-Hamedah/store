@@ -126,7 +126,7 @@
                             <div class="info-body custom-responsive-margin">
                                 <h4>{{__('frontend.details')}}</h4>
                                
-                                <h7>{{__($product->description)}}.</h7>
+                                <h7>{!! $product->getTranslation('description', app()->getLocale()) !!}.</h7>
                                 <h4>Features</h4>
                                 <ul class="features">
                                     <li>Capture 4K30 Video and 12MP Photos</li>

@@ -1,6 +1,6 @@
 @push('css')
     <link href="{{ asset('css/tagify.css') }}" rel="stylesheet" type="text/css" />
-  
+    <link rel="stylesheet" href="{{ asset('assets/summernote/summernote-bs4.min.css') }}">
 @endpush
 <div class="row">
     <div class="col-6">
@@ -20,8 +20,6 @@
          </div>
             </div>
 </div>        
-
-
 
 <div class="form-group-wrapper" style="display: flex; gap: 15px; align-items: center;">
     <div class="form-group" style="flex: 1;">
@@ -43,7 +41,7 @@
 <div class="row">
     <div class="col-6">
 <div class="form-group">
-    <x-form.input label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->description" />
+    <x-form.textarea label="Description Name English" class="form-control summernote" role="input" name="description_en" :value="$product->description" />
         @error('description_en')
         <div class="text-danger">{{ $message }}</div>
     @enderror
@@ -51,7 +49,7 @@
     </div>
     <div class="col-6">
         <div class="form-group">
-            <x-form.input label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->description" />
+            <x-form.textarea label="Description Name Arabic" class="form-control summernote" role="input" name="description_ar" :value="$product->description" />
                 @error('description_ar')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -178,7 +176,6 @@
             });
     </script>
   
-
     <script>
         $(document).ready(function() {
             $('[name=category_id]').on('change', function() {
@@ -197,7 +194,7 @@
                     });
                 }
             });
-        });
+        });  
     </script>
 
     <script>
@@ -241,5 +238,5 @@ $(document).on('click', '.remove-variant', function() {
 
 
     </script>
-   
+   <script src="{{ asset('assets/summernote/summernote-bs4.min.js') }}"></script>
 @endpush

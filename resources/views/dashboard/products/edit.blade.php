@@ -58,7 +58,7 @@
     <div class="row">
         <div class="col-6">
     <div class="form-group">
-        <x-form.input label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->getTranslation('description', 'en')" />
+        <x-form.textarea label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->getTranslation('description', 'en')" />
             @error('description_en')
             <div class="text-danger">{{ $message }}</div>
         @enderror
@@ -66,7 +66,7 @@
         </div>
         <div class="col-6">
             <div class="form-group">
-                <x-form.input label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->getTranslation('description', 'ar')" />
+                <x-form.textarea label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->getTranslation('description', 'ar')" />
                     @error('description_ar')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror

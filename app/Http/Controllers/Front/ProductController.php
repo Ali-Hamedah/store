@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Front;
 use App\Models\Size;
 use App\Models\Color;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -30,9 +32,6 @@ class ProductController extends Controller
         return view('front.products.show', compact('product', 'colors', 'sizes'));
     }
 
-   
-    
-    
     public function getSizes(Request $request, $colorId)
     {
         // جلب المقاسات بناءً على المنتج واللون باستخدام العلاقة مع جدول "sizes"
@@ -46,7 +45,30 @@ class ProductController extends Controller
         return response()->json($sizesNames); // إرسال البيانات بتنسيق JSON
     }
     
+    public function shop($slug = null)
+    {
+        if ($slug) {
+            $category = Cache::remember("category_{$slug}", now()->addMinutes(10), function () use ($slug) {
+                return Category::with('products')->where('slug', $slug)->first();
+            });
+            if (!$category) {
+                return redirect()->route('frontend.shop');
+            }
+            return view('front.shop', compact('category', 'slug'));
+        } else {
+            $categories = Cache::remember('categories_paginated', now()->addMinutes(10), function () {
+                return Category::with('products')->paginate(12);
+            });
+            return view('front.shop', compact('categories'));
+        }
+        
+    }
     
+
+    public function shop_tag($slug = null)
+    {
+        return view('front.shop_tag', compact('slug'));
+    }
     
     
     

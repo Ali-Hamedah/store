@@ -62,6 +62,15 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    public static function tree( $level = 1 )
+    {
+        return static::withCount('products')->with(implode('.', array_fill(0, $level, 'children')))
+            ->whereNull('parent_id')
+            ->whereStatus(true)
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
 
     public function subCategories()
     {

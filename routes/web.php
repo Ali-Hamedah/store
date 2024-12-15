@@ -1,5 +1,7 @@
 <?php
 
+use Livewire\Livewire;
+use App\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
@@ -7,7 +9,6 @@ use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\CheckoutController;
-use App\Livewire\Counter;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,13 @@ Route::group(
       // routes/web.php أو routes/api.php
         Route::get('/get-sizes/{colorId}', [ProductController::class, 'getSizes']);
 
+        Route::get('/shop/{slug?}', [ProductController::class, 'shop'])->name('frontend.shop');
+        // Route::get('/shop/tags/{slug}', [ProductController::class, 'shop_tag'])->name('frontend.shop_tag');
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
+                ->middleware(['guest']);
+        });
     });
  
-
+   
     require __DIR__.'/dashboard.php';

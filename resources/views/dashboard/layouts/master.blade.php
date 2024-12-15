@@ -6,7 +6,7 @@
  @stack('css')
  @livewireStyles
  <link rel="stylesheet" href="{{ asset('bootstrap-fileinput/css/fileinput.min.css') }}">
-
+ 
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -97,6 +97,7 @@
 <script src="{{ asset('bootstrap-fileinput/js/plugins/sortable.min.js') }}"></script>
 <script src="{{ asset('bootstrap-fileinput/js/fileinput.min.js') }}"></script>
 <script src="{{ asset('bootstrap-fileinput/themes/fas/theme.min.js') }}"></script>
+
 @stack('scripts')
 
 
