@@ -1,5 +1,5 @@
 <x-front-layout title="Cart">
-
+  
     <x-slot:breadcrumb>
         <div class="breadcrumbs">
             <div class="container">
@@ -56,7 +56,7 @@
                         <div class="row align-items-center">
                             <div class="col-lg-1 col-md-1 col-12">
                                 <a href="{{ route('products.show', $item->product->slug) }}">
-                                    <img src="{{ $item->product->getImageUrl() }}" alt="#" class="img-fluid">
+                                    <img src="{{ $item->product->firstMedia ? asset('assets/products/' . $item->product->firstMedia->file_name) : asset('assets/no_image.jpg')  }}" alt="#" class="img-fluid" style="height: 50px; width: 50px;">
                                 </a>
                             </div>
                             <div class="col-lg-4 col-md-3 col-12">
@@ -67,7 +67,9 @@
                                 </h5>
                                 <p class="product-des">
                                     <span><em>Type:</em> Mirrorless</span>
-                                    <span><em>Color:</em> Black</span>
+                                    <span><em>Color:</em> {{ $item->product->variants->first()->color->getTranslation('name', app()->getLocale()) ?? 'No color available' }}</span>
+                                    <span><em>Size:</em> {{ $item->product->variants->first()->size->name}}</span>
+
                                 </p>
                             </div>
                             <div class="col-lg-2 col-md-2 col-12">
@@ -104,8 +106,9 @@
                             <div class="col-lg-8 col-md-6 col-12">
                                 <div class="left">
                                     <div class="coupon">
-                                        <form action="#" target="_blank">
-                                            <input name="Coupon" placeholder="Enter Your Coupon" class="form-control">
+                                        <form id="apply-coupon-form">
+                                            <div id="coupon-response"></div>
+                                            <input type="text" id="coupon_code" name="coupon_code" placeholder="أدخل الكوبون">
                                             <div class="button mt-2">
                                                 <button class="btn btn-primary">Apply Coupon</button>
                                             </div>
@@ -119,19 +122,21 @@
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             Cart Subtotal
                                             <span
-                                                class="cart-total">{{ \App\Helpers\Currency::format($cart->total()) }}</span>
+                                                class="cart-total" id="subtotal">{{ \App\Helpers\Currency::format($cart->total()) }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             Shipping
                                             <span>Free</span>
                                         </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            You Save
-                                            <span>$29.00</span>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                                         >
+                                         Discount 
+                                            <span class="cart-discount" id="discount-amount">00.0</span>
                                         </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                                        class="cart-total" >
                                             You Pay
-                                            <span>$2531.00</span>
+                                            <span id="total"></span>
                                         </li>
                                     </ul>
                                     <div class="button mt-3">
@@ -151,11 +156,82 @@
     <!--/ End Shopping Cart -->
 
     @push('scripts')
-        <script>
-            const csrf_token = "{{ csrf_token() }}";
+    <script>
+        const csrf_token = "{{ csrf_token() }}"; // تعريف رمز CSRF Token
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // متغير للاحتفاظ بالمجموع الأساسي (قبل الخصم)
+            var originalSubtotal = parseFloat($('#subtotal').text().replace(/[^0-9.]/g, '')) || 0;
+        
+            // إعادة تعيين الخصم عند تغيير المجموع الفرعي
+            function resetDiscount() {
+                $('#discount-amount').text('0.00'); // تعيين الخصم إلى 0
+                $('#coupon-response').html('<p style="color: orange;">تم إلغاء الخصم بسبب تغيّر قيمة السلة. يرجى إعادة إدخال الكوبون.</p>');
+        
+                // تحديث المجموع الكلي بالمجموع الفرعي الأساسي
+                $('#total').text(originalSubtotal.toFixed(2));
+            }
+        
+            // مراقبة التغييرات في المجموع الفرعي (subtotal)
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === 'childList') {
+                        // إذا تغير النص في العنصر، أعد تعيين الخصم
+                        originalSubtotal = parseFloat($('#subtotal').text().replace(/[^0-9.]/g, '')) || 0;
+                        resetDiscount();
+                    }
+                });
+            });
+        
+            // مراقبة عنصر المجموع الفرعي
+            const targetNode = document.getElementById('subtotal');
+            if (targetNode) {
+                observer.observe(targetNode, { childList: true });
+            }
+        
+            // تطبيق الكوبون
+            $('#apply-coupon-form').on('submit', function (e) {
+                e.preventDefault();
+        
+                let couponCode = $('#coupon_code').val();
+        
+                $.ajax({
+                    url: '/apply-coupon', // مسار API في Laravel
+                    method: 'POST',
+                    data: {
+                        coupon_code: couponCode,
+                        _token: csrf_token // تأكد من إرسال CSRF Token هنا
+                    },
+                    success: function (response) {
+                        $('#coupon-response').html(`<p style="color: green;">${response.message}</p>`);
+                        $('#discount-amount').text(response.discount.toFixed(2));
+        
+                        // حساب المجموع الكلي بعد الخصم
+                        var discountAmount = parseFloat(response.discount.toFixed(2)) || 0;
+                        var total = originalSubtotal - discountAmount;
+        
+                        // تحديث المجموع الكلي في الواجهة
+                        $('#total').text(total.toFixed(2));
+                    },
+                    error: function (xhr) {
+                        let errorMessage = xhr.responseJSON?.error || 'كوبون غير صالح. يرجى المحاولة مجددًا.';
+                        
+                        // إظهار رسالة خطأ واضحة عند فشل الكوبون
+                        $('#coupon-response').html(`<p style="color: red;">${errorMessage}</p>`);
+        
+                        // إعادة ضبط الخصم والمجموع الكلي
+                        $('#discount-amount').text('0.00');
+                        $('#total').text(originalSubtotal.toFixed(2));
+                    }
+                });
+            });
+        });
         </script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
     @endpush
+    
 
     @vite('resources/js/cart.js')
 

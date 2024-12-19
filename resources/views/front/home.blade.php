@@ -300,7 +300,8 @@
                 <div class="col-lg-4 col-md-12 col-12">
                     <div class="offer-content">
                         <div class="image">
-                            <img src="{{ $bigOffer->firstMedia ? asset('assets/products/' . $bigOffer->firstMedia->file_name) : asset('assets/no_image.jpg') }}">
+                            <img src="{{ optional($bigOffer)->firstMedia ? asset('assets/products/' . optional($bigOffer->firstMedia)->file_name) : asset('assets/no_image.jpg') }}">
+
                             <span class="sale-tag">{{ round(($bigOffer->compare_price - $bigOffer->price)/ $bigOffer->compare_price * 100)}}-%</span>
                         </div>
                         <div class="text">

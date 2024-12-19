@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Front;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\ProductCoupon;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Repositories\Cart\CartRepository;
 use App\Repositories\Cart\CartModelRepository;
-use App\Models\ProductVariant;
 
 class CartController extends Controller
 {
@@ -114,4 +115,44 @@ class CartController extends Controller
             'total' => \App\Helpers\Currency::format($total),
         ];
     }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'coupon_code' => 'required|string',
+        ]);
+    
+        $code = $request->input('coupon_code');
+    
+        // تحقق من وجود الكوبون
+        $coupon = ProductCoupon::where('code', $code)->first();
+    
+        if (!$coupon) {
+            return response()->json(['error' => 'الكوبون غير صالح.'], 400);
+        }
+    
+        // تحقق من أن الكوبون يمكن استخدامه
+        if (!$coupon->canBeUsed()) {
+            return response()->json(['error' => 'الكوبون منتهي الصلاحية أو تم استخدامه بالكامل.'], 400);
+        }
+    
+        // احصل على إجمالي السلة
+        $cartTotal = $this->cart->total(); // تأكد أن لديك مكتبة Cart مفعلة
+        $discount = $coupon->discount($cartTotal); // احسب الخصم
+        $newTotal = $cartTotal - $discount;
+    
+        // تحديث عدد الاستخدامات
+        $coupon->increment('used_times');
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'تم تطبيق الكوبون بنجاح.',
+            'discount' => $discount,
+            'new_total' => $newTotal,
+        ]);
+    }
+    
+    
+    
+
 }

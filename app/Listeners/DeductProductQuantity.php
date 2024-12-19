@@ -27,11 +27,11 @@ class DeductProductQuantity
     public function handle(OrderCreated $event): void
     {
         DB::beginTransaction();
-
+    
         try {
             $cartItems = Cart::all();
             $isSuccess = true;
-
+    
             foreach ($cartItems as $item) {
                 $variant = ProductVariant::where('product_id', $item->product_id)
                     ->where('size_id', $item->size_id)
@@ -39,7 +39,6 @@ class DeductProductQuantity
                     ->first();
         
                 if ($variant) {
-                
                     if ($variant->quantity >= $item->quantity) {
                         $variant->decrement('quantity', $item->quantity);
                     } else {
@@ -59,17 +58,21 @@ class DeductProductQuantity
         
             if ($isSuccess) {
                 session()->flash('success', __('messages.order_processed_successfully'));
-            
-                Cart::truncate(); 
-                    // $this->cart->empty();
-                    event(new SendOrderEmails($event->order));
+                // Cart::truncate();
+                event(new SendOrderEmails($event->order));
             }
+    
+            DB::commit(); // تأكيد العملية
         } catch (\Exception $e) {
-           
-            session()->flash('error', __('messages.something_went_wrong'));
-            \Log::error($e->getMessage()); // تسجيل الخطأ في السجلات
+            DB::rollBack(); // إلغاء العملية في حال وجود خطأ
+            \Log::error($e->getMessage());
+    
+            if (config('app.debug')) {
+                session()->flash('error', $e->getMessage());
+            } else {
+                session()->flash('error', __('messages.something_went_wrong'));
+            }
         }
-        
-
     }
+    
 }

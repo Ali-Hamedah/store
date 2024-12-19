@@ -27,6 +27,7 @@ return new class extends Migration
 
             $table->float('shipping')->default(0);
             $table->float('tax')->default(0);
+            $table->decimal('total_before_discount', 10, 2); 
             $table->float('discount')->default(0);
             $table->float('total')->default(0);
             $table->timestamps();

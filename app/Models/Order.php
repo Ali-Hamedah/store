@@ -15,6 +15,7 @@ class Order extends Model
         'user_id',
         'payment_method',
         'total',
+        'total_before_discount',
         'status',
         'payment_status',
     ];
@@ -35,7 +36,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id', 'id', 'id')
             ->as('order_item')
-            ->withPivot(['product_name', 'price', 'quantity', 'options']);
+            ->withPivot(['product_name', 'original_price', 'quantity', 'options']);
     }
 
     // public function products()

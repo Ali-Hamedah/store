@@ -7,8 +7,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\CheckoutController;
+use App\Http\Controllers\front\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,18 +34,30 @@ Route::group(
         'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
     ], function(){ 
 
-        // Route::get('/', function () {
-            
-        // });
-     
+ Route::middleware(['auth', 'verified'])->group(function() {
+
+    Route::get('/profie/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
+    Route::get('/profile', [CustomerController::class, 'profile'])->name('customer.profile');
+    Route::patch('/profile', [CustomerController::class, 'update_profile'])->name('customer.update_profile');
+    Route::get('/profile/remove-image', [CustomerController::class, 'remove_profile_image'])->name('customer.remove_profile_image');
+    Route::get('/addresses', [CustomerController::class, 'addresses'])->name('customer.addresses');
+    Route::get('/orders', [CustomerController::class, 'orders'])->name('customer.orders');
+
+
+
+
+    Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout');
+    Route::post('checkout', [CheckoutController::class, 'store']);
+ });
+
         Route::get('/', [HomeController::class, 'index'])->name('home');;
 
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 
         Route::resource('cart', CartController::class);
-
-        Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout');
-        Route::post('checkout', [CheckoutController::class, 'store']);
+       
+        Route::get('choose-login', [GoogleController::class, 'chooseLoginMethod'])->name('choose.login');
+        Route::get('choose-registration', [GoogleController::class, 'chooseRegistrationMethod'])->name('choose.registration');
     
       // routes/web.php أو routes/api.php
         Route::get('/get-sizes/{colorId}', [ProductController::class, 'getSizes']);
@@ -55,6 +69,13 @@ Route::group(
                 ->middleware(['guest']);
         });
     });
- 
+    Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
    
+   
+  
+    Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
+
     require __DIR__.'/dashboard.php';
+    require __DIR__.'/auth.php';
+ 

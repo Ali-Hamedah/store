@@ -295,35 +295,33 @@
                 <div class="col-lg-4">
                     <div class="checkout-sidebar">
                         <div class="checkout-sidebar-coupon">
-                            <p>Appy Coupon to get discount!</p>
-                            <form action="#">
-                                <div class="single-form form-default">
-                                    <div class="form-input form">
-                                        <input type="text" placeholder="Coupon Code">
-                                    </div>
-                                    <div class="button">
-                                        <button class="btn">apply</button>
-                                    </div>
+                            <p>Apply Coupon to get discount!</p>
+                            <form id="apply-coupon-form">
+                                <div id="coupon-response"></div>
+                                <input type="text" id="coupon_code" name="coupon_code" placeholder="أدخل الكوبون">
+                                <div class="button mt-2">
+                                    <button type="button" class="btn btn-primary" id="apply-coupon-btn">Apply Coupon</button>
                                 </div>
                             </form>
                         </div>
+                        
                         <div class="checkout-sidebar-price-table mt-30">
                             <h5 class="title">Pricing Table</h5>
 
                             <div class="sub-total-price">
                                 <div class="total-price">
                                     <p class="value">Subtotal Price:</p>
-                                    <p class="price">{{ Currency::format($cart->total()) }}</p>
+                                    <p class="price" id="subtotal">{{ Currency::format($cart->total()) }}</p>
                                 </div>
                                 <div class="total-price shipping">
                                     <input type="hidden" name="discount" value="10"/> 
                                     <p class="value">Discount:</p>
-                                    <p class="price">{{ Currency::format(10.50) }}</p>
+                                    <p class="price" id="discount-amount">{{ Currency::format(00.0) }}</p>
                                 </div>
                                 <div class="total-price discount">
-                                    <input type="hidden" name="shipping" value="5"/> 
-                                    <p class="value">Shipping:</p>
-                                    <p class="price">{{ Currency::format(5.00) }}</p>
+                                    <input type="hidden" name="shipping"  value="5"/> 
+                                    <p class="value" >Shipping:</p>
+                                    <p class="price" id="shipping">{{ Currency::format(5.00) }}</p>
                                 </div>
                             </div>
                             
@@ -331,10 +329,10 @@
                                 <div class="payable-price">
                                     <p class="value">Total Payable Price:</p>
                                     @php
-                                        $totalWithDiscountAndShipping = floatval($cart->total()) - 10.50 - 5.00;
+                                        $totalWithDiscountAndShipping = floatval($cart->total())  + 5.00;
                                     @endphp
-                                    <input type="hidden" name="total" value="{{ $totalWithDiscountAndShipping }}"/>
-                                    <p class="price">{{ Currency::format($totalWithDiscountAndShipping) }}</p>
+                                    <input type="hidden" name="total"  id="paytotal" value="{{ $totalWithDiscountAndShipping }}"/>
+                                    <p class="price" id="total">{{ Currency::format($totalWithDiscountAndShipping) }}</p>
                                 </div>
                             </div>
                             
@@ -358,6 +356,11 @@
     </section>
 
     @push('scripts')
+    <script>
+        const csrf_token = "{{ csrf_token() }}"; // تعريف رمز CSRF Token
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   
         <script>
             document.addEventListener('DOMContentLoaded', function() {
 
@@ -381,5 +384,55 @@
                 });
             });
         </script>
+
+<script>
+   $(document).ready(function () {
+    const csrf_token = "{{ csrf_token() }}"; // تأكد من وجود الـ CSRF Token
+    var originalSubtotal = parseFloat($('#subtotal').text().replace(/[^0-9.]/g, '')) || 0;
+    var originalshipping = parseFloat($('#shipping').text().replace(/[^0-9.]/g, '')) || 0;
+    $('#apply-coupon-btn').on('click', function (e) {
+        e.preventDefault();  // منع التحديث التلقائي للصفحة
+
+        let couponCode = $('#coupon_code').val();
+
+        // تحقق إذا كان الكوبون فارغًا
+        if (!couponCode) {
+            $('#coupon-response').html('<p style="color: red;">من فضلك أدخل الكود</p>');
+            return;
+        }
+
+        $.ajax({
+            url: '/apply-coupon',  // تأكد أن هذا هو المسار الصحيح لتطبيق الكوبون في Laravel
+            method: 'POST',
+            data: {
+                coupon_code: couponCode,
+                _token: csrf_token  // تأكد من إرسال الـ CSRF Token
+            },
+            success: function (response) {
+                $('#coupon-response').html(`<p style="color: green;">${response.message}</p>`);
+                $('#discount-amount').text(response.discount.toFixed(2));
+
+                // حساب المجموع الكلي بعد الخصم
+                var discountAmount = parseFloat(response.discount.toFixed(2)) || 0;
+                var originalSubtotal = parseFloat($('#subtotal').text().replace(/[^\d.-]/g, ''));  // استخراج المجموع الكلي قبل الخصم
+                var total = originalSubtotal - discountAmount ;
+                var total = total + originalshipping ;
+                // تحديث المجموع الكلي في الواجهة
+                $('#total').text(total.toFixed(2));
+                $('#paytotal').val(total.toFixed(2));
+            },
+            error: function (xhr) {
+                let errorMessage = xhr.responseJSON?.error || 'كوبون غير صالح. يرجى المحاولة مجددًا.';
+                $('#coupon-response').html(`<p style="color: red;">${errorMessage}</p>`);
+
+                // إعادة ضبط الخصم والمجموع الكلي
+                $('#discount-amount').text('0.00');
+                $('#total').text(originalSubtotal.toFixed(2));
+            }
+        });
+    });
+});
+
+    </script>
     @endpush
 </x-front-layout>

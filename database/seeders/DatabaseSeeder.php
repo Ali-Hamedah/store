@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
@@ -15,24 +16,13 @@ use Spatie\Permission\Models\Permission;
 class DatabaseSeeder extends Seeder
 {
 
-    private $permissions = [
-        'role-list',
-        'role-create',
-        'role-edit',
-        'role-delete',
-        'product-list',
-        'product-create',
-        'product-edit',
-        'product-delete'
-    ];
-
     public function run(): void
     {
         
         Category::factory(10)->create();
 
         Store::factory(5)->create();
-
+     
         $this->call([
             ColorSeeder::class,
             SizeSeeder::class,

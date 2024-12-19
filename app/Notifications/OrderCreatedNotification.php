@@ -71,7 +71,7 @@ class OrderCreatedNotification extends Notification
         $addr = $this->order->billingAddress;
 
         return [
-            'body' => "A new order (#{$this->order->number}) created by {$addr->name} from {$addr->country_name}.",
+            'body' => "A new order (#{$this->order->number}) created by {$addr->name} from .",
             'icon' => 'fas fa-file',
             'url' => url($this->order->number),
             'order_id' => $this->order->id,

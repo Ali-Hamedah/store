@@ -32,13 +32,14 @@ class SendOrderCreatedNotification
      */
     public function handle(SendOrderEmails $event)
     {
+        
         //$store = $event->order->store;
         $order = $event->order;
 
-        $user = User::where('store_id', $order->store_id)->first();
+        $admin = User::where('store_id', $order->store_id)->first();
         
-        if ($user) {  
-            $user->notify(new StoreOwnerNotification($order));
+        if ($admin) {  
+            $admin->notify(new StoreOwnerNotification($order));
         }
         $user = Auth::User();
         if ($user) {

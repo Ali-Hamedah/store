@@ -43,7 +43,7 @@ class StoreOwnerNotification extends Notification
         return (new MailMessage)
             ->subject("New Order #{$this->order->number}")
             ->greeting("Hi " .  $store)
-            ->line("A new order (#{$this->order->number}) products: {$productNames} created by {$addr->name} from {$addr->country_name}.")
+            ->line("A new order (#{$this->order->number}) products: {$productNames} created by {$addr->name} from .")
             ->action('View Order', url('/dashboard'))
             ->line('Thank you for using our application!');
     }
@@ -53,7 +53,7 @@ class StoreOwnerNotification extends Notification
         $addr = $this->order->billingAddress;
 
         return [
-            'body' => "A new order (#{$this->order->number}) created by {$addr->name} from {$addr->country_name}.",
+            'body' => "A new order (#{$this->order->number}) created by {$addr->name} from .",
             'icon' => 'fas fa-file',
             'url' => url('/dashboard'),
             'order_id' => $this->order->id,

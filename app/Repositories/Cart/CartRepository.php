@@ -20,4 +20,6 @@ interface CartRepository
     public function empty();
 
     public function total() : float;
+
+    
 }

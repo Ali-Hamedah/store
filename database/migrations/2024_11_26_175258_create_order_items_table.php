@@ -18,7 +18,8 @@ return new class extends Migration
                 ->constrained('products')
                 ->nullOnDelete();
             $table->string('product_name');
-            $table->float('price');
+            $table->decimal('original_price', 10, 2); // السعر الأصلي
+            $table->decimal('discounted_price', 10, 2);
             $table->unsignedSmallInteger('quantity')->default(1);
             $table->json('options')->nullable();
 

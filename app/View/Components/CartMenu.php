@@ -30,6 +30,6 @@ class CartMenu extends Component
      */
     public function render()
     {
-        return view('components.cart-menu');
+        return view('components.front.cart-menu');
     }
 }

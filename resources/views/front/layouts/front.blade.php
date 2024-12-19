@@ -65,24 +65,24 @@
                                 </li>
                                 <li>
                                     <div class="select-position">
-                                        <select id="select5">
-                                            <option value="0" selected>English</option>
-                                            <option value="1">Español</option>
-                                            <option value="2">Filipino</option>
-                                            <option value="3">Français</option>
-                                            <option value="4">العربية</option>
-                                            <option value="5">हिन्दी</option>
-                                            <option value="6">বাংলা</option>
+                                        <select id="languageSelect" onchange="changeLanguage(this)">
+                                            @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                                <option value="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}" 
+                                                    {{ app()->getLocale() == $localeCode ? 'selected' : '' }}>
+                                                    {{ $properties['native'] }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </li>
+                                
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-middle">
                             <ul class="useful-links">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="{{route('home')}}">Home</a></li>
                                 <li><a href="about-us.html">About Us</a></li>
                                 <li><a href="contact.html">Contact Us</a></li>
                             </ul>
@@ -90,18 +90,24 @@
                     </div>
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="top-end">
-                            <div class="user">
-                                <i class="lni lni-user"></i>
-                                Hello
-                            </div>
+                            @if (!auth()->check())
                             <ul class="user-login">
                                 <li>
-                                    <a href="login.html">Sign In</a>
+                                    <a href="{{ route('choose.login') }}">Sign In</a>
                                 </li>
                                 <li>
-                                    <a href="register.html">Register</a>
+                                    <a href="{{ route('choose.registration') }}">Register</a>
                                 </li>
                             </ul>
+                            @else
+                                <div class="user">
+                               
+                                <a href="{{ route('customer.dashboard') }}"> <i class="lni lni-user">{{auth()->user()->name}}</i></a>
+                                
+                            </div>
+                            @endif
+                            
+                           
                         </div>
                     </div>
                 </div>
@@ -163,7 +169,8 @@
                                         <span class="total-items">0</span>
                                     </a>
                                 </div>
-
+                                
+                            {{-- cart menu --}}
                                <x-Cart-menu>
                                 </x-cart-menu>
 
@@ -519,6 +526,12 @@
         setInterval(timer, 1000);
     </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function changeLanguage(selectElement) {
+        const selectedUrl = selectElement.value; // Get the URL from the selected option
+        window.location.href = selectedUrl; // Redirect to the selected language URL
+    }
+</script>
 
 @stack('scripts')
 </body>

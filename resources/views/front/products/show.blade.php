@@ -59,19 +59,21 @@
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group color-option">
                                             <label>{{__('frontend.color')}}</label>
-                                            <select name="color_id" id="colorSelect" class="form-control">
+                                            <select name="color_id" id="colorSelect" class="form-control" required>
                                                 <option>{{__('frontend.choose')}} {{__('frontend.color')}}</option>
-                                                @foreach ($colors as $color)
-                                                    <option value="{{ $color->color_id }}">{{ $color->color->name }}
+                                                @foreach ($colors as $index => $color)
+                                                    <option value="{{ $color->color_id }}" @if($index === 0) selected @endif>
+                                                        {{ $color->color->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group size-option">
                                             <label>{{__('frontend.color')}}</label>
-                                            <select name="size_id" id="sizeSelect" class="form-control">
+                                            <select name="size_id" id="sizeSelect" class="form-control" required>
                                                 <option value="">{{__('frontend.choose')}} {{__('frontend.size')}}</option>
                                             </select>
                                         </div>
@@ -296,7 +298,7 @@
                 });
             }
         </script>
-        
+       
         <script>
             $(document).ready(function() {
                 $('#colorSelect').on('change', function() {

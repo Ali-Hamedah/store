@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Carbon\Carbon;
@@ -16,14 +17,6 @@ class ProductCoupon extends Model
         'start_date' => 'datetime',
         'expire_date' => 'datetime',
     ];
-    
-
-    protected $searchable = [
-        'columns' => [
-            'product_coupons.code' => 10,
-            'product_coupons.description' => 10,
-        ]
-    ];
 
     public function status()
     {
@@ -32,28 +25,34 @@ class ProductCoupon extends Model
 
     public function discount($total)
     {
-        if (!$this->checkDate() || !$this->checkUsedTimes()){
+        if (!$this->canBeUsed()) {
             return 0;
         }
-        return $this->checkGreaterThan($total) ? $this->doProcess($total) : 0;
+
+        return $this->checkGreaterThan($total) ? $this->calculateDiscount($total) : 0;
+    }
+
+    public function canBeUsed()
+    {
+        return $this->checkDate() && $this->checkUsedTimes();
     }
 
     protected function checkDate()
     {
-        return $this->expire_date != '' ? (Carbon::now()->between($this->start_date, $this->expire_date, true)) ? true : false : true;
+        return $this->expire_date ? Carbon::now()->between($this->start_date, $this->expire_date, true) : true;
     }
 
     protected function checkUsedTimes()
     {
-        return $this->use_times != '' ? ( $this->use_times > $this->used_times ) ? true : false : true;
+        return $this->use_times ? $this->use_times > $this->used_times : true;
     }
 
     protected function checkGreaterThan($total)
     {
-        return $this->greater_than != '' ? ($this->greater_than >= $total) ? true : false : true;
+        return $this->greater_than ? $total >= $this->greater_than : true;
     }
 
-    protected function doProcess($total)
+    public function calculateDiscount($total)
     {
         switch ($this->type) {
             case 'fixed':
@@ -64,4 +63,16 @@ class ProductCoupon extends Model
                 return 0;
         }
     }
+
+    public function calculateProductDiscount(Product $product)
+{
+    // مثال: خصم بنسبة مئوية أو مبلغ ثابت
+    if ($this->type == 'percentage') {
+        return $product->price * ($this->value / 100);
+    } elseif ($this->type == 'fixed') {
+        return min($this->value, $product->price);
+    }
+    return 0;
+}
+
 }
