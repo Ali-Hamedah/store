@@ -1,4 +1,4 @@
-<x-FrontLayout title="Store">
+<x-front-layout title="Store">
   
     <!-- Start Hero Area -->
     <section class="hero-area">
@@ -526,4 +526,4 @@
         </div>
     </section>
     <!-- End Shipping Info -->
-</x-FrontLayout>
+</x-front-layout>

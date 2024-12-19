@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_addresses', function (Blueprint $table) {
+        Schema::create('user_addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders')
-                ->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['billing', 'shipping']);
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->nullable();
@@ -25,7 +22,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('postal_code')->nullable();
             $table->string('state')->nullable();
-            $table->char('country', 2);   
+            $table->char('country', 2); 
+            $table->boolean('default')->default(false);
         });
     }
 
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_addresses');
+        Schema::dropIfExists('user_addresses');
     }
 };

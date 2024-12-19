@@ -65,5 +65,10 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     return $this->MorphOne(Media::class, 'mediable');
 }
+
+public function addresses()
+{
+    return $this->hasMany(UserAddress::class);
+}
    
 }

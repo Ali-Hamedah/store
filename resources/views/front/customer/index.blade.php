@@ -31,7 +31,7 @@
                         <ul class="list-group list-group-flush mt-3">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span><strong>Full Name:</strong></span>
-                                <span>{{ auth()->user()->full_name }}</span>
+                                <span>{{ auth()->user()->name }}</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span><strong>Email:</strong></span>
@@ -39,7 +39,7 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span><strong>Mobile:</strong></span>
-                                <span>{{ auth()->user()->mobile }}</span>
+                                <span>{{ auth()->user()->phone_number }}</span>
                             </li>
                         </ul>
                     </div>

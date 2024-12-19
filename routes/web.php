@@ -40,7 +40,16 @@ Route::group(
     Route::get('/profile', [CustomerController::class, 'profile'])->name('customer.profile');
     Route::patch('/profile', [CustomerController::class, 'update_profile'])->name('customer.update_profile');
     Route::get('/profile/remove-image', [CustomerController::class, 'remove_profile_image'])->name('customer.remove_profile_image');
+   
     Route::get('/addresses', [CustomerController::class, 'addresses'])->name('customer.addresses');
+    Route::post('/customer/address', [CustomerController::class, 'store'])->name('customer.address.store');
+    Route::post('addresses/{address}/set-default', [CustomerController::class, 'setDefaultAddress'])->name('customer.address.setDefault');
+    Route::get('/customer/addresses/{address}/edit', [CustomerController::class, 'addressEdit'])->name('customer.address.edit');
+    Route::put('/customer/addresses/{address}', [CustomerController::class, 'addressUpdate'])->name('customer.address.update');
+    Route::delete('/customer/addresses/{address}', [CustomerController::class, 'addressDelete'])->name('customer.address.delete');
+
+
+   
     Route::get('/orders', [CustomerController::class, 'orders'])->name('customer.orders');
 
 

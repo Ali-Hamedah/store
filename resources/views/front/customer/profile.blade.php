@@ -32,8 +32,8 @@
                         <div class="text-center mb-4">
                             <div class="d-inline-block position-relative">
                                 <img 
-                                    src="{{ auth()->user()->user_image ? asset('assets/users/' . auth()->user()->user_image) : asset('assets/users/avatar.svg') }}" 
-                                    alt="{{ auth()->user()->full_name }}" 
+                                    src="{{ auth()->user()->media ? asset('assets/customers/' . auth()->user()->media->file_name) : asset('assets/no_image.jpg') }}" 
+                                    alt="{{ auth()->user()->name }}" 
                                     class="rounded-circle img-thumbnail" 
                                     width="120">
                                 @if (auth()->user()->user_image)
@@ -47,24 +47,20 @@
                         <!-- Input Fields -->
                         <div class="row">
                             <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="first_name">First Name</label>
-                                <input class="form-control" name="first_name" type="text" value="{{ old('first_name', auth()->user()->first_name) }}" placeholder="Enter your first name">
-                                @error('first_name')<span class="text-danger">{{ $message }}</span>@enderror
+                                <label class="text-small text-uppercase" for="name">Name</label>
+                                <input class="form-control" name="name" type="text" value="{{ old('name', auth()->user()->name) }}" placeholder="Enter your full name">
+                                @error('name')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
-                            <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="last_name">Last Name</label>
-                                <input class="form-control" name="last_name" type="text" value="{{ old('last_name', auth()->user()->last_name) }}" placeholder="Enter your last name">
-                                @error('last_name')<span class="text-danger">{{ $message }}</span>@enderror
-                            </div>
+                           
                             <div class="col-lg-6 form-group">
                                 <label class="text-small text-uppercase" for="email">Email Address</label>
                                 <input class="form-control" name="email" type="email" value="{{ old('email', auth()->user()->email) }}" placeholder="e.g. Jason@example.com">
                                 @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="mobile">Mobile Number</label>
-                                <input class="form-control" name="mobile" type="tel" value="{{ old('mobile', auth()->user()->mobile) }}" placeholder="e.g. 966512345678">
-                                @error('mobile')<span class="text-danger">{{ $message }}</span>@enderror
+                                <label class="text-small text-uppercase" for="phone_number">Mobile Number</label>
+                                <input class="form-control" name="phone_number" type="tel" value="{{ old('phone_number', auth()->user()->phone_number) }}" placeholder="e.g. 966512345678">
+                                @error('phone_number')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label class="text-small text-uppercase d-flex justify-content-between" for="password">
@@ -83,9 +79,9 @@
                                 @error('password_confirmation')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-12 form-group">
-                                <label class="text-small text-uppercase" for="user_image">Profile Image</label>
-                                <input class="form-control" name="user_image" type="file">
-                                @error('user_image')<span class="text-danger">{{ $message }}</span>@enderror
+                                <label class="text-small text-uppercase" for="image">Profile Image</label>
+                                <input class="form-control" name="image" type="file">
+                                @error('image')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-12 form-group text-center">
                                 <button class="btn btn-dark btn-block" type="submit">Update Profile</button>

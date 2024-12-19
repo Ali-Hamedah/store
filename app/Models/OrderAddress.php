@@ -26,4 +26,9 @@ class OrderAddress extends Model
     {
         return Countries::getName($this->country);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
