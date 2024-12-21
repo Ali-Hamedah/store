@@ -92,11 +92,9 @@ class CustomerController extends Controller
 
     public function show(User $customer)
     {
-        // if (!auth()->user()->ability('admin', 'display_customers')) {
-        //     return redirect('admin/index');
-        // }
-
-        return view('dashboard.customers.show', compact('customer'));
+       
+        $countries = Countries::getNames();
+        return view('dashboard.customers.show', compact('customer', 'countries'));
     }
 
     public function edit(User $customer)

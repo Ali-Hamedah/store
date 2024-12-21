@@ -75,6 +75,12 @@
                     <td>
                         <div class="btn-group btn-group-sm">
                             @can('update product')
+                            <a data-effect="effect-scale"
+                                href="{{ route('dashboard.products.show', $product->id) }}" class="btn btn-success">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                          @endcan
+                            @can('update product')
                         <a data-effect="effect-scale"
                             href="{{ route('dashboard.products.edit', $product->id) }}" class="btn btn-primary">
                             <i class="fa fa-edit"></i>

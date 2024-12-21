@@ -53,6 +53,11 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                                 @can('update customer')
+                                <a href="{{ route('dashboard.customers.show', $customer->id) }}" class="btn btn-success">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                @endcan
+                                @can('update customer')
                                 <a href="{{ route('dashboard.customers.edit', $customer->id) }}" class="btn btn-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>

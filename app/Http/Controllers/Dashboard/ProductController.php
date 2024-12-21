@@ -167,9 +167,21 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $tags = implode(',', $product->tags()->pluck('name')->toArray());
+        $categories = Category::whereNull('parent_id')->pluck('name', 'id');
+        $category = $product->category;
+        $subCategories = $category->parent_id ? Category::where('parent_id', $category->parent_id)->get() : collect();
+        $parentCategory = $category->parent_id ? Category::find($category->parent_id) : null;
+        return view('dashboard.products.show', compact(
+            'product',
+            'tags',
+            'categories',
+            'subCategories',
+            'parentCategory'
+        ));
     }
 
     /**

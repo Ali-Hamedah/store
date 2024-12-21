@@ -20,8 +20,7 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->string('number')->unique();
             $table->string('payment_method');
-            $table->enum('status', ['pending', 'processing', 'delivering', 'completed', 'cancelled', 'refunded'])
-                ->default('pending');
+            $table->unsignedTinyInteger('order_status')->default(0);
             $table->enum('payment_status', ['pending', 'paid', 'failed'])
                 ->default('pending');
 

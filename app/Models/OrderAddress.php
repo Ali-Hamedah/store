@@ -13,7 +13,7 @@ class OrderAddress extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'order_id', 'type', 'first_name', 'last_name', 'email', 'phone_number',
+        'order_id','user_id', 'type', 'first_name', 'last_name', 'email', 'phone_number',
         'street_address', 'city', 'postal_code', 'state', 'country',
     ];
 

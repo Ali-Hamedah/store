@@ -31,11 +31,12 @@
                 <th>{{ __('orders.store') }}</th>
                 <th>{{ __('orders.payment_method') }}</th>
                 <th>{{ __('orders.status') }}</th>
-                <th>{{ __('orders.payment_status') }}</th>
+                {{-- <th>{{ __('orders.payment_status') }}</th> --}}
                 <th>{{ __('orders.shipping') }}</th>
                 <th>{{ __('orders.tax') }}</th>
                 <th>{{ __('orders.discount') }}</th>
                 <th>{{ __('orders.total') }}</th>
+                <th class="text-center" style="width: 30px;">Actions</th>
                 {{-- <th><button id="btn_delete_all" class="btn btn-danger">
                         <span class="icon text-white-50">
                             <i class="fa fa-trash icon text-white-50"></i>
@@ -50,37 +51,23 @@
                     <td>{{ $order->number }}</td>
                     <td>{{ $order->store->name }}</td>
                     <td>{{ $order->payment_method }}</td>
-                    <td>
-                        <span
-                            class="badge 
-                        {{ $order->status == 'completed' ? 'badge-success' : ($order->status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                            {{ $order->status == 'completed' ? 'completed' : ($order->status == 'pending' ? 'pending' : 'cancelled') }}
-                        </span>
-                    <td>
-                        <span
-                            class="badge 
-                        {{ $order->payment_status == 'paid' ? 'badge-success' : ($order->payment_status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                            {{ $order->payment_status == 'paid' ? 'paid' : ($order->payment_status == 'pending' ? 'pending' : 'cancelled') }}
-                        </span>
-                    </td>
+                    
+                        <td>{!! $order->statusWithLabel() !!}</td>
+                   
                     <td>{{ number_format($order->shipping, 2) }}</td>
                     <td>{{ number_format($order->tax, 2) }}</td>
                     <td>{{ number_format($order->discount, 2) }}</td>
                     <td>{{ number_format($order->total, 2) }}</td>
-
-                    {{-- <td>
-                        <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
-                            href="{{ route('dashboard.products.edit', $order->id) }}">
-                            <i class="las la-pen"></i>
+<td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ route('dashboard.orders.show', $order->id) }}" class="btn btn-primary">
+                            <i class="fa fa-eye"></i>
                         </a>
-                        <!-- Button to open the module-->
-                        <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale" data-toggle="modal"
-                            data-target="#delete{{ $order->id }}">
-                            <i class="las la-trash"></i>
+                        <a href="javascript:void(0);" onclick="if (confirm('Are you sure to delete this record?')) { document.getElementById('delete-orders-{{ $order->id }}').submit(); } else { return false; }" class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
                         </a>
-                    </td>
-                    <td><input type="checkbox" name="delete_select" value="{{ $order->id }}" class="delete_select">
-                    </td> --}}
+                    </div>
+</td>
                 </tr>
                 <!-- Modal Delete -->
                 {{-- @include('dashboard.products.delete')

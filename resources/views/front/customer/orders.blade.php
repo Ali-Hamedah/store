@@ -1,4 +1,4 @@
-@extends('layouts.app')
+<x-front-layout title="orders">
 @section('content')
 
     <!-- HERO SECTION-->
@@ -6,12 +6,12 @@
         <div class="container">
             <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="h2 text-uppercase mb-0">{{ auth()->user()->full_name }} Orders</h1>
+                    <h1 class="h2 text-uppercase mb-0">{{ auth()->user()->name }} Orders</h1>
                 </div>
                 <div class="col-lg-6 text-lg-right">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
-                            <li class="breadcrumb-item"><a href="{{ route('frontend.index') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('customer.orders') }}">Orders</a></li>
                         </ol>
                     </nav>
@@ -23,17 +23,18 @@
 
         <div class="row">
             <div class="col-lg-8">
-                <livewire:frontend.customer.orders-component />
+                <livewire:front.customer.order-component />
             </div>
 
 
             <!-- SIDEBAR -->
             <div class="col-lg-4">
-                @include('partial.frontend.customer.sidebar')
+                @include('front.layouts.customer.sidebar')
             </div>
         </div>
 
 
     </section>
 
-@endsection
+</x-front-layout>
+

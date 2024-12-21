@@ -106,7 +106,7 @@ class CheckoutController extends Controller
             
                     $totalAfterDiscount += $discountedPrice;
                 }
-            
+           
                 // إنشاء الطلب
                 $order = Order::create([
                     'store_id' => $store_id,
@@ -156,6 +156,7 @@ class CheckoutController extends Controller
                 ])->validate();
             
                 $validatedAddress['type'] = $type;
+                $validatedAddress['user_id'] = Auth::id(); // إضافة user_id بشكل صريح
                 $order->addresses()->create($validatedAddress);
             }
             
