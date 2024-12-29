@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         
         Category::factory(10)->create();
 
-        Store::factory(5)->create();
+        Store::factory(1)->create();
      
         $this->call([
             ColorSeeder::class,

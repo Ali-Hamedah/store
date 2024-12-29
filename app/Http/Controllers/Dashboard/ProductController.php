@@ -69,6 +69,7 @@ class ProductController extends Controller
     
     public function store(Request $request)
     {
+     
         // بدء المعاملة
         // DB::beginTransaction();
         

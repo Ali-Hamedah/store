@@ -15,7 +15,9 @@
                 <li class="d-flex align-items-center border-bottom py-2">
                     <div class="me-3">
                         <a href="{{ route('products.show', $item->product->slug) }}">
-                            <img src="{{ $item->product->firstMedia ? asset('assets/products/' . $item->product->firstMedia->file_name) : asset('assets/no_image.jpg') }}" style="width: 50px; height: 50px;">
+                            <img src="{{ $item->product->firstMedia ? asset('assets/products/' . $item->product->firstMedia->file_name) : asset('assets/no_image.jpg') }}"
+                                alt="{{ $item->product->product_name }}" class="img-fluid"
+                                style="height: 50px; width: 50px; margin-right: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         </a>
                     </div>
                     <div>
@@ -30,11 +32,11 @@
         </div>
         <div class="bottom">
             <div class="total">
-                <span>Total</span>
+                <span>{{__('frontend.total')}}</span>
                 <span class="total-amount">{{ Currency::format($total) }}</span>
             </div>
             <div class="button">
-                {{-- <a href="{{ route('checkout') }}" class="btn animate">Checkout</a> --}}
+                <a href="{{ route('checkout') }}" class="btn animate">{{__('frontend.checkout')}}</a>
             </div>
         </div>
     </div>

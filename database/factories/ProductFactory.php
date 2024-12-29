@@ -25,7 +25,7 @@ class ProductFactory extends Factory
         $name_ar = $this->faker->unique()->word;
         return [
             'name' =>  ['en' => $name,'ar' => $name_ar],
-          'slug' => Str::slug($name . '-' . $name_ar) . '-' . uniqid(),  
+            'slug' => Str::slug($name . '-' . $name_ar) . '-' . uniqid(),  
             'description' => $this->faker->sentence(15),
             'image' => $this->faker->imageUrl(600, 600),
             'price' => $this->faker->randomFloat(1, 1, 499),

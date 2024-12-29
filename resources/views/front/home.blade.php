@@ -1,10 +1,20 @@
-<x-front-layout title="Store">
-  
+<x-front-layout title="Cart">
+<style>
+
+
+.home-product-list .single-list {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+
+    </style>
     <!-- Start Hero Area -->
     <section class="hero-area">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-12 custom-padding-right">
+                <div class="col-lg-8 col-12 custom-padding-right" dir="ltr">
                     <div class="slider-head">
                         <!-- Start Hero Slider -->
                         <div class="hero-slider">
@@ -18,17 +28,17 @@
                                         <h2><span>No restocking fee ($35 savings)</span>
                                             {{ $newProduct->getTranslation('name', app()->getLocale()) }}
                                         </h2>
-                                        <p>{{ Str::limit($newProduct->getTranslation('description', app()->getLocale()), 100) }}</p>
+                                        <p>{!! substr($newProduct->getTranslation('description', app()->getLocale()), 0, 150) !!}</p>
 
                                         <div class="price">
-                                            <h3><span>Now Only</span> {{ $newProduct->price }}
+                                            <h3><span>Now Only</span>{{ Currency::format( $newProduct->price ) }}
                                                 <span class="discount-price"
-                                                    style="text-decoration: line-through;">{{ $newProduct->compare_price }}</span>
+                                                    style="text-decoration: line-through;"> {{ Currency::format(  $newProduct->compare_price ) }}</span>
 
                                         </div>
                                         <div class="button">
                                             <a href="{{ route('products.show', $newProduct->slug) }}"
-                                                class="btn">Shop Now</a>
+                                                class="btn">{{__('frontend.shop_now')}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -75,10 +85,10 @@
                             <!-- Start Small Banner -->
                             <div class="hero-small-banner style2">
                                 <div class="content">
-                                    <h2>Weekly Sale!</h2>
-                                    <p>Saving up to 50% off all online store items this week.</p>
+                                    <h2>{{__('frontend.weekly_sale')}}</h2>
+                                    <p>{{__('frontend.Saving_up_to')}}</p>
                                     <div class="button">
-                                        <a class="btn" href="{{route('frontend.shop' )}}">Shop Now</a>
+                                        <a class="btn" href="{{ route('frontend.shop') }}">{{__('frontend.shop_now')}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +107,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h2>Trending Product</h2>
+                        <h2>{{__('frontend.trending_product')}}</h2>
                         <p>There are many variations of passages of Lorem Ipsum available, but the majority have
                             suffered alteration in some form.</p>
                     </div>
@@ -113,15 +123,15 @@
                                     width="50px" height="150px">
 
 
-                <span class="{{ $favorite->discount_percentage ? 'sale-tag' : '' }}">
-        @if ($favorite->discount_percentage)
-            -{{ $favorite->discount_percentage }}%
-        @endif
-    </span>
+                                <span class="{{ $favorite->discount_percentage ? 'sale-tag' : '' }}">
+                                    @if ($favorite->discount_percentage)
+                                        -{{ $favorite->discount_percentage }}%
+                                    @endif
+                                </span>
 
-    @if ($favorite->is_new)
-        <span class="new-tag">New</span>
-    @endif
+                                @if ($favorite->is_new)
+                                    <span class="new-tag">New</span>
+                                @endif
 
                                 <!-- Add Product to Cart Form -->
                                 {{-- <form action="{{ route('products.show', $favorite->slug) }}" method="POST">
@@ -167,8 +177,8 @@
                                 </ul>
 
                                 <div class="price">
-                                    <span>${{ $favorite->price }}</span>
-                                    <span class="discount-price">{{ $favorite->compare_price }}</span>
+                                    <span>{{ Currency::format( $favorite->price) }}</span>
+                                    <span class="discount-price">{{ Currency::format(  $favorite->compare_price) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -185,30 +195,31 @@
         <div class="container">
             <div class="row">
                 @foreach ($favorites->take(2) as $favorite)
-                <div class="col-lg-6 col-md-6 col-12">
-                    <div 
-                        class="single-banner" 
-                        style="background-image: url('{{ $favorite->firstMedia ? asset('assets/products/' . $favorite->firstMedia->file_name) : asset('assets/no_image.jpg') }}'); background-size: cover; background-position: center; height: 340px;">
-                        <div class="content">
-                            <h2>{{ $favorite->getTranslation('name', app()->getLocale()) }}</h2>
-                            <p>{{ $favorite->getTranslation('description', app()->getLocale()) }}</p>
-                            <div class="button">
-                                <a href="#" class="btn">View Details</a>
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <div class="single-banner"
+                            style="background-image: url('{{ $favorite->firstMedia ? asset('assets/products/' . $favorite->firstMedia->file_name) : asset('assets/no_image.jpg') }}'); background-size: cover; background-position: center; height: 340px;">
+                            <div class="content">
+                                <h2>{{ $favorite->getTranslation('name', app()->getLocale()) }}</h2>
+                                <p>{!! substr($favorite->getTranslation('description', app()->getLocale()), 0, 150) !!}</p>
+                                <div class="button">
+                                    <a href="{{ route('products.show', $favorite->slug) }}" class="btn">View Details</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach            
+                @endforeach
             </div>
         </div>
     </section>
     <!-- End Banner Area -->
+   
+
     <section class="special-offer section">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h2>Special Offer</h2>
+                        <h2>{{__('frontend.special_offer')}}</h2>
                         <p>There are many variations of passages of Lorem Ipsum available, but the majority have
                             suffered alteration in some form.</p>
                     </div>
@@ -267,9 +278,9 @@
                                             </li>
                                         </ul>
                                         <div class="price">
-                                            <span>${{ $discount->price }}</span>
+                                            <span>{{ Currency::format( $discount->price  ) }}</span>
                                             @if ($discount->compare_price)
-                                                <span class="discount-price">${{ $discount->compare_price }}</span>
+                                                <span class="discount-price">{{ Currency::format( $discount->price  ) }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -300,48 +311,50 @@
                 <div class="col-lg-4 col-md-12 col-12">
                     <div class="offer-content">
                         <div class="image">
-                            <img src="{{ optional($bigOffer)->firstMedia ? asset('assets/products/' . optional($bigOffer->firstMedia)->file_name) : asset('assets/no_image.jpg') }}">
+                            <img
+                                src="{{ optional($bigOffer)->firstMedia ? asset('assets/products/' . optional($bigOffer->firstMedia)->file_name) : asset('assets/no_image.jpg') }}">
 
-                            <span class="sale-tag">{{ round(($bigOffer->compare_price - $bigOffer->price)/ $bigOffer->compare_price * 100)}}-%</span>
+                            <span
+                                class="sale-tag">{{ round((($bigOffer->compare_price - $bigOffer->price) / $bigOffer->compare_price) * 100) }}-%</span>
                         </div>
                         <div class="text">
                             @if ($bigOffer)
-                            <h2>
-                                <a href="{{ route('products.show', $bigOffer->slug) }}">
-                                    {{ $bigOffer->getTranslation('name', app()->getLocale()) }}
-                                </a>
-                            </h2>
-                        @else
-                            <p>No offer available at the moment.</p>
-                        @endif
-                        
-                        @php
-                        
-                        $ratingCacheKey = 'bigOffer_rating_' . $bigOffer->id;
-                        $roundedRating = Cache::remember(
-                            $ratingCacheKey,
-                            now()->addMinutes(10),
-                            function () use ($bigOffer) {
-                                return floor($bigOffer->averageRating);
-                            },
-                        );
-                    @endphp
-                        <ul class="review">
-                            @for ($i = 1; $i <= 5; $i++)
-                                @if ($i <= $roundedRating)
-                                    <li><i class="lni lni-star-filled"></i></li>
-                                @else
-                                    <li><i class="lni lni-star"></i></li>
-                                @endif
-                            @endfor
-                            <li><span>{{ number_format($bigOffer->averageRating, 1) }} Review(s)</span>
-                            </li>
-                        </ul>
+                                <h2>
+                                    <a href="{{ route('products.show', $bigOffer->slug) }}">
+                                        {{ $bigOffer->getTranslation('name', app()->getLocale()) }}
+                                    </a>
+                                </h2>
+                            @else
+                                <p>No offer available at the moment.</p>
+                            @endif
+
+                            @php
+
+                                $ratingCacheKey = 'bigOffer_rating_' . $bigOffer->id;
+                                $roundedRating = Cache::remember(
+                                    $ratingCacheKey,
+                                    now()->addMinutes(10),
+                                    function () use ($bigOffer) {
+                                        return floor($bigOffer->averageRating);
+                                    },
+                                );
+                            @endphp
+                            <ul class="review">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $roundedRating)
+                                        <li><i class="lni lni-star-filled"></i></li>
+                                    @else
+                                        <li><i class="lni lni-star"></i></li>
+                                    @endif
+                                @endfor
+                                <li><span>{{ number_format($bigOffer->averageRating, 1) }} Review(s)</span>
+                                </li>
+                            </ul>
                             <div class="price">
-                                <span>{{$bigOffer->price}}</span>
-                                <span class="discount-price">{{$bigOffer->compare_price}}</span>
+                                <span>{{ Currency::format(  $bigOffer->price  ) }}<</span>
+                                <span class="discount-price">{{ Currency::format(  $bigOffer->compare_price ) }}</span>
                             </div>
-                            <p>{{ Str::limit($bigOffer->description, 150) }}</p>
+                            <p>{!! substr($bigOffer->getTranslation('description', app()->getLocale()), 0, 150) !!}</p>
 
                         </div>
                         <div class="box-head">
@@ -362,8 +375,8 @@
                                 <h2 id="secondstxt">Secondes</h2>
                             </div>
                         </div>
-                        <div style="background: rgb(204, 24, 24);" class="alert">
-                            <h1 style="padding: 50px 80px;color: white;">{{__('frontend.bigoffer_message')}}</h1>
+                        <div style="background: rgb(204, 24, 24);">
+                            <h1 style="padding: 50px 80px;color: white;">{{ __('frontend.bigoffer_message') }}</h1>
                         </div>
                     </div>
                 </div>
@@ -375,7 +388,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-12 custom-responsive-margin">
-                    <h4 class="list-title">Best Sellers</h4>
+                    <h4 class="list-title">{{__('frontend.best_sellers')}}</h4>
                     <!-- Start Single List -->
                     @foreach ($favorites->take(3) as $favorite)
                         <div class="single-list">
@@ -385,29 +398,31 @@
                             </div>
                             <div class="list-info">
                                 <h3>
-                                    <a href="{{route('products.show', $favorite->slug)}}">{{ $favorite->getTranslation('name', app()->getLocale()) }}</a>
+                                    <a
+                                        href="{{ route('products.show', $favorite->slug) }}">{{ $favorite->getTranslation('name', app()->getLocale()) }}</a>
                                 </h3>
-                                <span>{{ $favorite->price }}</span>
+                                <span>{{ Currency::format( $favorite->price) }}</span>
                             </div>
                         </div>
                     @endforeach
                     <!-- End Single List -->
                 </div>
                 <div class="col-lg-4 col-md-4 col-12 custom-responsive-margin">
-                    <h4 class="list-title">New Arrivals</h4>
+                    <h4 class="list-title">{{__('frontend.new_arrivals')}}</h4>
                     <!-- Start Single List -->
                     @foreach ($newProducts->take(3) as $newProduct)
                         <div class="single-list">
                             <div class="list-image">
                                 <img src="{{ $newProduct->firstMedia ? asset('assets/products/' . $newProduct->firstMedia->file_name) : asset('assets/no_image.jpg') }}"
                                     width="50px" height="50px">
-                                   
+
                             </div>
                             <div class="list-info">
                                 <h3>
-                                    <a href="{{route('products.show', $newProduct->slug)}}">{{ $newProduct->getTranslation('name', app()->getLocale()) }}</a>
+                                    <a
+                                        href="{{ route('products.show', $newProduct->slug) }}">{{ $newProduct->getTranslation('name', app()->getLocale()) }}</a>
                                 </h3>
-                                <span>{{ $newProduct->price }}</span>
+                                <span>{{ Currency::format( $newProduct->price) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -415,19 +430,20 @@
 
                 </div>
                 <div class="col-lg-4 col-md-4 col-12">
-                    <h4 class="list-title">Top Rated</h4>
+                    <h4 class="list-title">{{__('frontend.top_rated')}}</h4>
                     <!-- Start Single List -->
                     @foreach ($topRatedProducts as $topRatedProduct)
                         <div class="single-list">
                             <div class="list-image">
                                 <img src="{{ $topRatedProduct->firstMedia ? asset('assets/products/' . $topRatedProduct->firstMedia->file_name) : asset('assets/no_image.jpg') }}"
-                                width="50px" height="50px">
+                                    width="50px" height="50px">
                             </div>
                             <div class="list-info">
                                 <h3>
-                                    <a href="{{route('products.show', $topRatedProduct->slug)}}">{{ $topRatedProduct->getTranslation('name', app()->getLocale()) }}</a>
+                                    <a
+                                        href="{{ route('products.show', $topRatedProduct->slug) }}">{{ $topRatedProduct->getTranslation('name', app()->getLocale()) }}</a>
                                 </h3>
-                                <span>{{ $topRatedProduct->price }}</span>
+                                <span>{{ Currency::format( $topRatedProduct->price) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -444,7 +460,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3 col-md-12 col-12">
-                    <h2 class="title">Popular Brands</h2>
+                    <h2 class="title">{{__('frontend.popular_brands')}}</h2>
                 </div>
             </div>
             <div class="brands-logo-wrapper">
@@ -488,7 +504,7 @@
                         <i class="lni lni-delivery"></i>
                     </div>
                     <div class="media-body">
-                        <h5>Free Shipping</h5>
+                        <h5>{{__('frontend.free_shipping')}}</h5>
                         <span>On order over $99</span>
                     </div>
                 </li>
@@ -498,7 +514,7 @@
                         <i class="lni lni-support"></i>
                     </div>
                     <div class="media-body">
-                        <h5>24/7 Support.</h5>
+                        <h5>24/7 {{__('frontend.support')}}.</h5>
                         <span>Live Chat Or Call.</span>
                     </div>
                 </li>
@@ -508,7 +524,7 @@
                         <i class="lni lni-credit-cards"></i>
                     </div>
                     <div class="media-body">
-                        <h5>Online Payment.</h5>
+                        <h5>{{__('frontend.online_Payment')}}.</h5>
                         <span>Secure Payment Services.</span>
                     </div>
                 </li>
@@ -518,7 +534,7 @@
                         <i class="lni lni-reload"></i>
                     </div>
                     <div class="media-body">
-                        <h5>Easy Return.</h5>
+                        <h5>{{__('frontend.easy_return')}}.</h5>
                         <span>Hassle Free Shopping.</span>
                     </div>
                 </li>
@@ -526,4 +542,6 @@
         </div>
     </section>
     <!-- End Shipping Info -->
+
+   
 </x-front-layout>

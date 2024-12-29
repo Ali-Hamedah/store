@@ -1,5 +1,9 @@
  <!-- Start Header Area -->
  <header class="header navbar-area">
+    @push('css')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    @endpush
     <!-- Start Topbar -->
     <div class="topbar">
         <div class="container">
@@ -9,14 +13,15 @@
                         <ul class="menu-top-link">
                             <li>
                                 <div class="select-position">
-                                    <select id="select4">
-                                        <option value="0" selected>$ USD</option>
-                                        <option value="1">€ EURO</option>
-                                        <option value="2">$ CAD</option>
-                                        <option value="3">₹ INR</option>
-                                        <option value="4">¥ CNY</option>
-                                        <option value="5">৳ BDT</option>
-                                    </select>
+                                    <form action="{{ route('currency.store') }}" method="post">
+                                        @csrf
+                                        <select name="currency_code" onchange="this.form.submit()">
+                                            <option value="USD" @selected('USD' == session('currency_code'))>$ USD</option>
+                                            <option value="EUR" @selected('EUR' == session('currency_code'))>€ EURO</option>
+                                            <option value="SAR" @selected('SAR' == session('currency_code'))>¥ SAR</option>
+                                            <option value="QAR" @selected('QAR' == session('currency_code'))>৳ QAR</option>
+                                        </select>
+                                    </form>
                                 </div>
                             </li>
                             <li>
@@ -38,9 +43,9 @@
                 <div class="col-lg-4 col-md-4 col-12">
                     <div class="top-middle">
                         <ul class="useful-links">
-                            <li><a href="{{route('home')}}">Home</a></li>
-                            <li><a href="about-us.html">About Us</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="{{route('home')}}">{{__('frontend.home')}}</a></li>
+                            <li><a href="about-us.html">{{__('frontend.aboute_us')}}</a></li>
+                            <li><a href="contact.html">{{__('frontend.contact_us')}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -49,10 +54,10 @@
                         @if (!auth()->check())
                         <ul class="user-login">
                             <li>
-                                <a href="{{ route('choose.login') }}">Sign In</a>
+                                <a href="{{ route('choose.login') }}">{{__('frontend.sign_in')}}</a>
                             </li>
                             <li>
-                                <a href="{{ route('choose.registration') }}">Register</a>
+                                <a href="{{ route('choose.registration') }}">{{__('frontend.register')}}</a>
                             </li>
                         </ul>
                         @else
@@ -86,29 +91,39 @@
                     <div class="main-menu-search">
                         <!-- navbar search start -->
                         <div class="navbar-search search-style-5">
-                            <div class="search-select">
-                                <div class="select-position">
-                                    <select id="select1">
-                                        <option selected>All</option>
-                                        <option value="1">option 01</option>
-                                        <option value="2">option 02</option>
-                                        <option value="3">option 03</option>
-                                        <option value="4">option 04</option>
-                                        <option value="5">option 05</option>
-                                    </select>
+                            <form method="GET" action="{{ route('frontend.shop') }}" class="d-flex align-items-center">
+                                <div class="search-select me-2">
+                                    <div class="select-position">
+                                        <select id="select1" name="category" class="form-select">
+                                            <option value="" selected>All Categories</option>
+                                            @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" 
+                                                {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="search-input">
-                                <input type="text" placeholder="Search">
-                            </div>
-                            <div class="search-btn">
-                                <button><i class="lni lni-search-alt"></i></button>
-                            </div>
+                                <div class="search-input me-2 flex-grow-1">
+                                    <input 
+                                        type="text" 
+                                        name="search" 
+                                        class="form-control" 
+                                        placeholder="Search products..." 
+                                        value="{{ request('search') }}"
+                                    />
+                                </div>
+                                <div class="search-btn">
+                                    <button class="btn btn-primary"><i class="lni lni-search-alt"></i></button>
+                                </div>
+                            </form>
                         </div>
                         <!-- navbar search Ends -->
                     </div>
                     <!-- End Main Menu Search -->
                 </div>
+                
                 <div class="col-lg-4 col-md-2 col-5">
                     <div class="middle-right-area">
                         <div class="nav-hotline">
@@ -190,7 +205,7 @@
                         <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                             <ul id="nav" class="navbar-nav ms-auto">
                                 <li class="nav-item">
-                                    <a href="index.html" class="active" aria-label="Toggle navigation">Home</a>
+                                    <a href="index.html" class="active" aria-label="Toggle navigation">{{__('frontend.home')}}</a>
                                 </li>
                                 @foreach($categories as $category)
                                 <li class="nav-item">
@@ -215,7 +230,7 @@
                             @endforeach
                             
                                 <li class="nav-item">
-                                    <a href="contact.html" aria-label="Toggle navigation">Contact Us</a>
+                                    <a href="contact.html" aria-label="Toggle navigation">{{__('frontend.contact_us')}}</a>
                                 </li>
                             </ul>
                         </div> <!-- navbar collapse -->
@@ -226,7 +241,7 @@
             <div class="col-lg-4 col-md-6 col-12">
                 <!-- Start Nav Social -->
                 <div class="nav-social">
-                    <h5 class="title">Follow Us:</h5>
+                    <h5 class="title">{{__('frontend.follow_us')}}:</h5>
                     <ul>
                         <li>
                             <a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a>
@@ -247,5 +262,10 @@
         </div>
     </div>
     <!-- End Header Bottom -->
+    @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    </script>
+@endpush
 </header>
 <!-- End Header Area -->

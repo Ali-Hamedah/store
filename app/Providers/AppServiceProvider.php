@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('currency', function () {
             return new \App\Helpers\Currency;
         });
+        $this->app->singleton('currency.converter', function ($app) {
+            return new CurrencyConverter(config('services.currency.api_key'));
+        });
 
     }
 

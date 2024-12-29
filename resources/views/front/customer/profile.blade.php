@@ -4,13 +4,13 @@
         <div class="container">
             <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="h2 text-uppercase mb-0">Profile</h1>
+                    <h1 class="h2 text-uppercase mb-0">{{__('frontend.profile')}}</h1>
                 </div>
                 <div class="col-lg-6 text-lg-right">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{__('frontend.home')}}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{__('frontend.profile')}}</li>
                         </ol>
                     </nav>
                 </div>
@@ -47,44 +47,44 @@
                         <!-- Input Fields -->
                         <div class="row">
                             <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="name">Name</label>
+                                <label class="text-small text-uppercase" for="name">{{__('frontend.full_name')}}</label>
                                 <input class="form-control" name="name" type="text" value="{{ old('name', auth()->user()->name) }}" placeholder="Enter your full name">
                                 @error('name')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                            
                             <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="email">Email Address</label>
+                                <label class="text-small text-uppercase" for="email">{{__('frontend.email')}}</label>
                                 <input class="form-control" name="email" type="email" value="{{ old('email', auth()->user()->email) }}" placeholder="e.g. Jason@example.com">
                                 @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-6 form-group">
-                                <label class="text-small text-uppercase" for="phone_number">Mobile Number</label>
+                                <label class="text-small text-uppercase" for="phone_number">{{__('frontend.mobile')}}</label>
                                 <input class="form-control" name="phone_number" type="tel" value="{{ old('phone_number', auth()->user()->phone_number) }}" placeholder="e.g. 966512345678">
                                 @error('phone_number')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label class="text-small text-uppercase d-flex justify-content-between" for="password">
-                                    Password 
-                                    <small class="text-danger">(Optional)</small>
+                                    {{__('frontend.password')}}
+                                    <small class="text-danger">({{__('frontend.optional')}})</small>
                                 </label>
                                 <input class="form-control" name="password" type="password">
                                 @error('password')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label class="text-small text-uppercase d-flex justify-content-between" for="password_confirmation">
-                                    Confirm Password 
-                                    <small class="text-danger">(Optional)</small>
+                                    {{__('frontend.confirm_password')}}  Confirm Password 
+                                    <small class="text-danger">({{__('frontend.optional')}})</small>
                                 </label>
                                 <input class="form-control" name="password_confirmation" type="password">
                                 @error('password_confirmation')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-12 form-group">
-                                <label class="text-small text-uppercase" for="image">Profile Image</label>
+                                <label class="text-small text-uppercase" for="image">{{__('frontend.profile_image')}}</label>
                                 <input class="form-control" name="image" type="file">
                                 @error('image')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="col-lg-12 form-group text-center">
-                                <button class="btn btn-dark btn-block" type="submit">Update Profile</button>
+                                <button class="btn btn-dark btn-block" type="submit">{{__('frontend.update_profile')}}</button>
                             </div>
                         </div>
                     </form>

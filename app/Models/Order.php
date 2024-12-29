@@ -19,6 +19,7 @@ class Order extends Model
         'discount',
         'order_status',
         'payment_status',
+        'currency_code',
     ];
 
     const NEW_ORDER = 0;

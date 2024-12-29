@@ -15,8 +15,9 @@ class OrderItem extends Model
         'quantity',
         'original_price',
         'discounted_price',
+        'total',
         'product_name',
-        // أضف الحقول الأخرى هنا إذا لزم الأمر
+        
     ];
     protected $table = 'order_items';
 

@@ -4,6 +4,7 @@ use Livewire\Livewire;
 use App\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\HomeController;
@@ -62,6 +63,9 @@ Route::group(
         Route::get('/', [HomeController::class, 'index'])->name('home');;
 
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+       
+        Route::post('/reviews/add', [ProductController::class, 'addReview'])->name('reviews.store');
+        Route::put('/reviews/{review}', [ProductController::class, 'update'])->name('reviews.update');
 
         Route::resource('cart', CartController::class);
        
@@ -72,19 +76,24 @@ Route::group(
         Route::get('/get-sizes/{colorId}', [ProductController::class, 'getSizes']);
 
         Route::get('/shop/{slug?}', [ProductController::class, 'shop'])->name('frontend.shop');
-        // Route::get('/shop/tags/{slug}', [ProductController::class, 'shop_tag'])->name('frontend.shop_tag');
+
+Route::get('/search', [ProductController::class, 'search'])->name('shop.search');
+        //  Route::get('/shop/tags/{slug}', [ProductController::class, 'shop_tag'])->name('frontend.shop_tag');
         Livewire::setUpdateRoute(function ($handle) {
-            return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle)
-                ->middleware(['guest']);
+            return Route::post(LaravelLocalization::setLocale() . '/livewire/update', $handle);
         });
+        
+        
     });
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
    
-   
+    Route::post('currency', [CurrencyController::class, 'store'])
+    ->name('currency.store');
   
     Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
 
     require __DIR__.'/dashboard.php';
     require __DIR__.'/auth.php';
  
+   

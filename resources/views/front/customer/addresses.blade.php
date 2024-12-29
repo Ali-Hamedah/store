@@ -10,7 +10,7 @@
                 <div class="col-lg-6 text-lg-right">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{__('frontend.home')}}</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('customer.addresses') }}">Addresses</a></li>
                         </ol>
                     </nav>
@@ -24,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h4 class="mb-4">Your Addresses</h4>
+                    <h4 class="mb-4">{{__('frontend.your_addresses')}}</h4>
                     <ul class="list-group">
                         @forelse ($addresses as $address)
                             <li class="list-group-item">
@@ -102,7 +102,7 @@
         <div class="container">
             <div class="row" id="addressSection">
                 <div class="col-lg-8">
-                    <h4 class="mb-4">Add New Address</h4>
+                    <h4 class="mb-4">{{__('frontend.add_new_address')}}</h4>
                     <form action="{{ route('customer.address.store') }}" method="POST">
                         @csrf
                         <div class="checkout-steps-form-style-1">
@@ -111,14 +111,14 @@
 
                                     <h6 class="title" data-bs-toggle="collapse" data-bs-target="#collapseThree"
                                         aria-expanded="true" aria-controls="collapseThree"><button id="toggleButton"
-                                            type="button" class="btn btn-secondary">Add Address</button></h6>
+                                            type="button" class="btn btn-secondary">{{__('frontend.add_new_address')}}</button></h6>
                                     <section class="checkout-steps-form-content collapse show" id="addressDetails"
                                         style="display: none;" aria-labelledby="headingThree"
                                         data-bs-parent="#accordionExample">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="single-form form-default">
-                                                    <label>User Name</label>
+                                                    <label>{{__('frontend.full_name')}}</label>
                                                     <div class="row">
                                                         <div class="col-md-6 form-input form">
                                                             <x-form.input name="first_name" placeholder="First Name" />
@@ -131,7 +131,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="single-form form-default">
-                                                    <label>Email Address</label>
+                                                    <label>{{__('frontend.email')}} </label>
                                                     <div class="form-input form">
                                                         <x-form.input name="email" placeholder="Email Address" />
                                                     </div>
@@ -139,7 +139,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="single-form form-default">
-                                                    <label>Phone Number</label>
+                                                    <label>{{__('frontend.mobile')}}</label>
                                                     <div class="form-input form">
                                                         <x-form.input name="phone_number" placeholder="Phone Number" />
                                                     </div>
@@ -191,13 +191,13 @@
                                                     <input type="checkbox" id="checkbox-default" name="default"
                                                         value="1">
                                                     <label for="checkbox-default"><span></span></label>
-                                                    <p>Set this address as default.</p>
+                                                    <p>{{__('frontend.Set_this_address_default')}}.</p>
                                                 </div>
                                             </div>
 
 
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Add Address</button>
+                                        <button type="submit" class="btn btn-primary">{{__('frontend.add_new_address')}}</button>
                                     </section>
                                 </li>
 

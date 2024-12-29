@@ -20,6 +20,13 @@
 </div>
 <!-- End Breadcrumbs -->
 
-<livewire:front.shop-products-component :slug="$slug ?? null" />
+<livewire:front.shop-products-component 
+    :slug="$slug ?? null" 
+    :search="request('search')" 
+    :categorySlug="request('category')" 
+/>
+
+
+
 
 </x-FrontLayout>

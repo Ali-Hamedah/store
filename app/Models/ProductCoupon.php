@@ -75,4 +75,6 @@ class ProductCoupon extends Model
     return 0;
 }
 
+
+
 }

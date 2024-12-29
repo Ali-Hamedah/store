@@ -58,7 +58,7 @@
     <div class="row">
         <div class="col-6">
     <div class="form-group">
-        <x-form.textarea label="Description Name English" class="form-control-lg" role="input" name="description_en" :value="$product->getTranslation('description', 'en')" />
+        <x-form.textarea label="Description Name English" class="form-control-lg" role="input" id="description_en" name="description_en" :value="$product->getTranslation('description', 'en')" />
             @error('description_en')
             <div class="text-danger">{{ $message }}</div>
         @enderror
@@ -66,7 +66,7 @@
         </div>
         <div class="col-6">
             <div class="form-group">
-                <x-form.textarea label="Description Name Arabic" class="form-control-lg" role="input" name="description_ar" :value="$product->getTranslation('description', 'ar')" />
+                <x-form.textarea label="Description Name Arabic" class="form-control-lg" role="input" id="description_ar" name="description_ar" :value="$product->getTranslation('description', 'ar')" />
                     @error('description_ar')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -176,6 +176,7 @@
     @push('scripts')
         <script src="{{ asset('js/tagify.min.js') }}"></script>
         <script src="{{ asset('js/tagify.polyfills.min.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote.min.js"></script>
         <script>
             var inputElm = document.querySelector('[name=tags]'),
                 tagify = new Tagify(inputElm);
@@ -238,6 +239,29 @@
             });
 
             </script>
+
+<script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+<script>
+ CKEDITOR.replace('description_en', {
+ toolbar: [
+     { name: 'basicstyles', items: ['Bold', 'Italic'] },
+     { name: 'paragraph', items: ['NumberedList', 'BulletedList'] }
+ ],
+ height: 300,
+ language: 'en'
+});
+
+CKEDITOR.replace('description_ar', {
+ toolbar: [
+     { name: 'basicstyles', items: ['Bold', 'Italic'] },
+     { name: 'paragraph', items: ['NumberedList', 'BulletedList'] }
+ ],
+ height: 300,
+ language: 'ar'
+});
+
+</script>
+
        
     @endpush
     

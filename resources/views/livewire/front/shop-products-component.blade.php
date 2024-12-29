@@ -8,16 +8,17 @@
                     <div class="product-sidebar">
                         <!-- Start Single Widget -->
                         <div class="single-widget search">
-                            <h3>Search Product</h3>
-                            <form action="#">
-                                <input type="text" placeholder="Search Here...">
+                            <h3>{{__('frontend.search_product')}}</h3>
+                            <form wire:submit.prevent="loadProducts">
+                                <input type="text" wire:model="search" placeholder="Search Here..." class="form-control">
                                 <button type="submit"><i class="lni lni-search-alt"></i></button>
                             </form>
                         </div>
+                        
                         <!-- End Single Widget -->
                         <!-- Start Single Widget -->
                         <div class="single-widget">
-                            <h3>All Categories</h3>
+                            <h3>{{__('frontend.all_categories')}}</h3>
                             <ul class="list">
                                 @foreach ($shop_categories_menu as $category)
                                     <li>
@@ -31,7 +32,7 @@
                         </div>
 
                         <div class="single-widget">
-                            <h3>All Tags</h3>
+                            <h3>{{__('frontend.all_tags')}}</h3>
                             <ul class="list">
                                 @foreach ($shop_tags_menu as $tag)
                                     <li>
@@ -46,23 +47,21 @@
 
                         <!-- End Single Widget -->
                       
-                      
-                     
                     </div>
                     <!-- End Product Sidebar -->
                 </div>
                 <div class="col-lg-9 col-12">
-                    <div class="product-grids-head">Sort by:
+                    <div class="product-grids-head">{{__('frontend.sort_by')}}:
                         <div class="product-grid-topbar">
                             <div class="row align-items-center">
                                 <div class="col-lg-7 col-md-8 col-12">
                                     <div class="product-sorting">
-                                        <label for="sorting">Sort by:</label>
+                                        <label for="sorting">{{__('frontend.sort_by')}}:</label>
                                         <select wire:model="sortingBy" class="form-control" wire:change="loadProducts">
-                                            <option value="default">Default sorting</option>
-                                            <option value="popularity">Popularity</option>
-                                            <option value="low-high">Price: Low to High</option>
-                                            <option value="high-low">Price: High to Low</option>
+                                            <option value="default">{{__('frontend.default_sorting')}}</option>
+                                            <option value="popularity">{{__('frontend.popularity')}}</option>
+                                            <option value="low-high">{{__('frontend.low_to_high')}}</option>
+                                            <option value="high-low">{{__('frontend.high_to_low')}}</option>
                                         </select>
                                         
                                         <h3 class="total-show-product">Showing {{ $products->firstItem() }}–{{ $products->lastItem() }} of {{ $products->total() }} results</h3>
@@ -123,10 +122,10 @@
                                                         <li><span>{{ $product->rating }} Review(s)</span></li>
                                                     </ul>
                                                     <div class="price">
-                                                        <span>${{ $product->price }}</span>
-                                                        @if ($product->original_price)
+                                                        <span>{{ Currency::format($product->price) }}</span>
+                                                        @if ($product->compare_price)
                                                             <span
-                                                                class="discount-price">${{ $product->original_price }}</span>
+                                                                class="discount-price">{{ Currency::format($product->compare_price) }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -196,10 +195,10 @@
 
                                                                 <!-- Product Price -->
                                                                 <div class="price">
-                                                                    <span>${{ $product->price }}</span>
-                                                                    @if ($product->original_price)
+                                                                    <span>{{ Currency::format($product->price) }}</span>
+                                                                    @if ($product->compare_price)
                                                                         <span
-                                                                            class="discount-price">${{ $product->original_price }}</span>
+                                                                            class="discount-price">{{ Currency::format($product->compare_price) }}</span>
                                                                     @endif
                                                                 </div>
                                                             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Helpers\Currency;
 use Illuminate\Http\Request;
 use App\Models\ProductCoupon;
 use App\Models\ProductVariant;
@@ -47,25 +48,25 @@ class CartController extends Controller
             'size_id' => ['required', 'exists:sizes,id'],
             'quantity' => ['required', 'integer', 'min:1'],
         ]);
-    
+
         $productVariant = ProductVariant::where('product_id', $validatedData['product_id'])
             ->where('color_id', $validatedData['color_id'])
             ->where('size_id', $validatedData['size_id'])
             ->first();
-    
+
         if (!$productVariant) {
             return redirect()->back()->withErrors(['variant' => 'The selected variant is not available.']);
         }
-    
+
         // استدعاء دالة add
         $this->cart->add($productVariant, $validatedData['quantity'], $validatedData['color_id'], $validatedData['size_id']);
 
-    
+
         return redirect()->back()->with('success', __('messages.add'));
     }
-    
-    
-    
+
+
+
 
     /**
      * Update the specified resource in storage.
@@ -79,26 +80,29 @@ class CartController extends Controller
         $request->validate([
             'quantity' => ['required', 'int', 'min:1'],
         ]);
-    
-        $this->cart->update($id, $request->post('quantity'));
-    
-        // جلب العنصر المحدث من السلة
+
         $cartItem = Cart::find($id);
-    
-        // حساب المجموع الفرعي مباشرة
+
+        $variant = $cartItem->product->variants->first();
+
+        if ($request->quantity > $variant->quantity) {
+            return response()->json([
+                'error' => __('frontend.quantity_not_available'),
+            ], 400);
+        }
+        $this->cart->update($id, $request->post('quantity'));
+
         $subtotal = $cartItem->quantity * $cartItem->product->price;
-    
-        // حساب المجموع الكلي (ديناميكيًا من العناصر في السلة)
+
         $total = Cart::all()->sum(fn($item) => $item->quantity * $item->product->price);
-    
-        // إرجاع الاستجابة كـ JSON
+
         return response()->json([
-            'subtotal' => \App\Helpers\Currency::format($subtotal),
-            'total' => \App\Helpers\Currency::format($total),
+            'subtotal' => Currency::format($subtotal),
+            'total' => Currency::format($total),
         ]);
     }
-    
-    
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -109,7 +113,7 @@ class CartController extends Controller
     {
         $this->cart->delete($id);
         $total = Cart::all()->sum(fn($item) => $item->quantity * $item->product->price);
-        
+
         return [
             'message' => 'Item deleted!',
             'total' => \App\Helpers\Currency::format($total),
@@ -121,38 +125,49 @@ class CartController extends Controller
         $request->validate([
             'coupon_code' => 'required|string',
         ]);
-    
+
         $code = $request->input('coupon_code');
-    
-        // تحقق من وجود الكوبون
+
         $coupon = ProductCoupon::where('code', $code)->first();
-    
+
         if (!$coupon) {
-            return response()->json(['error' => 'الكوبون غير صالح.'], 400);
+            return response()->json([
+                'error_type' => 'invalid',
+            ], 400);
         }
-    
-        // تحقق من أن الكوبون يمكن استخدامه
+
         if (!$coupon->canBeUsed()) {
-            return response()->json(['error' => 'الكوبون منتهي الصلاحية أو تم استخدامه بالكامل.'], 400);
+            return response()->json([
+                'error_type' => 'expired',
+            ], 400);
         }
-    
-        // احصل على إجمالي السلة
-        $cartTotal = $this->cart->total(); // تأكد أن لديك مكتبة Cart مفعلة
-        $discount = $coupon->discount($cartTotal); // احسب الخصم
+
+
+        $cartTotal = $this->cart->total();
+        $greaterThan =  Currency::format($coupon->greater_than);
+
+        $discount = $coupon->discount($cartTotal);
         $newTotal = $cartTotal - $discount;
-    
-        // تحديث عدد الاستخدامات
+
+        $formattedCartTotal = Currency::format($cartTotal);
+        $formattedNewTotal = Currency::format($newTotal);
+        $formattedDiscount = Currency::format($discount);
+
+        session([
+            'coupon_code' => $code,
+            'formatted_discount' => $formattedDiscount,
+            'formatted_cart_total' => $formattedCartTotal,
+            'formatted_new_total' => $formattedNewTotal,
+        ]);
+
         $coupon->increment('used_times');
-    
+
         return response()->json([
             'success' => true,
-            'message' => 'تم تطبيق الكوبون بنجاح.',
-            'discount' => $discount,
-            'new_total' => $newTotal,
+            'message' => __('frontend.coupon_success'),
+            'formatted_discount' => $formattedDiscount,
+            'greater_than' => $greaterThan,
+            'formatted_new_total' => $formattedNewTotal, 
         ]);
     }
-    
-    
-    
-
 }

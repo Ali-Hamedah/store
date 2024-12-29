@@ -11,8 +11,8 @@
                 <div class="col-lg-6 text-lg-right">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-lg-end mb-0 px-0">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('customer.orders') }}">Orders</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{__('frontend.home')}}</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('customer.orders') }}">{{__('frontend.orders')}}</a></li>
                         </ol>
                     </nav>
                 </div>

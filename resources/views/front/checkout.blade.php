@@ -6,14 +6,15 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 col-12">
                     <div class="breadcrumbs-content">
-                        <h1 class="page-title">checkout</h1>
+                        <h1 class="page-title">{{__('frontend.checkout')}}</h1>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-12">
                     <ul class="breadcrumb-nav">
-                        <li><a href="{{ route('home') }}"><i class="lni lni-home"></i> Home</a></li>
-                        <li><a href="#">Shop</a></li>
-                        <li>checkout</li>
+                        <li><a href="{{ route('home') }}"><i class="lni lni-home"></i>{{__('frontend.home')}}</a></li>
+                       
+                        <li><a href="#">{{__('frontend.checkout')}}</a></li>
+                     
                     </ul>
                 </div>
             </div>
@@ -23,7 +24,7 @@
 
     <!--====== Checkout Form Steps Part Start ======-->
 
-    <section class="checkout-wrapper section">
+    <section class="checkout-wrapper section" >
         <div class="container">
             <div class="row justify-content-center">
                 <form action="{{ route('checkout') }}" method="post" id="payment-form">
@@ -276,7 +277,7 @@
                                 <li>
                                     <h6 class="title collapsed" data-bs-toggle="collapse"
                                         data-bs-target="#collapsefive" aria-expanded="false"
-                                        aria-controls="collapsefive">Payment Info</h6>
+                                        aria-controls="collapsefive">{{__('frontend.payment_info')}}</h6>
                                     <section class="checkout-steps-form-content collapse" id="collapsefive"
                                         aria-labelledby="headingFive" data-bs-parent="#accordionExample">
                                         <div class="row">
@@ -295,50 +296,46 @@
                 <div class="col-lg-4">
                     <div class="checkout-sidebar">
                         <div class="checkout-sidebar-coupon">
-                            <p>Apply Coupon to get discount!</p>
+                            <p style="color: rgb(21, 93, 249)">{{__('frontend.apply_coupon')}}!</p>
                             <form id="apply-coupon-form">
                                 <div id="coupon-response"></div>
-                                <input type="text" id="coupon_code" name="coupon_code" placeholder="أدخل الكوبون">
+                                <input type="text" id="coupon_code" name="coupon_code" placeholder="{{__('frontend.enter_coupon')}}">
                                 <div class="button mt-2">
-                                    <button type="button" class="btn btn-primary" id="apply-coupon-btn">Apply Coupon</button>
+                                    <button type="button" class="btn btn-primary" id="apply-coupon-btn">{{__('frontend.apply_coupon')}}</button>
                                 </div>
                             </form>
                         </div>
                         
                         <div class="checkout-sidebar-price-table mt-30">
-                            <h5 class="title">Pricing Table</h5>
+                            <h5 class="title">{{__('frontend.pricing_table')}}</h5>
 
                             <div class="sub-total-price">
                                 <div class="total-price">
-                                    <p class="value">Subtotal Price:</p>
-                                    <p class="price" id="subtotal">{{ Currency::format($cart->total()) }}</p>
+                                    <p class="value">{{__('frontend.subtotal')}}:</p>
+                                    <p class="price" id="subtotal">{{ $cart_total ?? \App\Helpers\Currency::format($cart->total()) }}</p>
                                 </div>
                                 <div class="total-price shipping">
-                                    <input type="hidden" name="discount" value="10"/> 
-                                    <p class="value">Discount:</p>
-                                    <p class="price" id="discount-amount">{{ Currency::format(00.0) }}</p>
+                                    <input type="hidden" name="coupon_code" id="coupon_code" value="{{ $couponCode ??  ''}}"/> 
+                                    <p class="value">{{__('frontend.discount')}}:</p>
+                                    <p class="price" id="discount-amount">{{ $discount ??  '0.00'}}</p>
                                 </div>
                                 <div class="total-price discount">
                                     <input type="hidden" name="shipping"  value="5"/> 
-                                    <p class="value" >Shipping:</p>
-                                    <p class="price" id="shipping">{{ Currency::format(5.00) }}</p>
+                                    <p class="value" >{{__('frontend.shipping')}}:</p>
+                                    <p class="price" id="shipping">0.00</p>
                                 </div>
                             </div>
                             
                             <div class="total-payable">
                                 <div class="payable-price">
-                                    <p class="value">Total Payable Price:</p>
-                                    @php
-                                        $totalWithDiscountAndShipping = floatval($cart->total())  + 5.00;
-                                    @endphp
-                                    <input type="hidden" name="total"  id="paytotal" value="{{ $totalWithDiscountAndShipping }}"/>
-                                    <p class="price" id="total">{{ Currency::format($totalWithDiscountAndShipping) }}</p>
+                                    <p class="value">{{__('frontend.total_payable_price')}}:</p>
+                                    <input type="hidden" name="total"  id="paytotal" value="{{  $cart->total()}}"/>
+                                    <p class="price" id="total">{{ $total ??  \App\Helpers\Currency::format($cart->total()) }}</p>
                                 </div>
                             </div>
                             
                             <div class="single-form form-default button">
-                                <button type="submit" id="submit" class="btn">pay
-                                    now</button>
+                                <button type="submit" id="submit" class="btn">{{__('frontend.pay_now')}}</button>
                             </div>
                         </div>
                   

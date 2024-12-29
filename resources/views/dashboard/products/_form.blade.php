@@ -238,5 +238,29 @@ $(document).on('click', '.remove-variant', function() {
 
 
     </script>
-   <script src="{{ asset('assets/summernote/summernote-bs4.min.js') }}"></script>
+
+
+   <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+   <script>
+    CKEDITOR.replace('description_en', {
+    toolbar: [
+        { name: 'basicstyles', items: ['Bold', 'Italic'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] }
+    ],
+    height: 300,
+    language: 'en'
+});
+
+CKEDITOR.replace('description_ar', {
+    toolbar: [
+        { name: 'basicstyles', items: ['Bold', 'Italic'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] }
+    ],
+    height: 300,
+    language: 'ar'
+});
+
+</script>
+
+
 @endpush

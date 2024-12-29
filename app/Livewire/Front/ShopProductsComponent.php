@@ -18,6 +18,7 @@ class ShopProductsComponent extends Component
     public $categoryId;
     public $tagId;
     public $sortingBy = 'default';
+    public $search = '';
 
     public function mount($slug = null)
     {
@@ -60,6 +61,11 @@ class ShopProductsComponent extends Component
         });
     }
 
+     // تصفية المنتجات بناءً على النص المدخل في البحث
+     if ($this->search) {
+        $query->where('name', 'like', '%' . $this->search . '%');
+    }
+    
     // تطبيق الفلاتر الخاصة بالترتيب
     if ($this->sortingBy === 'popularity') {
         $query->orderBy('rating', 'DESC');

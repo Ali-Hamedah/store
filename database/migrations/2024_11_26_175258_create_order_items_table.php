@@ -21,6 +21,8 @@ return new class extends Migration
             $table->decimal('original_price', 10, 2); // السعر الأصلي
             $table->decimal('discounted_price', 10, 2);
             $table->unsignedSmallInteger('quantity')->default(1);
+            $table->decimal('total', 10, 2);
+            $table->char('currency_code', 3);
             $table->json('options')->nullable();
 
             $table->unique(['order_id', 'product_id']);

@@ -4,6 +4,7 @@
     $('.item-quantity').on('change', function() {
         const itemId = $(this).data('id'); 
         const newQuantity = $(this).val();
+   
 
         $.ajax({
             url: "/cart/" + itemId, 
@@ -13,18 +14,29 @@
                 _token: csrf_token, 
             },
             success: response => {
+                const errorMessageDiv = document.querySelector(`#item-${itemId} #error-message`);
                 $(`#item-${itemId} .subtotal`).text(response.subtotal);
                 $('.cart-total').text(response.total);
+                errorMessageDiv.style.display = 'none';
             },
             error: error => {
-                alert("حدث خطأ أثناء تحديث الكمية. حاول مرة أخرى.");
-            },
+                const errorMessageDiv = document.querySelector(`#item-${itemId} #error-message`);
+                if (error.responseJSON && error.responseJSON.error) {
+                    errorMessageDiv.textContent = error.responseJSON.error;
+                    errorMessageDiv.style.display = 'block';
+                    
+                } else {
+                    errorMessageDiv.textContent = "حدث خطأ غير متوقع.";
+                    errorMessageDiv.style.display = 'block'; // إظهار رسالة الخطأ
+                }
+            }
+            
         });
     });
    
   
     $(document).on('click', '.remove-item', function(e) {
-        e.preventDefault(); // منع السلوك الافتراضي
+        e.preventDefault(); 
     
         let id = $(this).data('id'); 
         $.ajax({
@@ -59,5 +71,17 @@
             }
         });
     });
+    
 
 })(jQuery);
+document.getElementById('coupon_code').addEventListener('input', function () {
+    const couponInput = this.value.trim();
+    const applyButton = document.getElementById('apply-coupon-button');
+
+    if (couponInput === "") {
+        applyButton.disabled = true; 
+    } else {
+        applyButton.disabled = false; 
+    }
+});
+

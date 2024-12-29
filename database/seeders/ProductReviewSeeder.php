@@ -21,7 +21,7 @@ class ProductReviewSeeder extends Seeder
         Product::all()->each(function ($product) use ($faker) {
             for ($i = 1; $i < rand(1, 3); $i++) {
                 $product->reviews()->create([
-                    'user_id' => rand(1, 2),
+                    'user_id' => 1,
                     'name' => $faker->userName,
                     'email' => $faker->safeEmail,
                     'title' => $faker->sentence,
