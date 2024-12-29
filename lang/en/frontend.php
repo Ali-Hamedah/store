@@ -105,6 +105,8 @@ return [
     'expired_coupon' => 'The coupon has expired or has been fully used.',
     'cart_total_limit' => 'The amount to apply the coupon must exceed.',
     'quantity_not_available' => 'Quantity is not available',
+    'quantity_available' => 'The requested quantity is not available for the product.', 
+    'quantity_stock' => 'Only left in Stock', 
 
 
 

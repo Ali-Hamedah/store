@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Front;
 
 use App\Models\Tag;
-use App\Models\Size;
-use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
@@ -31,10 +28,8 @@ class ProductController extends Controller
             ->get();
         $sizes = $product->variants()->get();
 
-        // الحصول على تقييمات المستخدم الخاصة أولاً
         $userReview = $product->reviews->firstWhere('user_id', auth()->id());
 
-        // التصفية بناءً على التقييمات
         $reviewsInRange = $product->reviews->filter(function ($review) {
             return $review->rating >= 3 && $review->rating <= 5;
         })->shuffle();
@@ -43,49 +38,45 @@ class ProductController extends Controller
             return $review->rating < 3 || $review->rating > 5;
         });
 
-        // دمج التقييمات مع تقييم المستخدم في الأعلى إذا كان موجودًا
         if ($userReview) {
             $reviews = collect([$userReview])->merge($reviewsInRange)->merge($otherReviews);
         } else {
             $reviews = $reviewsInRange->concat($otherReviews);
         }
 
-        // إزالة التقييمات المكررة بناءً على id
         $reviews = $reviews->unique('id');
 
-        // حساب عدد التقييمات حسب التصنيف
         $fiveStars = $reviews->where('rating', 5)->count();
         $fourStars = $reviews->where('rating', 4)->count();
         $threeStars = $reviews->where('rating', 3)->count();
         $twoStars = $reviews->where('rating', 2)->count();
         $oneStar = $reviews->where('rating', 1)->count();
 
-        // حساب التقييم المتوسط
         $averageRating = $reviews->avg('rating');
 
-        // إرجاع العرض مع البيانات
         return view('front.products.show', compact('product', 'colors', 'sizes', 'reviews', 'fiveStars', 'fourStars', 'threeStars', 'twoStars', 'oneStar', 'averageRating', 'userReview'));
     }
 
-
     public function getSizes(Request $request, $colorId)
-    {
-        // جلب المقاسات بناءً على المنتج واللون باستخدام العلاقة مع جدول "sizes"
+    {   
         $sizesNames = ProductVariant::where('product_id', $request->product_id)
             ->where('color_id', $colorId)
-            ->with('size') // تأكد من أنك قد قمت بتعريف العلاقة في نموذج "ProductVariant"
+            ->with('size') 
             ->get()
-            ->pluck('size.name', 'size.id'); // سيعيد المصفوفة مع الـ ID كـ مفتاح والـ name كـ قيمة
-        // جلب اسم المقاس فقط
-
-        return response()->json($sizesNames); // إرسال البيانات بتنسيق JSON
+            ->map(function ($variant) {
+                return [
+                    'id' => $variant->size->id,
+                    'name' => $variant->size->name,
+                    'quantity' => $variant->quantity, 
+                ];
+            }); 
+        return response()->json($sizesNames); 
     }
 
     public function shop($slug = null)
     {
         $search = request()->query('search', null);
 
-        // Handle product search
         if ($search) {
             $products = Product::where('name', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
@@ -93,7 +84,6 @@ class ProductController extends Controller
 
             return view('front.shop', ['products' => $products]);
         }
-
 
         if ($slug) {
             $category = Cache::remember("category_{$slug}", now()->addMinutes(10), function () use ($slug) {
@@ -121,7 +111,6 @@ class ProductController extends Controller
             return view('front.shop', ['categories' => $categories]);
         }
     }
-
 
     public function addReview(Request $request)
     {
@@ -162,7 +151,6 @@ class ProductController extends Controller
             return redirect()->back()->with('success', 'Review submitted falled!');
         }
     }
-
 
     public function search(Request $request)
     {

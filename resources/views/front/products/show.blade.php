@@ -40,13 +40,13 @@
                     <div class="col-lg-6 col-md-12 col-12">
                         <div class="product-info">
                             <h2 class="title">{{ $product->getTranslation('name', app()->getLocale()) }}</h2>
-                            <p class="category"><i class="lni lni-tag"></i> {{__('frontend.tags')}}:
+                            <p class="category"><i class="lni lni-tag"></i> {{ __('frontend.tags') }}:
                                 @foreach ($product->tags as $tag)
-                                    <a href="{{ route('frontend.shop', $tag->slug) }}">{{$tag->slug }}</a>
+                                    <a href="{{ route('frontend.shop', $tag->slug) }}">{{ $tag->slug }}</a>
                                 @endforeach
                             </p>
-                            <h3 class="price">{{ Currency::format($product->price ) }} @if ($product->compare_price)
-                                    <span>{{ Currency::format($product->compare_price ) }}</span>
+                            <h3 class="price">{{ Currency::format($product->price) }} @if ($product->compare_price)
+                                    <span>{{ Currency::format($product->compare_price) }}</span>
                                 @endif
                             </h3>
                             <p class="info-text">{!! substr($product->getTranslation('description', app()->getLocale()), 0, 150) !!}</p>
@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div id="coupon-response"></div>
                                 <div class="bottom-content">
                                     <div class="row align-items-end">
                                         <div class="col-lg-4 col-md-4 col-12">
@@ -110,7 +110,8 @@
                                         </div>
                                         <div class="col-lg-4 col-md-4 col-12">
                                             <div class="wish-button">
-                                                <button type="button" class="btn"><i class="lni lni-heart"></i> {{__('frontend.add_to_wishlist')}}</button>
+                                                <button type="button" class="btn"><i class="lni lni-heart"></i>
+                                                    {{ __('frontend.add_to_wishlist') }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +138,7 @@
                     <div class="col-lg-8 col-12">
                         <div class="single-block">
                             <div class="reviews" id="latest_review">
-                                <h4 class="title">{{__('frontend.latest_reviews')}}</h4>
+                                <h4 class="title">{{ __('frontend.latest_reviews') }}</h4>
 
                                 @foreach ($reviews as $key => $review)
                                     <div class="single-review review-item" data-index="{{ $key }}"
@@ -163,7 +164,8 @@
 
                                 @if ($reviews->count() > 3)
                                     <div class="text-center">
-                                        <button id="load-more" class="btn btn-primary">{{__('frontend.load_more')}}</button>
+                                        <button id="load-more"
+                                            class="btn btn-primary">{{ __('frontend.load_more') }}</button>
                                     </div>
                                 @endif
                             </div>
@@ -215,8 +217,8 @@
                             @endif
                         @else
                             <div class="alert alert-warning" role="alert">
-                                {{__('frontend.you_must_log')}}<a href="{{ route('choose.login') }}"
-                                    class="alert-link">{{__('frontend.click_here_to_login')}}</a>.
+                                {{ __('frontend.you_must_log') }}<a href="{{ route('choose.login') }}"
+                                    class="alert-link">{{ __('frontend.click_here_to_login') }}</a>.
                             </div>
                         @endif
                     </div>
@@ -293,9 +295,11 @@
 
         <script>
             $(document).ready(function() {
+
                 $('#colorSelect').on('change', function() {
                     var colorId = $(this).val();
                     var productId = $('#product_id').val();
+
                     $.ajax({
                         url: '/get-sizes/' + colorId,
                         method: 'GET',
@@ -303,17 +307,41 @@
                             product_id: productId,
                         },
                         success: function(response) {
+
                             $('#sizeSelect').empty();
-                            $.each(response, function(id, sizeName) {
-                                $('#sizeSelect').append('<option value="' + id +
-                                    '">' + sizeName + '</option>');
+                            $('#sizeSelect').append(
+                                '<option value="">{{ __('frontend.choose') }} {{ __('frontend.size') }}</option>'
+                            );
+
+                            $.each(response, function(index, size) {
+                                $('#sizeSelect').append('<option value="' + size.id +
+                                    '" data-quantity="' + size.quantity + '">' + size
+                                    .name + '</option>');
                             });
+
+                            $('#coupon-response').html('');
                         },
                         error: function() {
                             alert('حدث خطأ في جلب المقاسات!');
                         }
                     });
                 });
+
+                $('#sizeSelect').on('change', function() {
+                    var selectedOption = $(this).find(':selected');
+                    var quantity = selectedOption.data('quantity');
+                    var sizeName = selectedOption.text();
+
+                    if (quantity !== undefined && quantity < 10) {
+                        $('#coupon-response').html(
+                            '<p style="color: red; font-size: 12px; font-weight: bold;">' + sizeName + ' ' +
+                            @json(__('frontend.quantity_stock')) + ' (' + quantity + ') ' + '</p>'
+                        );
+                    } else {
+                        $('#coupon-response').html('');
+                    }
+                });
+
             });
         </script>
 
@@ -321,24 +349,22 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const loadMoreBtn = document.getElementById('load-more');
                 const reviewItems = document.querySelectorAll('.review-item');
-                let visibleCount = 3; // عدد التقييمات المرئية أولاً
+                let visibleCount = 3; // 
 
                 loadMoreBtn.addEventListener('click', function() {
                     const reviewsToShow = Array.from(reviewItems).slice(visibleCount, visibleCount +
-                    3); // عرض 3 تقييمات إضافية
+                        3);
                     reviewsToShow.forEach(review => review.style.display = 'block');
                     visibleCount += 3;
 
-                    // إذا ظهرت كل التقييمات، قم بإخفاء الزر
                     if (visibleCount >= reviewItems.length) {
                         loadMoreBtn.style.display = 'none';
                     }
                 });
             });
         </script>
-       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @endpush
 
 </x-FrontLayout>

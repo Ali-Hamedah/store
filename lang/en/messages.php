@@ -13,7 +13,8 @@ return [
     'confirm_delete' => 'Confirm deletion',
     'cancel' => 'Cancel',
     'purchase_completed' => 'Purchase completed',
-    'quantity_available' => 'The requested quantity is not available for the product.', 
+  
+ 
     
     
 

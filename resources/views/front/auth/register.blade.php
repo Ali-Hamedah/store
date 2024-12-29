@@ -1,4 +1,4 @@
-<x-front-layout title="Login">
+<x-front-layout title="Register">
 
     <!-- Start Account Login Area -->
     <div class="account-login section">
@@ -46,7 +46,7 @@
                                 @enderror
                             </div>
                             <div class="form-group input-group">
-                                <label for="reg-fn">phone_number</label>
+                                <label for="reg-fn">Mobile</label>
                                 <input class="form-control" type="text" name="phone_number" id="reg-email" required>
                                 @error('phone_number')
                                     <div class="text-danger">{{ $message }}</div>

@@ -103,5 +103,6 @@ return [
     'expired_coupon' => 'الكوبون منتهي الصلاحية أو تم استخدامه بالكامل.',
     'cart_total_limit' => 'يجب أن يتجاوز المبلغ المطلوب لتطبيق القسيمة',
     'quantity_not_available' => 'Quantity is not available',
+    'quantity_stock' => 'متبقي فقط في المخزون', 
 
 ];
